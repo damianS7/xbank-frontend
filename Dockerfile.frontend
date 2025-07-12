@@ -11,5 +11,5 @@ RUN npm run build
 FROM nginx:alpine
 # Copiar build estático generado en /app/dist al directorio de nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
-# Exponer puerto 80 (nginx)
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
