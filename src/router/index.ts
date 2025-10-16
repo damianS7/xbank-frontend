@@ -9,13 +9,16 @@ import MainLayout from "@/layouts/MainLayout.vue";
 import AuthLayout from "@/layouts/AuthLayout.vue";
 import BankingAccountsView from "@/views/account/BankingAccountListView.vue";
 import BankingAccountView from "@/views/account/BankingAccountItemView.vue";
-import BankingCardListView from "@/views/card//BankingCardListView.vue";
-import BankingCardItemView from "@/views/card//BankingCardItemView.vue";
-import RegisterView from "@/views/auth/RegisterView.vue";
+import BankingCardListView from "@/views/card/BankingCardListView.vue";
+import BankingCardItemView from "@/views/card/BankingCardItemView.vue";
 import SettingsView from "@/views/SettingsView.vue";
 import ProfileView from "@/views/profile/ProfileView.vue";
-import ResetPasswordView from "@/views/auth/ResetPasswordView.vue";
+import RegisterView from "@/views/accounts/RegisterView.vue";
 import PendingTransactionsView from "@/views/PendingTransactionsView.vue";
+import VerificationView from "@/views/accounts/verification/VerificationView.vue";
+import ResendVerificationView from "@/views/accounts/verification/ResendVerificationView.vue";
+import ResetPasswordView from "@/views/accounts/password/reset/ResetPasswordView.vue";
+import ResetPasswordSetView from "@/views/accounts/password/reset/ResetPasswordSetView.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const routes: Array<RouteRecordRaw> = [
@@ -71,6 +74,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/auth",
     component: AuthLayout,
     redirect: "/auth/login",
+    meta: { redirectIfLogged: true },
     children: [
       {
         path: "login",
@@ -82,10 +86,32 @@ const routes: Array<RouteRecordRaw> = [
         name: "register",
         component: RegisterView,
       },
+    ],
+  },
+  {
+    path: "/accounts",
+    component: AuthLayout,
+    meta: { redirectIfLogged: true },
+    children: [
       {
-        path: "reset-password",
+        path: "verification/:token?",
+        name: "verify-account",
+        component: VerificationView,
+      },
+      {
+        path: "verification/resend",
+        name: "resend-verification",
+        component: ResendVerificationView,
+      },
+      {
+        path: "password/reset",
         name: "reset-password",
         component: ResetPasswordView,
+      },
+      {
+        path: "password/reset/:token",
+        name: "reset-password-set",
+        component: ResetPasswordSetView,
       },
     ],
   },
@@ -95,25 +121,47 @@ const routes: Array<RouteRecordRaw> = [
     redirect: "/",
   },
 ];
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore();
+  await authStore.initialize();
   const isAuthenticated = authStore.isAuthenticated;
 
+  // if authentication is required but you are not logged
   if (to.meta.requiresAuth && !isAuthenticated) {
-    next({
+    // redirect to login
+    return next({
       path: "/auth/login",
       query: { redirect: to.fullPath },
     });
-    // next({ path: "/auth/login" }); // opcional: guardar destino
-  } else {
-    next();
   }
-});
 
+  // if you access to /auth being logged ...
+  if (to.meta.redirectIfLogged && isAuthenticated) {
+    // redirects to /
+    return next({
+      path: "/",
+    });
+  }
+
+  // from now on you are authenticated
+  // if the route requires a role ...
+  if (to.meta.role) {
+    // get the user role
+    const role = authStore.getPayload()?.role || "USER";
+
+    // compare them
+    if (role !== to.meta.role) {
+      return next({
+        path: "/404",
+      });
+    }
+  }
+
+  next();
+});
 export default router;
