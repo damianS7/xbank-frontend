@@ -1,9 +1,10 @@
+<script setup lang="ts">
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+</script>
 <template>
   <div
-    class="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm flex items-center justify-center"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 dark:bg-black/30 backdrop-blur-lg"
   >
-    <div
-      class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"
-    ></div>
+    <Spinner class="size-18 text-blue-600" />
   </div>
 </template>
