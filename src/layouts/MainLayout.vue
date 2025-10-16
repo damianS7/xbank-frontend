@@ -6,7 +6,7 @@ import { useAppInit } from "@/composables/useAppInit";
 const appInit = useAppInit();
 </script>
 <template>
-  <FullScreenLoadingSpinner v-if="appInit.isInitialized()" />
+  <FullScreenLoadingSpinner v-if="!appInit.isInitialized()" />
   <div v-else class="flex h-screen overflow-hidden">
     <Sidebar />
 
