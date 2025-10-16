@@ -76,9 +76,9 @@ function onFormSubmit() {
 </script>
 <template>
   <form :resolver="resolver" @submit.prevent="onFormSubmit">
-    <Card>
+    <Card class="shadow-md">
       <CardHeader>
-        <CardTitle class="text-2xl"> Login </CardTitle>
+        <CardTitle class="text-2xl">Login</CardTitle>
         <CardDescription>
           Enter your email below to login to your account.
         </CardDescription>

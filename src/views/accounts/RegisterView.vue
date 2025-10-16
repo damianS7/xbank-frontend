@@ -52,11 +52,6 @@ const form = ref<Field>({
     placeholder: "Password",
     value: "",
   },
-  username: {
-    type: "text",
-    placeholder: "Your @username",
-    value: "",
-  },
   firstname: {
     type: "text",
     placeholder: "First name",
@@ -83,13 +78,17 @@ const form = ref<Field>({
     placeholder: "Birthdate",
     value: "",
   },
+  zipcode: {
+    type: "text",
+    placeholder: "Zip code",
+    value: "",
+  },
 });
 
 // form errors
 const formErrors = ref<Record<keyof typeof form.value, string[]>>({
   email: [],
   password: [],
-  username: [],
   firstname: [],
   lastname: [],
   phone: [],
@@ -100,7 +99,6 @@ const formErrors = ref<Record<keyof typeof form.value, string[]>>({
 const resolver = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters long"),
-  username: z.string().min(1, "Username is required"),
   firstname: z.string().min(1, "First name is required"),
   lastname: z.string().min(1, "Last name is required"),
   phone: z.string().min(1, "Phone number is required"),

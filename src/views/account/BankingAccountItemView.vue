@@ -4,7 +4,7 @@ import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAccountStore } from "@/stores/account";
 import { useCardStore } from "@/stores/card";
-import MessageAlert from "@/components/MessageAlert.vue";
+import CustomAlert from "@/components/CustomAlert.vue";
 import BankingAccount from "@/views/account/components/BankingAccount.vue";
 import RequestBankingCardModal from "@/views/account/components/BankingAccountRequestCardModal.vue";
 import ConfirmPasswordModal from "@/components/modal/ConfirmPasswordModal.vue";
@@ -129,7 +129,7 @@ onMounted(() => {
     <RequestBankingCardModal :ref="modals.requestCard" />
     <TransferModal :ref="modals.transfer" />
     <ConfirmPasswordModal :ref="modals.confirmPassword" />
-    <MessageAlert ref="alert" />
+    <CustomAlert ref="alert" />
 
     <div class="flex flex-col sm:flex-row sm:justify-end gap-1 mb-6">
       <button @click="transferTo" class="btn-sm btn-blue">TRANSFER TO</button>
@@ -175,7 +175,8 @@ onMounted(() => {
           :currency="account.accountCurrency"
           ref="transactionRefs"
           :fetch="
-            (id: number, page: number, size: number) => transactionStore.fetchAccountTransactions(id, page, size)
+            (id: number, page: number, size: number) =>
+              transactionStore.fetchAccountTransactions(id, page, size)
           "
         />
       </div>

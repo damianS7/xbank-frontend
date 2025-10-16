@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useCustomerStore } from "@/stores/customer";
-import MessageAlert from "@/components/MessageAlert.vue";
+import CustomAlert from "@/components/CustomAlert.vue";
 import { onMounted, ref } from "vue";
 import ProfileEditableField from "./components/ProfileEditableField.vue";
 import ProfilePhoto from "./components/ProfilePhotoUploader.vue";
 import ConfirmPasswordModal from "@/components/modal/ConfirmPasswordModal.vue";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
-import { GenderType } from "@/types/Profile";
+import type { GenderType } from "@/types/Profile";
 import { MessageType } from "@/types/Message";
 const customerStore = useCustomerStore();
 const customer = customerStore.getLoggedCustomer;
@@ -269,7 +269,7 @@ onMounted(() => {
   <div>
     <ConfirmPasswordModal :ref="modals.confirmPassword" />
     <ConfirmMessageModal :ref="modals.confirmMessage" />
-    <MessageAlert
+    <CustomAlert
       v-if="messageAlert.visible"
       class="mb-4"
       :message="messageAlert.message"

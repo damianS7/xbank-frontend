@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MessageAlert from "@/components/MessageAlert.vue";
+import CustomAlert from "@/components/CustomAlert.vue";
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useCardStore } from "@/stores/card";
@@ -9,12 +9,12 @@ import { MessageType } from "@/types/Message";
 import BankingCardSetPinModal from "@/views/card/components/BankingCardSetPinModal.vue";
 import BankingCardLockModal from "@/views/card/components/BankingCardLockModal.vue";
 import BankingCardDailyLimitModal from "@/views/card/components/BankingCardDailyLimitModal.vue";
-import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import ConfirmPasswordModal from "@/components/modal/ConfirmPasswordModal.vue";
 import BankingTransactions from "@/components/BankingTransactions.vue";
 import { FieldException } from "@/exceptions/FieldException";
 import { useAccountStore } from "@/stores/account";
 import { useTransactionStore } from "@/stores/transaction";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
 const accountStore = useAccountStore();
 const transactionStore = useTransactionStore();
 const cardStore = useCardStore();
@@ -135,7 +135,7 @@ onMounted(async () => {
       :cardEnabled="card?.cardStatus === 'ENABLED'"
     />
     <BankingCardDailyLimitModal :ref="modals.dailyLimitModal" />
-    <MessageAlert ref="alert" />
+    <CustomAlert ref="alert" />
 
     <div v-if="card && isViewReady">
       <div class="flex flex-wrap justify-end gap-1 mb-6">
@@ -194,14 +194,15 @@ onMounted(async () => {
             :id="card.id"
             :currency="currency"
             :fetch="
-              (id: number, page: number, size: number) => transactionStore.fetchCardTransactions(id, page, size)
+              (id: number, page: number, size: number) =>
+                transactionStore.fetchCardTransactions(id, page, size)
             "
           />
         </div>
       </div>
     </div>
     <div v-else>
-      <LoadingSpinner v-if="!isViewReady" />
+      <Spinner v-if="!isViewReady" />
     </div>
 
     <div

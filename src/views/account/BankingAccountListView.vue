@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MessageAlert from "@/components/MessageAlert.vue";
+import CustomAlert from "@/components/CustomAlert.vue";
 import BankingAccount from "@/views/account/components/BankingAccount.vue";
 import { computed, onMounted, ref } from "vue";
 import { useAccountStore } from "@/stores/account";
@@ -50,7 +50,7 @@ onMounted(() => {
 <template>
   <div>
     <OpenAccountModal :ref="modals.openAccount" />
-    <MessageAlert ref="alert" />
+    <CustomAlert ref="alert" />
 
     <div class="flex justify-end rounded gap-1 mb-6">
       <button type="button" @click="openAccount" class="btn btn-blue btn-sm">
