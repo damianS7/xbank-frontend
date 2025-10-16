@@ -1,5 +1,5 @@
-import { BankingTransaction } from "@/types/BankingTransaction";
-import { BankingCard } from "@/types/BankingCard";
+import type { BankingTransaction } from "@/types/BankingTransaction";
+import type { BankingCard } from "@/types/BankingCard";
 
 export const BankingAccountTypes = ["SAVINGS", "CHECKING"] as const;
 export type BankingAccountType = (typeof BankingAccountTypes)[number];

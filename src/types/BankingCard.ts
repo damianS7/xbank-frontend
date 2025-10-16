@@ -1,4 +1,4 @@
-import { BankingTransaction } from "./BankingTransaction";
+import type { BankingTransaction } from "./BankingTransaction";
 
 export type BankingCardType = "DEBIT" | "CREDIT";
 export type BankingCardStatus = "ENABLED" | "DISABLED";

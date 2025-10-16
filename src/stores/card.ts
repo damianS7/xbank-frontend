@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import type { BankingCard, BankingCardLockStatus } from "../types/BankingCard";
-import { BankingTransaction } from "@/types/BankingTransaction";
-import { FieldException } from "@/exceptions/FieldException";
+import type { BankingTransaction } from "@/types/BankingTransaction";
+import type { FieldException } from "@/exceptions/FieldException";
 
 export const useCardStore = defineStore("card", {
   state: () => ({

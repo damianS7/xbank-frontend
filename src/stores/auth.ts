@@ -1,4 +1,4 @@
-import { Customer } from "@/types/Customer";
+import type { Customer } from "@/types/Customer";
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {

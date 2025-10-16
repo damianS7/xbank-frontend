@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { BankingTransaction } from "@/types/BankingTransaction";
-import { FieldException } from "@/exceptions/FieldException";
+import type { FieldException } from "@/exceptions/FieldException";
 
 export const useTransactionStore = defineStore("transaction", {
   state: () => ({

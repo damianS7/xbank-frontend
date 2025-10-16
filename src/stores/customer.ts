@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { Customer } from "@/types/Customer";
-import { Profile } from "@/types/Profile";
+import type { Profile } from "@/types/Profile";
 
 export const useCustomerStore = defineStore("customer", {
   state: () => ({
