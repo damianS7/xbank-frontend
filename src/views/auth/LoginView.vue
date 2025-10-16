@@ -1,35 +1,39 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { z } from "zod";
-import { useRouter } from "vue-router";
-import { useRoute } from "vue-router";
+import CustomAlert from "@/components/CustomAlert.vue";
+import Button from "@/components/ui/button/Button.vue";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/stores/auth";
+import { z } from "zod";
+import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
+
+const alert = ref<InstanceType<typeof CustomAlert>>();
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
-function redirectBackToLastPage() {
-  const redirectPath = route.query.redirect?.toString() || "/home";
-  router.push(redirectPath);
-}
-
-// Check if the user is already authenticated
-if (authStore.isAuthenticated) {
-  redirectBackToLastPage();
-}
-
+// form
 const form = ref({
   email: "",
   password: "",
 });
 
-const errors = ref<{ form?: string; email?: string[]; password?: string[] }>(
-  {}
-);
+const formErrors = ref<Record<keyof typeof form.value, string[]>>({
+  email: [],
+  password: [],
+});
 
 const resolver = ref(
   z.object({
-    // email: z.string().min(1, { message: "Email is required." }),
     email: z.string().nonempty({
       message: "Email cannot be empty.",
     }),
@@ -39,68 +43,87 @@ const resolver = ref(
   })
 );
 
-const onFormSubmit = async () => {
-  let email = form.value.email;
-  let password = form.value.password;
+function resetFormErrors() {
+  Object.keys(formErrors.value).forEach(
+    (key) => (formErrors.value[key as keyof typeof form.value] = [])
+  );
+}
+
+function onFormSubmit() {
+  resetFormErrors();
   const result = resolver.value.safeParse(form.value);
 
+  // if fails to validate fields
   if (!result.success) {
-    errors.value = result.error.flatten().fieldErrors;
+    const fieldErrors: any = result.error.flatten().fieldErrors;
+
+    Object.keys(fieldErrors).forEach((key) =>
+      formErrors.value[key as keyof typeof form.value].push(...fieldErrors[key])
+    );
     return;
   }
 
-  // clean errors
-  errors.value = {};
-  await authStore
-    .login(email, password)
+  authStore
+    .login(form.value.email, form.value.password)
     .then(() => {
-      redirectBackToLastPage();
+      const to = route.query.redirect?.toString() || "/";
+      router.push(to);
     })
     .catch((error) => {
-      errors.value.form = error.message || "An error occurred.";
+      alert.value?.exception(error);
     });
-};
+}
 </script>
 <template>
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <form
-      :resolver="resolver"
-      @submit.prevent="onFormSubmit"
-      class="flex flex-col gap-4"
-    >
-      <div class="flex flex-col gap-1">
-        <input
-          v-model="form.email"
-          name="email"
-          type="email"
-          placeholder="Email"
-          class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        <span v-if="errors?.email" class="text-sm text-red-500">{{
-          errors.email[0]
-        }}</span>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <input
-          v-model="form.password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        <span v-if="errors?.password" class="text-sm text-red-500">{{
-          errors.password[0]
-        }}</span>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <span v-if="errors?.form" class="text-sm text-red-500">{{
-          errors.form
-        }}</span>
-      </div>
-
-      <button type="submit" class="btn btn-blue">Sign in</button>
-    </form>
-  </div>
+  <form :resolver="resolver" @submit.prevent="onFormSubmit">
+    <Card>
+      <CardHeader>
+        <CardTitle class="text-2xl"> Login </CardTitle>
+        <CardDescription>
+          Enter your email below to login to your account.
+        </CardDescription>
+      </CardHeader>
+      <CardContent class="grid gap-4">
+        <div class="grid gap-2">
+          <Label for="email">Email</Label>
+          <Input
+            v-model="form.email"
+            id="email"
+            type="email"
+            placeholder="mail@example.com"
+            required
+          />
+          <p
+            v-if="formErrors.email"
+            v-for="(error, index) in formErrors.email"
+            :key="index"
+            class="text-sm text-red-500 ml-2"
+          >
+            {{ error }}
+          </p>
+        </div>
+        <div class="grid gap-2">
+          <Label for="password">Password</Label>
+          <Input
+            v-model="form.password"
+            id="password"
+            type="password"
+            required
+          />
+          <p
+            v-if="formErrors.password"
+            v-for="(error, index) in formErrors.password"
+            :key="index"
+            class="text-sm text-red-500 ml-2"
+          >
+            {{ error }}
+          </p>
+        </div>
+      </CardContent>
+      <CardFooter class="flex flex-col gap-2">
+        <Button class="w-full" type="submit"> Submit </Button>
+        <CustomAlert ref="alert" />
+      </CardFooter>
+    </Card>
+  </form>
 </template>
