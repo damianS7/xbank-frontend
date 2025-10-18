@@ -1,21 +1,3 @@
-<template>
-  <RouterLink v-slot="{ isActive }" :to="to">
-    <div
-      :class="[
-        'flex items-center gap-4 p-2 rounded transition-colors',
-        isActive ? 'bg-gray-200' : 'hover:bg-gray-200',
-      ]"
-    >
-      <span class="text-lg">
-        <component :is="icon" class="w-6 h-6" />
-      </span>
-      <span
-        class="sidebar-label overflow-hidden whitespace-nowrap transition-all duration-300 group-hover:opacity-100 opacity-0"
-        >{{ label }}</span
-      >
-    </div>
-  </RouterLink>
-</template>
 <script setup lang="ts">
 import { defineProps } from "vue";
 defineProps<{
@@ -24,3 +6,16 @@ defineProps<{
   label: string;
 }>();
 </script>
+
+<template>
+  <RouterLink
+    :to="to"
+    :class="[
+      'flex items-center gap-4 p-4 rounded',
+      $route.path === to ? 'bg-gray-200' : 'hover:bg-gray-200',
+    ]"
+  >
+    <component :is="icon" />
+    <span>{{ label }}</span>
+  </RouterLink>
+</template>
