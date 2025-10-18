@@ -34,27 +34,27 @@ const routes: Array<RouteRecordRaw> = [
         component: HomeView,
       },
       {
-        path: "accounts",
-        name: "accounts",
+        path: "/banking/accounts",
+        name: "banking-accounts",
         component: BankingAccountsView,
       },
       {
-        path: "account/:id",
+        path: "/banking/account/:id",
         name: "account",
         component: BankingAccountView,
       },
       {
-        path: "transactions",
-        name: "transactions",
+        path: "/banking/transactions",
+        name: "banking-transactions",
         component: PendingTransactionsView,
       },
       {
-        path: "cards",
-        name: "cards",
+        path: "/banking/cards",
+        name: "banking-cards",
         component: BankingCardListView,
       },
       {
-        path: "card/:id",
+        path: "/banking/card/:id",
         name: "card",
         component: BankingCardItemView,
       },
@@ -71,10 +71,10 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/auth",
+    path: "/customers/accounts",
     component: AuthLayout,
-    redirect: "/auth/login",
-    meta: { redirectIfLogged: true },
+    redirect: "/customers/accounts/login",
+    meta: { requiresAuth: false, redirectIfAuth: true },
     children: [
       {
         path: "login",
@@ -82,17 +82,18 @@ const routes: Array<RouteRecordRaw> = [
         component: LoginView,
       },
       {
+        path: "logout",
+        name: "logout",
+        component: LoginView,
+        beforeEnter: () => {
+          useAuthStore().logout();
+        },
+      },
+      {
         path: "register",
         name: "register",
         component: RegisterView,
       },
-    ],
-  },
-  {
-    path: "/accounts",
-    component: AuthLayout,
-    meta: { redirectIfLogged: true },
-    children: [
       {
         path: "verification/:token?",
         name: "verify-account",
@@ -131,26 +132,31 @@ router.beforeEach(async (to, _from, next) => {
   await authStore.initialize();
   const isAuthenticated = authStore.isAuthenticated;
 
-  // if authentication is required but you are not logged
+  // if you access logout route and you are authenticated
+  if (to.name === "logout" && isAuthenticated) {
+    return next();
+  }
+
+  // if to path requires authentication but you are not authenticated ...
   if (to.meta.requiresAuth && !isAuthenticated) {
     // redirect to login
     return next({
-      path: "/auth/login",
+      name: "login",
       query: { redirect: to.fullPath },
     });
   }
 
-  // if you access to /auth being logged ...
-  if (to.meta.redirectIfLogged && isAuthenticated) {
-    // redirects to /
+  // if to path forces you to redirect when authenticated and you are ...
+  if (to.meta.redirectIfAuth && isAuthenticated) {
+    // redirects to home
     return next({
-      path: "/",
+      name: "home",
     });
   }
 
   // from now on you are authenticated
   // if the route requires a role ...
-  if (to.meta.role) {
+  if (to.meta.requiresAuth && to.meta.role) {
     // get the user role
     const role = authStore.getPayload()?.role || "USER";
 
