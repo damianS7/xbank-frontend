@@ -24,13 +24,17 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
 const links = [
-  { to: "/home", icon: Home, label: "Home" },
-  { to: "/accounts", icon: Accounts, label: "Accounts" },
-  { to: "/cards", icon: CreditCard, label: "Cards" },
-  { to: "/transactions", icon: ReceiptText, label: "Pending Transactions" },
-  { to: "/profile", icon: Profile, label: "Profile" },
-  { to: "/settings", icon: Settings, label: "Settings" },
-  { to: "/accounts/logout", icon: LogOut, label: "Logout" },
+  { to: "home", icon: Home, label: "Home" },
+  { to: "banking-accounts", icon: Accounts, label: "Accounts" },
+  { to: "banking-cards", icon: CreditCard, label: "Cards" },
+  {
+    to: "banking-transactions",
+    icon: ReceiptText,
+    label: "Pending Transactions",
+  },
+  { to: "profile", icon: Profile, label: "Profile" },
+  { to: "settings", icon: Settings, label: "Settings" },
+  { to: "logout", icon: LogOut, label: "Logout" },
 ];
 
 function handleMouseEnter() {
