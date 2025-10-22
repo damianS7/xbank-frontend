@@ -1,8 +1,15 @@
-import type { Profile } from "./Profile";
+export type GenderType = "MALE" | "FEMALE";
 export interface Customer {
-  id?: number;
-  customerId?: number;
+  id: number;
   email: string;
   password: string;
-  profile: Profile;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address: string;
+  nationalId: string;
+  postalCode: string;
+  birthdate: string;
+  gender: GenderType;
+  photoUrl: string;
 }
