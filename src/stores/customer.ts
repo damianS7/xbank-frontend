@@ -1,246 +1,107 @@
 import { defineStore } from "pinia";
 import type { Customer } from "@/types/Customer";
-import type { Profile } from "@/types/Profile";
+import { computed, ref } from "vue";
+import { customerService } from "@/services/customerService";
+import type { CustomerRegisterRequest } from "@/types/request/CustomerRegisterRequest";
 
-export const useCustomerStore = defineStore("customer", {
-  state: () => ({
-    customer: {} as Customer,
-    initialized: false,
-  }),
+export const useCustomerStore = defineStore("customer", () => {
+  const customer = ref<Customer>(null);
+  const initialized = ref(false);
 
-  getters: {
-    getLoggedCustomer: (state) => {
-      return state.customer;
-    },
-    getFullName: (state) => {
-      return (
-        state.customer.profile.firstName + " " + state.customer.profile.lastName
-      );
-    },
-  },
+  const getLoggedCustomer = computed(() => {
+    return customer.value;
+  });
 
-  actions: {
-    async getCustomer(): Promise<Customer> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  const getFullName = computed(() => {
+    return customer.value.firstName + " " + customer.value.lastName;
+  });
 
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to fetch customer. " + jsonResponse.message);
-        }
+  async function initialize() {
+    await fetchCustomer().then((fcustomer) => {
+      customer.value = fcustomer;
+      initialized.value = true;
+    });
+  }
 
-        return (await response.json()) as Customer;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to fetch customer.");
-      }
-    },
-    async patchProfile(
-      currentPassword: string,
-      fieldsToUpdate: Record<string, any>
-    ): Promise<Profile> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/profile`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ currentPassword, fieldsToUpdate }),
-          }
-        );
+  async function fetchCustomer(): Promise<Customer> {
+    const customer: Customer = await customerService.fetchCustomer();
+    // TODO use then
+    try {
+      const resource = await customerService.fetchProfileImage(customer.id);
+      customer.photoUrl = URL.createObjectURL(resource);
+    } catch (error) {
+      customer.photoUrl = "/default-avatar.jpg";
+    }
+    return customer;
+  }
 
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to updated profile. " + jsonResponse.message);
-        }
+  async function updateCustomer(
+    currentPassword: string,
+    fieldsToUpdate: Record<string, any>
+  ): Promise<Customer> {
+    const updatedCustomer: Customer = await customerService.updateCustomer(
+      currentPassword,
+      fieldsToUpdate
+    );
 
-        return (await response.json()) as Profile;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to update profile.");
-      }
-    },
-    async patchEmail(
-      currentPassword: string,
-      newEmail: string
-    ): Promise<Customer> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/email`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ currentPassword, newEmail }),
-          }
-        );
+    // set the current avatar for the updated customer
+    updatedCustomer.photoUrl = customer.value.photoUrl;
+    customer.value = updatedCustomer;
+    return updatedCustomer;
+  }
 
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to update email. " + jsonResponse.message);
-        }
+  async function updateEmail(
+    currentPassword: string,
+    newEmail: string
+  ): Promise<Customer> {
+    const updatedCustomer = await customerService.updateEmail(
+      currentPassword,
+      newEmail
+    );
+    customer.value.email = updatedCustomer.email;
+    return updatedCustomer;
+  }
 
-        return (await response.json()) as Customer;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to update email.");
-      }
-    },
-    async changePassword(currentPassword: string, newPassword: string) {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/auth/customers/password`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ currentPassword, newPassword }),
-          }
-        );
+  async function updatePassword(currentPassword: string, newPassword: string) {
+    await customerService.updatePassword(currentPassword, newPassword);
+  }
 
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to change password. " + jsonResponse.message);
-        }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to change password.");
-      }
-    },
-    async getPhoto(filename: string): Promise<Blob> {
-      try {
-        const token = localStorage.getItem("token");
+  async function getPhoto(customerId?: number): Promise<Blob> {
+    if (!customerId) {
+      customerId = customer.value.id;
+    }
 
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/profile/photo/${filename}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    return await customerService.fetchProfileImage(customerId);
+  }
 
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          const json = await response.json();
-          throw new Error(json?.message || "Failed to get photo.");
-        }
+  async function uploadPhoto(
+    currentPassword: string,
+    file: any
+  ): Promise<Blob> {
+    const blob = await customerService.uploadProfileImage(
+      currentPassword,
+      file
+    );
+    customer.value.photoUrl = URL.createObjectURL(blob);
+    return blob;
+  }
 
-        return (await response.blob()) as Blob;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw new Error(error.message);
-        }
-        throw new Error("Failed to get photo. Unknown error.");
-      }
-    },
-    async uploadPhoto(currentPassword: string, file: any): Promise<Blob> {
-      try {
-        const token = localStorage.getItem("token");
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("currentPassword", currentPassword); // otro campo necesario
+  async function register(fields: CustomerRegisterRequest) {
+    return await customerService.register(fields);
+  }
 
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/profile/photo`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-          }
-        );
-
-        // if response is not 201, throw an error
-        if (response.status !== 201) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to upload photo. " + jsonResponse.message);
-        }
-
-        return (await response.blob()) as Blob;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to upload photo");
-      }
-    },
-    async setCustomer(customer: any) {
-      this.customer = customer;
-    },
-    async setEmail(email: string) {
-      this.customer.email = email;
-    },
-    async setProfile(profile: any) {
-      this.customer.profile = profile;
-    },
-    async setPhoto(image: any) {
-      this.customer.profile.photoPath = ".";
-    },
-    async initialize() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
-
-      await this.getCustomer()
-        .then((customer) => {
-          this.setCustomer(customer);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      if (!this.customer?.profile?.photoPath) {
-        return;
-      }
-
-      await this.getPhoto(this.customer.profile.photoPath)
-        .then((filename) => {
-          localStorage.setItem(
-            "profilePhotoURL",
-            URL.createObjectURL(filename)
-          );
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      this.initialized = true;
-    },
-  },
+  return {
+    initialized,
+    customer,
+    getLoggedCustomer,
+    getFullName,
+    fetchCustomer,
+    updateCustomer,
+    updateEmail,
+    updatePassword,
+    getPhoto,
+    uploadPhoto,
+    initialize,
+    register,
+  };
 });
