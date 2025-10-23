@@ -13,24 +13,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ref } from "vue";
 import { z } from "zod";
-import type { GenderType } from "@/types/User";
-import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
-import { useAuthStore } from "@/stores/auth";
+import { genderOptions, genderValues, type GenderType } from "@/types/Gender";
+import type { CustomerRegisterRequest } from "@/types/request/CustomerRegisterRequest";
+import { useCustomerStore } from "@/stores/customer";
 
 const alert = ref<InstanceType<typeof CustomAlert>>();
 
 // store
-const authStore = useAuthStore();
-
-// gender types/options
-const genderTypes: GenderType[] = ["MALE", "FEMALE"];
-const genderOptions = genderTypes.map((value) => ({
-  value,
-  label: value.charAt(0) + value.slice(1).toLowerCase(),
-}));
+const customerStore = useCustomerStore();
 
 type FieldItem = {
-  type: "text" | "email" | "password" | "select" | "date";
+  type: "text" | "email" | "password" | "select" | "date" | "number";
   placeholder: string;
   value: string;
   options?: { value: any; label: any }[];
@@ -52,17 +45,17 @@ const form = ref<Field>({
     placeholder: "Password",
     value: "",
   },
-  firstname: {
+  firstName: {
     type: "text",
     placeholder: "First name",
     value: "",
   },
-  lastname: {
+  lastName: {
     type: "text",
     placeholder: "Last name",
     value: "",
   },
-  phone: {
+  phoneNumber: {
     type: "text",
     placeholder: "Phone",
     value: "",
@@ -73,14 +66,29 @@ const form = ref<Field>({
     value: "",
     options: genderOptions,
   },
-  birthdate: {
+  birthDate: {
     type: "date",
     placeholder: "Birthdate",
     value: "",
   },
-  zipcode: {
+  zipCode: {
     type: "text",
     placeholder: "Zip code",
+    value: "",
+  },
+  address: {
+    type: "text",
+    placeholder: "Address",
+    value: "",
+  },
+  country: {
+    type: "text",
+    placeholder: "Country",
+    value: "",
+  },
+  nationalId: {
+    type: "text",
+    placeholder: "National Id",
     value: "",
   },
 });
@@ -89,23 +97,81 @@ const form = ref<Field>({
 const formErrors = ref<Record<keyof typeof form.value, string[]>>({
   email: [],
   password: [],
-  firstname: [],
-  lastname: [],
-  phone: [],
+  firstName: [],
+  lastName: [],
+  phoneNumber: [],
   gender: [],
-  birthdate: [],
+  birthDate: [],
+  zipCode: [],
+  address: [],
+  country: [],
+  nationalId: [],
 });
 
 const resolver = z.object({
-  email: z.string().email("Invalid email"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
-  firstname: z.string().min(1, "First name is required"),
-  lastname: z.string().min(1, "Last name is required"),
-  phone: z.string().min(1, "Phone number is required"),
-  // TODO fix this. use genderOptions
-  gender: z.enum(["MALE", "FEMALE"], {
-    errorMap: () => ({ message: "Invalid gender" }),
+  email: z.string().trim().email("Please enter a valid email address"),
+
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/\d/, "Password must contain at least one number")
+    .regex(
+      /[@$!%*?&]/,
+      "Password must contain at least one special character (@$!%*?&)"
+    ),
+
+  firstName: z
+    .string()
+    .trim()
+    .min(2, "First name is required")
+    .max(50, "First name cannot exceed 50 characters"),
+
+  lastName: z
+    .string()
+    .trim()
+    .min(2, "Last name is required")
+    .max(50, "Last name cannot exceed 50 characters"),
+
+  phoneNumber: z
+    .string()
+    .trim()
+    .regex(/^\+?[0-9\s-]{7,20}$/, "Please enter a valid phone number"),
+
+  gender: z.enum(genderValues, {
+    errorMap: () => ({ message: "Please select a valid gender" }),
   }),
+
+  birthDate: z
+    .string()
+    .refine(
+      (val) => !Number.isNaN(Date.parse(val)),
+      "Please provide a valid birth date"
+    )
+    .transform((val) => new Date(val)),
+
+  zipCode: z
+    .string()
+    .trim()
+    .regex(/^\d{4,10}$/, "Please enter a valid ZIP code"),
+
+  address: z
+    .string()
+    .trim()
+    .min(4, "Address must be at least 4 characters long")
+    .max(100, "Address cannot exceed 100 characters"),
+
+  country: z
+    .string()
+    .trim()
+    .min(2, "Country is required")
+    .max(56, "Country name cannot exceed 56 characters"),
+
+  nationalId: z
+    .string()
+    .trim()
+    .min(6, "Please enter a valid national ID")
+    .max(20, "National ID cannot exceed 20 characters"),
 });
 
 // Convert form fields to key, value array
@@ -137,19 +203,22 @@ const onFormSubmit = async () => {
     return;
   }
 
-  const userRegisterRequest: UserRegisterRequest = {
+  const request: CustomerRegisterRequest = {
     email: formData.email,
     password: formData.password,
-    userName: formData.username,
-    firstName: formData.firstname,
-    lastName: formData.lastname,
-    phone: formData.phone,
-    birthdate: formData.birthdate,
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    phoneNumber: formData.phoneNumber,
+    birthdate: formData.birthDate,
     gender: formData.gender as GenderType,
+    address: formData.address,
+    zipCode: formData.zipCode,
+    country: formData.country,
+    nationalId: formData.nationalId,
   };
 
-  await authStore
-    .register(userRegisterRequest)
+  await customerStore
+    .register(request)
     .then(() => {
       alert.value?.success("Account created.");
     })
@@ -172,7 +241,7 @@ const onFormSubmit = async () => {
           class="grid gap-2"
         >
           <Label :for="String(fieldKey)" class="capitalize">{{
-            fieldKey
+            field.placeholder
           }}</Label>
           <Input
             v-if="field.type !== 'select'"
@@ -191,7 +260,7 @@ const onFormSubmit = async () => {
             <option
               v-for="(option, index) in field.options"
               :key="index"
-              :value="option"
+              :value="option.label"
             >
               {{ option.label }}
             </option>
