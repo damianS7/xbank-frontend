@@ -1,16 +1,13 @@
+<script setup lang="ts">
+import ModalManager from "@/components/modal/ModalManager.vue";
+</script>
 <template>
+  <ModalManager />
   <router-view />
 </template>
-<script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
-const authStore = useAuthStore();
-onMounted(() => {
-  authStore.initialize();
-});
-</script>
 <style>
 @reference "tailwindcss";
+
 * {
   font-family:
     system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
@@ -21,11 +18,11 @@ onMounted(() => {
 
 header,
 nav,
-.main-container {
+main {
   @apply bg-gray-100;
 }
 
-.main-container {
+main {
   @apply p-4 rounded shadow;
 }
 </style>
