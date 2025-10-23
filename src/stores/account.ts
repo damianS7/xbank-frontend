@@ -29,7 +29,7 @@ export const useAccountStore = defineStore("account", () => {
 
   async function fetchAccounts(): Promise<BankingAccount[]> {
     bankingAccounts.value = await accountService.fetchAccounts();
-    return accountService.fetchAccounts();
+    return bankingAccounts.value;
   }
 
   async function requestBankingAccount(
@@ -190,6 +190,7 @@ export const useAccountStore = defineStore("account", () => {
   }
 
   async function initialize() {
+    console.log("Initializing account store...");
     // get the accounts
     await fetchAccounts().then(() => {
       // store initialized
