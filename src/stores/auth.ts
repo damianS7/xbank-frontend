@@ -1,5 +1,4 @@
 import type { JwtPayload } from "@/types/JwtPayload";
-import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
 import { jwtDecode } from "jwt-decode";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -35,10 +34,6 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  async function register(fields: UserRegisterRequest) {
-    return await authService.register(fields);
-  }
-
   async function logout() {
     token.value = "";
     initialized.value = false;
@@ -56,7 +51,6 @@ export const useAuthStore = defineStore("auth", () => {
     initialized,
     isAuthenticated,
     login,
-    register,
     logout,
     initialize,
     getPayload,
