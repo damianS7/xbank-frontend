@@ -131,7 +131,7 @@ export const customerService = {
     }
   },
   async register(fields: CustomerRegisterRequest) {
-    const response = await fetch(`${API}/accounts/register`, {
+    const response = await fetch(`${API}/customers/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(fields),
