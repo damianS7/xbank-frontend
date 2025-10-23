@@ -1,261 +1,160 @@
 import { defineStore } from "pinia";
-import type { BankingCard, BankingCardLockStatus } from "../types/BankingCard";
-import type { BankingTransaction } from "@/types/BankingTransaction";
-import type { FieldException } from "@/exceptions/FieldException";
+import type { BankingCard, BankingCardLockStatus } from "@/types/BankingCard";
+import { computed, ref } from "vue";
+import { cardService } from "@/services/cardService";
 
-export const useCardStore = defineStore("card", {
-  state: () => ({
-    bankingCards: [] as BankingCard[],
-    initialized: false,
-  }),
+export const useCardStore = defineStore("card", () => {
+  const bankingCards = ref<BankingCard[]>([]);
+  const initialized = ref(false);
 
-  getters: {
-    countCards: (state) => {
-      return state.bankingCards.length;
-    },
-    countCardsByAccount: (state) => {
-      return (accountId: number) => {
-        return state.bankingCards.filter(
-          (card) => card.bankingAccountId === accountId
-        ).length;
-      };
-    },
-    getBankingCard: (state) => {
-      return (id: number) => {
-        return state.bankingCards.find((card) => card.id === id);
-      };
-    },
-    getBankingCards: (state) => {
-      return state.bankingCards;
-    },
-    getBankingCardsByAccountId: (state) => {
-      return (accountId: number) => {
-        return state.bankingCards.filter(
-          (card) => card.bankingAccountId === accountId
-        );
-      };
-    },
-  },
+  const countCards = computed(() => {
+    return bankingCards.value.length;
+  });
 
-  actions: {
-    async fetchBankingCards() {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/banking/cards`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  const countCardsByAccount = computed(() => {
+    return (accountId: number) => {
+      return bankingCards.value.filter(
+        (card) => card.bankingAccountId === accountId
+      ).length;
+    };
+  });
 
-        if (!response.ok) {
-          // problem setting pin
-          const error = await response.json();
+  const getBankingCard = computed(() => {
+    return (id: number) => {
+      return bankingCards.value.find((card) => card.id === id);
+    };
+  });
 
-          // if the field errors exists we used a custom exception
-          if (error.errors) {
-            throw new FieldException(error.message, error.errors);
-          }
+  const getBankingCards = computed(() => {
+    return bankingCards.value;
+  });
 
-          throw new Error(error.message || "Failed to fetch cards.");
-        }
+  const getBankingCardsByAccountId = computed(() => {
+    return (accountId: number) => {
+      return bankingCards.value.filter(
+        (card) => card.bankingAccountId === accountId
+      );
+    };
+  });
 
-        const cards = await response.json();
-        return cards.map((card: any) => ({
-          ...card,
-          transactions: [],
-          expiredDate: new Date(card.expiredDate),
-          createdAt: new Date(card.createdAt),
-          updatedAt: new Date(card.updatedAt),
-        }));
-      } catch (error: unknown) {
-        if (error instanceof FieldException || error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to fetch cards.");
-      }
-    },
-    async setCardPin(
-      id: number,
-      pin: string,
-      password: string
-    ): Promise<BankingCard> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/banking/cards/${id}/pin`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ pin, password }),
-          }
-        );
+  async function fetchBankingCards() {
+    const cards = await cardService.fetchCards();
+    return cards.map((card: any) => ({
+      ...card,
+      transactions: [],
+      expiredDate: new Date(card.expiredDate),
+      createdAt: new Date(card.createdAt),
+      updatedAt: new Date(card.updatedAt),
+    }));
+  }
 
-        if (!response.ok) {
-          // problem setting pin
-          const error = await response.json();
+  async function setCardPin(
+    cardId: number,
+    pin: string,
+    password: string
+  ): Promise<BankingCard> {
+    const card: BankingCard = await cardService.setPIN(cardId, pin, password);
 
-          // if the field errors exists we used a custom exception
-          if (error.errors) {
-            throw new FieldException(error.message, error.errors);
-          }
+    return {
+      ...card,
+      expiredDate: new Date(card.expiredDate),
+      createdAt: new Date(card.createdAt),
+      updatedAt: new Date(card.updatedAt),
+    };
+  }
 
-          throw new Error(error.message || "Failed to set pin.");
-        }
+  async function setDailyLimit(
+    cardId: number,
+    dailyLimit: number,
+    password: string
+  ): Promise<BankingCard> {
+    const card: BankingCard = await cardService.setDailyLimit(
+      cardId,
+      dailyLimit,
+      password
+    );
 
-        const cardJson = await response.json();
-        const card = {
-          ...cardJson,
-          expiredDate: new Date(cardJson.expiredDate),
-          createdAt: new Date(cardJson.createdAt),
-          updatedAt: new Date(cardJson.updatedAt),
-        };
+    return {
+      ...card,
+      expiredDate: new Date(card.expiredDate),
+      createdAt: new Date(card.createdAt),
+      updatedAt: new Date(card.updatedAt),
+    };
+  }
 
-        return card as BankingCard;
-      } catch (error: unknown) {
-        if (error instanceof FieldException || error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to set pin.");
-      }
-    },
-    async setDailyLimit(
-      id: number,
-      dailyLimit: number,
-      password: string
-    ): Promise<BankingCard> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/banking/cards/${id}/daily-limit`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ dailyLimit, password }),
-          }
-        );
+  async function setLockStatus(
+    cardId: number,
+    lockStatus: BankingCardLockStatus,
+    password: string
+  ): Promise<BankingCard> {
+    const card: BankingCard = await cardService.setLockStatus(
+      cardId,
+      lockStatus,
+      password
+    );
 
-        // if response is not 200, throw an error
-        if (!response.ok) {
-          // problem setting pin
-          const error = await response.json();
+    return {
+      ...card,
+      expiredDate: new Date(card.expiredDate),
+      createdAt: new Date(card.createdAt),
+      updatedAt: new Date(card.updatedAt),
+    };
+  }
 
-          // if the field errors exists we used a custom exception
-          if (error.errors) {
-            throw new FieldException(error.message, error.errors);
-          }
+  function setCards(cards: any) {
+    bankingCards.value = cards;
+  }
 
-          throw new Error(error.message || "Failed to set daily limit.");
-        }
+  function setCard(card: BankingCard) {
+    const index = bankingCards.value.findIndex((a) => a.id === card.id);
+    if (index !== -1) {
+      // bankingCards[index] = card; // non reactive
+      bankingCards.value.splice(index, 1, card); // reactive
+    }
+  }
 
-        const cardJson = await response.json();
-        const card = {
-          ...cardJson,
-          expiredDate: new Date(cardJson.expiredDate),
-          createdAt: new Date(cardJson.createdAt),
-          updatedAt: new Date(cardJson.updatedAt),
-        };
-        return card as BankingCard;
-      } catch (error: unknown) {
-        if (error instanceof FieldException || error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to set daily limit.");
-      }
-    },
-    async setLockStatus(
-      id: number,
-      lockStatus: BankingCardLockStatus,
-      password: string
-    ): Promise<BankingCard> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/banking/cards/${id}/lock-status`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ lockStatus, password }),
-          }
-        );
+  function addCard(card: BankingCard) {
+    bankingCards.value.push(card);
+  }
 
-        if (!response.ok) {
-          // problem setting pin
-          const error = await response.json();
+  function setCardTransactions(cardId: number, transactions: any) {
+    const index = bankingCards.value.findIndex((a) => a.id === cardId);
+    if (index !== -1) {
+      // bankingCards.splice(index, 1, transactions);
+      bankingCards.value[index].transactions = transactions;
+    }
+  }
 
-          // if the field errors exists we used a custom exception
-          if (error.errors) {
-            throw new FieldException(error.message, error.errors);
-          }
+  function removeCard(cardId: number) {
+    const index = bankingCards.value.findIndex((a) => a.id === cardId);
+    if (index !== -1) {
+      bankingCards.value.splice(index, 1);
+    }
+  }
 
-          throw new Error(error.message || "Failed to set lock.");
-        }
+  async function initialize() {
+    await fetchBankingCards().then((cards) => {
+      setCards(cards);
+      initialized.value = true;
+    });
+  }
 
-        const cardJson = await response.json();
-        const card = {
-          ...cardJson,
-          expiredDate: new Date(cardJson.expiredDate),
-          createdAt: new Date(cardJson.createdAt),
-          updatedAt: new Date(cardJson.updatedAt),
-        };
-        return card as BankingCard;
-      } catch (error: unknown) {
-        if (error instanceof FieldException || error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to set lock.");
-      }
-    },
-    setCards(cards: any) {
-      this.bankingCards = cards;
-    },
-    setCard(card: BankingCard) {
-      const index = this.bankingCards.findIndex((a) => a.id === card.id);
-      if (index !== -1) {
-        // this.bankingCards[index] = card; // non reactive
-        this.bankingCards.splice(index, 1, card); // reactive
-      }
-    },
-    addCard(card: BankingCard) {
-      this.bankingCards.push(card);
-    },
-    setCardTransactions(cardId: number, transactions: any) {
-      const index = this.bankingCards.findIndex((a) => a.id === cardId);
-      if (index !== -1) {
-        // this.bankingCards.splice(index, 1, transactions);
-        this.bankingCards[index].transactions = transactions;
-      }
-    },
-    removeCard(cardId: number) {
-      const index = this.bankingCards.findIndex((a) => a.id === cardId);
-      if (index !== -1) {
-        this.bankingCards.splice(index, 1);
-      }
-    },
-    async initialize() {
-      if (this.initialized) {
-        return;
-      }
-
-      const savedToken = localStorage.getItem("token");
-      if (savedToken) {
-        const cards = await this.fetchBankingCards();
-        this.setCards(cards);
-      }
-      this.initialized = true;
-    },
-  },
+  return {
+    countCards,
+    bankingCards,
+    initialized,
+    initialize,
+    setCardPin,
+    setDailyLimit,
+    setLockStatus,
+    getBankingCard,
+    getBankingCards,
+    getBankingCardsByAccountId,
+    countCardsByAccount,
+    setCards,
+    setCard,
+    addCard,
+    setCardTransactions,
+    removeCard,
+  };
 });
