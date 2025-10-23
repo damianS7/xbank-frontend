@@ -7,7 +7,12 @@ export type BankingAccountType = (typeof BankingAccountTypes)[number];
 export const BankingAccountCurrencies = ["USD", "EUR"] as const;
 export type BankingAccountCurrency = (typeof BankingAccountCurrencies)[number];
 
-export const BankingAccountStatus = ["OPEN", "CLOSED", "SUSPENDED"] as const;
+export const BankingAccountStatus = [
+  "PENDING_ACTIVATION",
+  "ACTIVE",
+  "CLOSED",
+  "SUSPENDED",
+] as const;
 export type BankingAccountStatus = (typeof BankingAccountStatus)[number];
 
 export interface BankingAccount {

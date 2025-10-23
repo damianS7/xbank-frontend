@@ -8,8 +8,8 @@ export type BankingTransactionStatus = "PENDING" | "COMPLETED" | "FAILED"; // Aj
 
 export interface BankingTransaction {
   id: number;
-  bankingAccountId: number;
-  bankingCardId?: number;
+  accountId: number;
+  cardId?: number;
   amount: number;
   accountBalance: number;
   transactionType: BankingTransactionType;
