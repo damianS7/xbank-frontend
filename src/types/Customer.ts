@@ -1,4 +1,4 @@
-export type GenderType = "MALE" | "FEMALE";
+import type { GenderType } from "@/types/Gender";
 export interface Customer {
   id: number;
   email: string;
@@ -8,7 +8,8 @@ export interface Customer {
   phone: string;
   address: string;
   nationalId: string;
-  postalCode: string;
+  zipCode: string;
+  country: string;
   birthdate: string;
   gender: GenderType;
   photoUrl: string;
