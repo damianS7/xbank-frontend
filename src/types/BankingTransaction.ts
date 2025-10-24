@@ -11,7 +11,7 @@ export interface BankingTransaction {
   accountId: number;
   cardId?: number;
   amount: number;
-  accountBalance: number;
+  lastBalance: number;
   transactionType: BankingTransactionType;
   transactionStatus: BankingTransactionStatus;
   description: string;

@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import { MessageType } from "@/types/Message";
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAccountStore } from "@/stores/account";
 import { useCardStore } from "@/stores/card";
 import CustomAlert from "@/components/CustomAlert.vue";
-import BankingAccount from "@/views/account/components/BankingAccount.vue";
-import RequestBankingCardModal from "@/views/account/components/BankingAccountRequestCardModal.vue";
-import ConfirmPasswordModal from "@/components/modal/ConfirmPasswordModal.vue";
-import TransferModal from "@/views/account/components/BankingAccountTransferModal.vue";
-import BankingAccountCards from "@/views/account/components/BankingAccountCards.vue";
+import BankingAccount from "@/views/banking/account/components/BankingAccount.vue";
+import BankingAccountCards from "@/views/banking/account/components/BankingAccountCards.vue";
 import BankingTransactions from "@/components/BankingTransactions.vue";
-import { FieldException } from "@/exceptions/FieldException";
 import { useTransactionStore } from "@/stores/transaction";
+import { useModalStore } from "@/stores/modal";
 const route = useRoute();
 const accountStore = useAccountStore();
 const transactionStore = useTransactionStore();
@@ -24,19 +20,20 @@ const transactionRefs = ref();
 const alert = ref();
 
 // modals to show
-const modals = {
-  requestCard: ref(),
-  transfer: ref(),
-  confirmPassword: ref(),
-};
+const modalStore = useModalStore();
 
 async function transferTo() {
-  const transferData = await modals.transfer.value.open();
+  const transferData = (await modalStore.open("TransferModal", {
+    title: "Transfer to",
+  })) as string;
+
   if (!transferData || !transferData.accountNumber) {
     return;
   }
 
-  const password = await modals.confirmPassword.value.open();
+  const password = (await modalStore.open("ConfirmPassword", {
+    title: "Open account",
+  })) as string;
   if (!password) {
     return;
   }
@@ -51,33 +48,26 @@ async function transferTo() {
       password
     )
     .then((transaction) => {
-      accountStore.setBalance(accountId, transaction.accountBalance);
+      accountStore.setBalance(accountId, transaction.lastBalance);
       transactionRefs.value.reloadTransactions();
-      alert.value.showMessage("Transfered funds.", MessageType.SUCCESS);
+      alert.value?.success("Transfered funds.");
     })
     .catch((error) => {
-      if (error instanceof FieldException) {
-        alert.value.showException(error);
-        return;
-      }
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value?.exception(error);
     });
 }
 
 // Set alias for the banking account
 async function setAlias(alias: string) {
   if (alias.length < 5) {
-    alert.value.showMessage(
-      "Alias must be at least 5 characters long.",
-      MessageType.ERROR
-    );
+    alert.value?.error("Alias must be at least 5 characters long.");
     return;
   }
 
   const password = await modals.confirmPassword.value.open();
 
   if (!password) {
-    alert.value.showMessage("Invalid password format.", MessageType.ERROR);
+    alert.value?.error("Invalid password format.");
     return;
   }
 
@@ -87,11 +77,7 @@ async function setAlias(alias: string) {
       accountStore.setAccount(newAccount);
     })
     .catch((error) => {
-      if (error instanceof FieldException) {
-        alert.value.showException(error);
-        return;
-      }
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value?.exception(error);
     });
 }
 
@@ -106,17 +92,10 @@ async function requestCard() {
     .requestBankingCard(accountId.toString(), cardType)
     .then((card) => {
       cardStore.addCard(card);
-      alert.value.showMessage(
-        "Card " + card.cardNumber + " created.",
-        MessageType.SUCCESS
-      );
+      alert.value.success("Card " + card.cardNumber + " created.");
     })
     .catch((error) => {
-      if (error instanceof FieldException) {
-        alert.value.showException(error);
-        return;
-      }
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value?.exception(error);
     });
 }
 
@@ -126,9 +105,6 @@ onMounted(() => {
 </script>
 <template>
   <div v-if="account">
-    <RequestBankingCardModal :ref="modals.requestCard" />
-    <TransferModal :ref="modals.transfer" />
-    <ConfirmPasswordModal :ref="modals.confirmPassword" />
     <CustomAlert ref="alert" />
 
     <div class="flex flex-col sm:flex-row sm:justify-end gap-1 mb-6">

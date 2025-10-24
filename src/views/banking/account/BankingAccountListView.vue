@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import CustomAlert from "@/components/CustomAlert.vue";
-import BankingAccount from "@/views/account/components/BankingAccount.vue";
+import BankingAccount from "@/views/banking/account/components/BankingAccount.vue";
 import { computed, onMounted, ref } from "vue";
 import { useAccountStore } from "@/stores/account";
-import { MessageType } from "@/types/Message";
-import OpenAccountModal from "@/views/account/components/BankingAccountOpenModal.vue";
-import { FieldException } from "@/exceptions/FieldException";
+import Button from "@/components/ui/button/Button.vue";
+import { useModalStore } from "@/stores/modal";
 const accountStore = useAccountStore();
 
 // message to show
 const alert = ref();
 
-const accounts = computed(() => accountStore.getBankingAccounts);
+const accounts = computed(() => accountStore.bankingAccounts);
 
-const modals = {
-  openAccount: ref(),
-};
+const modalStore = useModalStore();
 
 // function to handle the submission of the open account modal
 async function openAccount() {
-  const accountData = await modals.openAccount.value.open();
+  const accountData = (await modalStore.open("OpenAccount", {
+    title: "Open account",
+  })) as string;
+
   // if modal is cancelled, accountData will be undefined
   if (!accountData.type) {
     return;
@@ -29,17 +29,10 @@ async function openAccount() {
     .requestBankingAccount(accountData.type, accountData.currency)
     .then((account) => {
       accountStore.addAccount(account);
-      alert.value.showMessage(
-        `Account ${account.accountNumber} created.`,
-        MessageType.SUCCESS
-      );
+      alert.value.show(`Account ${account.accountNumber} created.`);
     })
     .catch((error) => {
-      if (error instanceof FieldException) {
-        alert.value.showException(error);
-        return;
-      }
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 
@@ -49,13 +42,10 @@ onMounted(() => {
 </script>
 <template>
   <div>
-    <OpenAccountModal :ref="modals.openAccount" />
     <CustomAlert ref="alert" />
 
     <div class="flex justify-end rounded gap-1 mb-6">
-      <button type="button" @click="openAccount" class="btn btn-blue btn-sm">
-        Open account
-      </button>
+      <Button @click="openAccount" size="sm"> Open account </Button>
     </div>
 
     <div class="main-container">
@@ -65,7 +55,6 @@ onMounted(() => {
         <h1>Accounts</h1>
         <div class="flex flex-wrap gap-1 text-sm"></div>
       </section>
-
       <div v-for="account in accounts" :key="account.id">
         <router-link :to="`/account/${account.id}`">
           <BankingAccount :id="account.id" />

@@ -23,7 +23,8 @@ export const useTransactionStore = defineStore("transaction", () => {
     );
 
     // replace content with parsed dates
-    paginatedTransactions.content = parsedTransactions;
+    // paginatedTransactions.content = parsedTransactions;
+    transactions.value = parsedTransactions;
     return transactions.value;
   }
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useCardStore } from "@/stores/card";
-import BankingCardFront from "@/views/card/components/BankingCardFront.vue";
+import BankingCardFront from "@/views/banking/card/components/BankingCardFront.vue";
 import { ChevronRight, ChevronLeft } from "lucide-vue-next";
 const cardStore = useCardStore();
-const cards = cardStore.getBankingCards;
+const cards = cardStore.bankingCards;
 const currentCardIndex = ref(0);
 const currentCard = computed(() => {
   return cards[currentCardIndex.value];
@@ -23,13 +23,9 @@ function nextCard() {
   }
   currentCardIndex.value++;
 }
-
-onMounted(() => {
-  // accountStore.initialize();
-});
 </script>
 <template>
-  <div class="main-container">
+  <div v-if="cards && currentCard" class="main-container">
     <section
       class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1 mb-1"
     >
@@ -55,4 +51,5 @@ onMounted(() => {
       </div>
     </section>
   </div>
+  <div v-else>No cards</div>
 </template>

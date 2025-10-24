@@ -1,15 +1,14 @@
 <script setup lang="ts">
+import { useSidebar } from "@/components/ui/sidebar";
 import {
   Landmark as Home,
   Wallet as Accounts,
   CreditCard,
   UserPen as Profile,
   Settings,
-  LogOut,
   ReceiptText,
   Bell,
 } from "lucide-vue-next";
-import ProfilePhoto from "@/components/ProfilePhoto.vue";
 import SidebarLink from "@/components/SidebarLink.vue";
 import {
   Sidebar,
@@ -23,6 +22,8 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
+import { useCustomerStore } from "@/stores/customer";
+import CustomSidebarFooter from "./CustomSidebarFooter.vue";
 const links = [
   { to: "home", icon: Home, label: "Home" },
   { to: "banking-accounts", icon: Accounts, label: "Accounts" },
@@ -34,25 +35,15 @@ const links = [
   },
   { to: "profile", icon: Profile, label: "Profile" },
   { to: "settings", icon: Settings, label: "Settings" },
-  { to: "logout", icon: LogOut, label: "Logout" },
+  { to: "notifications", icon: Bell, label: "Notifications" },
 ];
-
-function handleMouseEnter() {
-  setOpen(true);
-}
-function handleMouseLeave() {
-  setOpen(false);
-}
-
-import { useSidebar } from "@/components/ui/sidebar";
 
 const { setOpen } = useSidebar();
 </script>
-
 <template>
   <Sidebar
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
+    @mouseenter="setOpen(true)"
+    @mouseleave="setOpen(false)"
     collapsible="icon"
   >
     <SidebarContent>
@@ -74,10 +65,13 @@ const { setOpen } = useSidebar();
       </SidebarGroup>
     </SidebarContent>
     <SidebarFooter>
-      <Bell />
-      <!-- <CustomAvatar>
-        <ProfilePhoto class="rounded w-full h-8 bg-gray-300" />
-      </CustomAvatar> -->
+      <CustomSidebarFooter
+        :user="{
+          name: useCustomerStore().customer.firstName,
+          email: useCustomerStore().customer.email,
+          avatar: useCustomerStore().customer.photoUrl,
+        }"
+      />
     </SidebarFooter>
   </Sidebar>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
-import { BankingCard } from "@/types/BankingCard";
+import type { BankingCard } from "@/types/BankingCard";
 import { useCustomerStore } from "@/stores/customer";
 const customerStore = useCustomerStore();
 

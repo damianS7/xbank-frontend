@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits, ref } from "vue";
-import ProfilePhoto from "@/components/ProfilePhoto.vue";
+import CustomAvatar from "@/components/CustomAvatar.vue";
 import { useCustomerStore } from "@/stores/customer";
 const emit = defineEmits(["update", "close"]);
 const customerStore = useCustomerStore();
@@ -24,8 +24,10 @@ function updatePhoto(event: Event) {
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
     <div class="md:col-span-2">
       <input type="file" ref="fileInput" class="hidden" @change="updatePhoto" />
-      <ProfilePhoto
-        v-if="customerStore.customer.profile?.photoPath"
+      <CustomAvatar
+        v-if="customerStore.customer.photoUrl"
+        :src="customerStore.customer.photoUrl"
+        :fallback="customerStore.customer.firstName"
         alt="Profile photo"
         @click="showFileChooserDialog"
         class="w-24 h-24 rounded-full object-cover border cursor-pointer"
