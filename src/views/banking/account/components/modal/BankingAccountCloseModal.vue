@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import { ref, defineExpose } from "vue";
-import {
-  BankingAccountCurrencies as currencies,
-  BankingAccountTypes as accountTypes,
-} from "@/types/BankingAccount";
-
+import type { BankingCardType } from "@/types/BankingCard";
 const visible = ref(false);
-const newAccount = ref({
-  type: "CHECKING",
-  currency: "USD",
+const cardTypes: BankingCardType[] = ["CREDIT", "DEBIT"];
+const newCard = ref({
+  type: "DEBIT",
 });
-
-let _resolve: (value: object) => void;
+let _resolve: (value: string) => void;
 
 // open modal
-function open(): Promise<object> {
+function open(): Promise<string> {
   visible.value = true;
 
   return new Promise((resolve) => {
@@ -24,10 +19,7 @@ function open(): Promise<object> {
 
 function submit() {
   visible.value = false;
-  _resolve({
-    type: newAccount.value.type,
-    currency: newAccount.value.currency,
-  });
+  _resolve(newCard.value.type);
 }
 
 function cancel() {
@@ -43,30 +35,14 @@ defineExpose({ open });
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
   >
     <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-      <h2 class="text-xl font-semibold mb-4">Open account</h2>
+      <h2 class="text-xl font-semibold mb-4">Card request</h2>
 
       <form @submit.prevent="submit">
         <div class="mb-4">
-          <label class="block mb-1">Account type</label>
-          <select v-model="newAccount.type" class="w-full border rounded p-2">
-            <option v-for="type in accountTypes" :key="type" :value="type">
+          <label class="block mb-1">Card type</label>
+          <select v-model="newCard.type" class="w-full border rounded p-2">
+            <option v-for="type in cardTypes" :key="type" :value="type">
               {{ type }}
-            </option>
-          </select>
-        </div>
-
-        <div class="mb-4">
-          <label class="block mb-1">Currency</label>
-          <select
-            v-model="newAccount.currency"
-            class="w-full border rounded p-2"
-          >
-            <option
-              v-for="currency in currencies"
-              :key="currency"
-              :value="currency"
-            >
-              {{ currency }}
             </option>
           </select>
         </div>
