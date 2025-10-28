@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import CustomAlert from "@/components/CustomAlert.vue";
 import BankingAccount from "@/views/banking/account/components/BankingAccount.vue";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useAccountStore } from "@/stores/account";
 import Button from "@/components/ui/button/Button.vue";
 import { useModalStore } from "@/stores/modal";
+import type {
+  BankingAccountCurrency,
+  BankingAccountType,
+} from "@/types/BankingAccount";
 const accountStore = useAccountStore();
 
 // message to show
@@ -16,9 +20,12 @@ const modalStore = useModalStore();
 
 // function to handle the submission of the open account modal
 async function openAccount() {
-  const accountData = (await modalStore.open("OpenAccount", {
+  const accountData = (await modalStore.open("OpenAccountModal", {
     title: "Open account",
-  })) as string;
+  })) as {
+    type: BankingAccountType;
+    currency: BankingAccountCurrency;
+  };
 
   // if modal is cancelled, accountData will be undefined
   if (!accountData.type) {
@@ -29,37 +36,35 @@ async function openAccount() {
     .requestBankingAccount(accountData.type, accountData.currency)
     .then((account) => {
       accountStore.addAccount(account);
-      alert.value.show(`Account ${account.accountNumber} created.`);
+      alert.value.success(`Account ${account.accountNumber} created.`, {
+        timeout: 5,
+      });
     })
     .catch((error) => {
       alert.value.exception(error);
     });
 }
-
-onMounted(() => {
-  // accountStore.initialize();
-});
 </script>
 <template>
-  <div>
-    <CustomAlert ref="alert" />
+  <div class="grid grid-rows-[auto_1fr] h-full">
+    <section
+      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2"
+    >
+      <h1>Accounts</h1>
+      <Button @click="openAccount" size="sm">Open account</Button>
+    </section>
 
-    <div class="flex justify-end rounded gap-1 mb-6">
-      <Button @click="openAccount" size="sm"> Open account </Button>
-    </div>
-
-    <div class="main-container">
-      <section
-        class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1 mb-1"
-      >
-        <h1>Accounts</h1>
-        <div class="flex flex-wrap gap-1 text-sm"></div>
-      </section>
+    <section
+      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
+    >
+      <CustomAlert ref="alert" />
       <div v-for="account in accounts" :key="account.id">
-        <router-link :to="`/account/${account.id}`">
+        <router-link
+          :to="{ name: 'banking-account', params: { id: account.id } }"
+        >
           <BankingAccount :id="account.id" />
         </router-link>
       </div>
-    </div>
+    </section>
   </div>
 </template>
