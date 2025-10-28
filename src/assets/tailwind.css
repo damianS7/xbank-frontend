@@ -81,6 +81,10 @@
     --input: hsl(64, 32%, 91%);
     --ring: hsl(221.2, 83.2%, 53.3%);
     --radius: 0.5rem;
+
+    --vis-primary-color: 220 90% 60%;
+    --vis-secondary-color: 210 90% 60%;
+    --vis-text-color: 220 90% 60%;
   }
 
   .dark {
