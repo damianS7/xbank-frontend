@@ -1,4 +1,4 @@
-import type { GenderType } from "@/types/Customer";
+import type { GenderType } from "@/types/Gender";
 
 export interface CustomerRegisterRequest {
   email: string;
