@@ -20,7 +20,6 @@ import ResendVerificationView from "@/views/customer/account/verification/Resend
 import ResetPasswordView from "@/views/customer/account/password/reset/ResetPasswordView.vue";
 import ResetPasswordSetView from "@/views/customer/account/password/reset/ResetPasswordSetView.vue";
 import { useAuthStore } from "@/stores/auth";
-import BankingAccountCurrencyChart from "@/views/home/BankingAccountCurrencyChart.vue";
 import NotificationView from "@/views/notification/NotificationView.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -42,7 +41,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/banking/account/:id",
-        name: "account",
+        name: "banking-account",
         component: BankingAccountItemView,
       },
       {
