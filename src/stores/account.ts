@@ -1,8 +1,17 @@
 import { defineStore } from "pinia";
-import type { BankingAccount } from "@/types/BankingAccount";
-import type { BankingCard } from "@/types/BankingCard";
+import type {
+  BankingAccount,
+  BankingAccountCurrency,
+  BankingAccountType,
+} from "@/types/BankingAccount";
+import type { BankingCard, BankingCardType } from "@/types/BankingCard";
 import { computed, ref } from "vue";
 import { accountService } from "@/services/accountService";
+import type { BankingAccountCreateRequest } from "@/types/request/BankingAccountCreateRequest";
+import type { BankingAccountCardRequest } from "@/types/request/BankingAccountCardRequest";
+import { set } from "zod";
+import type { BankingAccountUpdateRequest } from "@/types/request/BankingAccountUpdateRequest";
+import type { BankingAccountAliasUpdateRequest } from "@/types/request/BankingAccountAliasUpdateRequest";
 export const useAccountStore = defineStore("account", () => {
   const bankingAccounts = ref<BankingAccount[]>([]);
   const initialized = ref(false);
@@ -28,138 +37,78 @@ export const useAccountStore = defineStore("account", () => {
   });
 
   async function fetchAccounts(): Promise<BankingAccount[]> {
-    bankingAccounts.value = await accountService.fetchAccounts();
+    const accounts: BankingAccount[] = await accountService.fetchAccounts();
+
+    for (const account of accounts) {
+      account.createdAt = new Date(account.createdAt);
+      account.updatedAt = new Date(account.updatedAt);
+    }
+
+    bankingAccounts.value = accounts;
     return bankingAccounts.value;
   }
 
   async function requestBankingAccount(
-    type: string,
-    currency: string
+    type: BankingAccountType,
+    currency: BankingAccountCurrency
   ): Promise<BankingAccount> {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${process.env.VUE_APP_API_URL}/customers/me/banking/accounts/request`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            accountType: type,
-            accountCurrency: currency,
-          }),
-        }
-      );
+    const request: BankingAccountCreateRequest = {
+      type,
+      currency,
+    };
 
-      // if response is not 200, throw an error
-      if (response.status !== 201) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to open account");
-      }
+    const account: BankingAccount =
+      await accountService.requestBankingAccount(request);
 
-      const account = await response.json();
-
-      return {
-        ...account,
-        createdAt: new Date(account.createdAt),
-        updatedAt: new Date(account.updatedAt),
-      } as BankingAccount;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw new Error("Failed to open account");
-    }
+    return {
+      ...account,
+      createdAt: new Date(account.createdAt),
+      updatedAt: new Date(account.updatedAt),
+    } as BankingAccount;
   }
+
   async function requestBankingCard(
     accountId: string,
-    cardType: string
+    cardType: BankingCardType
   ): Promise<BankingCard> {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${process.env.VUE_APP_API_URL}/customers/me/banking/accounts/` +
-          accountId +
-          "/cards/request",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            cardType,
-          }),
-        }
-      );
+    const request: BankingAccountCardRequest = {
+      type: cardType,
+    };
 
-      // if response is not 201, throw an error
-      if (response.status !== 201) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to request card");
-      }
+    const card: BankingCard = await accountService.requestBankingCard(
+      accountId,
+      request
+    );
 
-      const card = await response.json();
-      return {
-        ...card,
-        expiredDate: new Date(card.expiredDate),
-        createdAt: new Date(card.createdAt),
-        updatedAt: new Date(card.updatedAt),
-      } as BankingCard;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw new Error("Failed to request card");
-    }
+    return {
+      ...card,
+      expiredDate: new Date(card.expiredDate),
+      createdAt: new Date(card.createdAt),
+      updatedAt: new Date(card.updatedAt),
+    } as BankingCard;
   }
 
   async function updateBankingAccountAlias(
     accountId: string,
-    alias: string,
-    password: string
+    alias: string
   ): Promise<BankingAccount> {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${process.env.VUE_APP_API_URL}/customers/me/banking/accounts/` +
-          accountId +
-          "/alias",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            alias,
-            password,
-          }),
-        }
-      );
+    const request: BankingAccountAliasUpdateRequest = {
+      alias,
+    };
 
-      // if response is not 200, throw an error
-      if (response.status !== 200) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to set an alias");
-      }
+    const account: BankingAccount =
+      await accountService.updateBankingAccountAlias(accountId, request);
 
-      const account = await response.json();
+    // find and update the account in the store
+    setAccount(account);
 
-      return {
-        ...account,
-        createdAt: new Date(account.createdAt),
-        updatedAt: new Date(account.updatedAt),
-      } as BankingAccount;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw new Error("Failed to set an alias");
-    }
+    return {
+      ...account,
+      createdAt: new Date(account.createdAt),
+      updatedAt: new Date(account.updatedAt),
+    } as BankingAccount;
   }
+
   function setAccount(account: any) {
     const index = bankingAccounts.value.findIndex(
       (account) => account.id === account.id
@@ -190,7 +139,6 @@ export const useAccountStore = defineStore("account", () => {
   }
 
   async function initialize() {
-    console.log("Initializing account store...");
     // get the accounts
     await fetchAccounts().then(() => {
       // store initialized
