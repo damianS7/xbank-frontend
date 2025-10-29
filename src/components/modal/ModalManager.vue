@@ -8,6 +8,8 @@ import ConfirmMessage from "@/components/modal/ConfirmMessageModal.vue";
 import ConfirmPassword from "@/components/modal/ConfirmPasswordModal.vue";
 import ConfirmNewPassword from "@/views/customer/profile/components/ProfileNewPasswordConfirmModal.vue";
 import OpenAccountModal from "@/views/banking/account/components/modal/BankingAccountOpenModal.vue";
+import BankingCardSetPin from "@/views/banking/card/components/modal/BankingCardSetPinModal.vue";
+import BankingCardDailyLimit from "@/views/banking/card/components/modal/BankingCardDailyLimitModal.vue";
 const modalStore = useModalStore();
 
 const modals = {
@@ -17,6 +19,8 @@ const modals = {
   ConfirmNewPassword,
   RequestBankingCard,
   BankingAccountTransfer,
+  BankingCardSetPin,
+  BankingCardDailyLimit,
 };
 
 function handleUpdateOpen() {

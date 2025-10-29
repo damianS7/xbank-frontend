@@ -5,14 +5,13 @@ import { useRoute } from "vue-router";
 import { useCardStore } from "@/stores/card";
 import BankingCardFront from "@/views/banking/card/components/BankingCardFront.vue";
 import BankingCardBack from "@/views/banking/card/components/BankingCardBack.vue";
-import BankingCardSetPinModal from "@/views/banking/card/components/BankingCardSetPinModal.vue";
-import BankingCardLockModal from "@/views/banking/card/components/BankingCardLockModal.vue";
-import BankingCardDailyLimitModal from "@/views/banking/card/components/BankingCardDailyLimitModal.vue";
-import ConfirmPasswordModal from "@/components/modal/ConfirmPasswordModal.vue";
-import BankingTransactions from "@/components/BankingTransactions.vue";
+import Button from "@/components/ui/button/Button.vue";
+import Badge from "@/components/ui/badge/Badge.vue";
+import BankingTransactions from "@/views/banking/account/BankingAccountTransactions.vue";
 import { useAccountStore } from "@/stores/account";
 import { useTransactionStore } from "@/stores/transaction";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
+import { useModalStore } from "@/stores/modal";
 const accountStore = useAccountStore();
 const transactionStore = useTransactionStore();
 const cardStore = useCardStore();
@@ -23,12 +22,7 @@ const isViewReady = ref(false);
 const alert = ref();
 
 // modals to show
-const modals = {
-  confirmPassword: ref(),
-  setPinModal: ref(),
-  dailyLimitModal: ref(),
-  lockModal: ref(),
-};
+const modalStore = useModalStore();
 
 const cardId = parseInt(route.params.id as string, 10);
 const card = computed(() => cardStore.getBankingCard(cardId));
@@ -39,12 +33,21 @@ const currency = computed(() => {
 });
 
 async function setLock() {
-  const userConfirmed = await modals.lockModal.value.open();
-  if (!userConfirmed) {
+  const confirm: string = (await modalStore.open("ConfirmMessage", {
+    title: "Card lock",
+    message: "Do you wish to lock this card?",
+  })) as string;
+
+  // if modal is cancelled ...
+  if (!confirm) {
     return;
   }
 
-  const password = await modals.confirmPassword.value.open();
+  const password = (await modalStore.open("ConfirmPassword", {
+    title: "Confirm password",
+  })) as string;
+
+  // if modal is cancelled ...
   if (!password) {
     return;
   }
@@ -56,24 +59,27 @@ async function setLock() {
     .setLockStatus(cardId, newCardLockStatus, password)
     .then((card) => {
       cardStore.setCard(card);
-      alert.value.showMessage("Card lock status updated.", MessageType.SUCCESS);
+      alert.value.success("Card lock status updated.");
     })
     .catch((error) => {
-      if (error instanceof FieldException) {
-        alert.value.showException(error);
-        return;
-      }
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error.message);
     });
 }
 
 async function setPin() {
-  const pin = await modals.setPinModal.value.open();
+  const pin: string = (await modalStore.open("BankingCardSetPin", {
+    title: "Set card PIN",
+  })) as string;
+
   if (!pin) {
     return;
   }
 
-  const password = await modals.confirmPassword.value.open();
+  const password = (await modalStore.open("ConfirmPassword", {
+    title: "Confirm password",
+  })) as string;
+
+  // if modal is cancelled ...
   if (!password) {
     return;
   }
@@ -82,25 +88,28 @@ async function setPin() {
     .setCardPin(cardId, pin, password)
     .then((card) => {
       cardStore.setCard(card);
-      alert.value.showMessage("PIN updated.", MessageType.SUCCESS);
+      alert.value.success("PIN updated.");
     })
     .catch((error) => {
-      if (error instanceof FieldException) {
-        alert.value.showException(error);
-        return;
-      }
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error.message);
     });
 }
 
 async function setDailyLimit() {
-  const dailyLimit = await modals.dailyLimitModal.value.open();
+  const dailyLimit: number = (await modalStore.open("BankingCardDailyLimit", {
+    title: "Card daily limit",
+  })) as number;
 
+  // if modal is cancelled ...
   if (!dailyLimit) {
     return;
   }
 
-  const password = await modals.confirmPassword.value.open();
+  const password = (await modalStore.open("ConfirmPassword", {
+    title: "Confirm password",
+  })) as string;
+
+  // if modal is cancelled ...
   if (!password) {
     return;
   }
@@ -109,14 +118,10 @@ async function setDailyLimit() {
     .setDailyLimit(cardId, dailyLimit, password)
     .then((card) => {
       cardStore.setCard(card);
-      alert.value.showMessage("Daily limit updated.", MessageType.SUCCESS);
+      alert.value.success("Daily limit updated.");
     })
     .catch((error) => {
-      if (error instanceof FieldException) {
-        alert.value.showException(error);
-        return;
-      }
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error.message);
     });
 }
 
@@ -125,95 +130,87 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <div>
-    <ConfirmPasswordModal :ref="modals.confirmPassword" />
+  <div v-if="card" class="grid grid-rows-[auto_1fr] h-full">
+    <section
+      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2 gap-2"
+    >
+      <div class="flex items-center gap-2">
+        <span>Banking card</span>
+        <Badge
+          size="sm"
+          :variant="card?.cardStatus === 'ENABLED' ? 'default' : 'destructive'"
+        >
+          {{ card?.cardStatus }}
+        </Badge>
+        <Badge
+          :variant="card.lockStatus === 'UNLOCKED' ? 'default' : 'destructive'"
+          >{{ card?.lockStatus }}
+        </Badge>
+        <Badge :variant="card.dailyLimit > 0 ? 'destructive' : 'default'"
+          >{{ card?.dailyLimit ? card?.dailyLimit + " LIMIT" : "NO LIMIT" }}
+        </Badge>
+      </div>
+      <div class="flex gap-2">
+        <Button @click="setPin" size="sm"> SET PIN </Button>
+        <Button @click="setLock" size="sm">
+          {{ card?.lockStatus === "LOCKED" ? "UNLOCK" : "LOCK" }} CARD
+        </Button>
+        <Button @click="setDailyLimit" size="sm"> SET DAILY LIMIT </Button>
+      </div>
+    </section>
+
+    <section
+      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
+    >
+      <CustomAlert ref="alert" />
+      <div v-if="card && isViewReady">
+        <div class="main-container">
+          <div class="flex justify-center my-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
+              <div class="flex jusfity-center">
+                <BankingCardFront v-if="card" :card="card" />
+              </div>
+              <div class="flex jusfity-center">
+                <BankingCardBack v-if="card" :card="card" />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <BankingTransactions
+              :id="card.id"
+              :currency="currency"
+              :fetch="
+                (id: number, page: number, size: number) =>
+                  transactionStore.fetchCardTransactions(id, page, size)
+              "
+            />
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <Spinner v-if="!isViewReady" />
+      </div>
+
+      <div
+        v-if="!card && isViewReady"
+        class="flex justify-center items-center p-4 rounded shadow bg-red-50"
+      >
+        <div class="text-center">
+          <h1 class="text-2xl font-bold mb-4">Card not found</h1>
+          <p class="text-red-600">Please check the card ID and try again.</p>
+          <p class="text-red-600">
+            If you think this is a mistake, please contact support.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- <ConfirmPasswordModal :ref="modals.confirmPassword" />
     <BankingCardSetPinModal :ref="modals.setPinModal" />
     <BankingCardLockModal
       :ref="modals.lockModal"
       :cardEnabled="card?.cardStatus === 'ENABLED'"
     />
-    <BankingCardDailyLimitModal :ref="modals.dailyLimitModal" />
-    <CustomAlert ref="alert" />
-
-    <div v-if="card && isViewReady">
-      <div class="flex flex-wrap justify-end gap-1 mb-6">
-        <button @click="setPin" class="btn-sm btn-blue w-full sm:w-auto">
-          SET PIN
-        </button>
-        <button @click="setLock" class="btn-sm btn-blue w-full sm:w-auto">
-          {{ card?.lockStatus === "LOCKED" ? "UNLOCK" : "LOCK" }} CARD
-        </button>
-        <button @click="setDailyLimit" class="btn-sm btn-blue w-full sm:w-auto">
-          SET DAILY LIMIT
-        </button>
-      </div>
-
-      <div class="main-container">
-        <div
-          class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1 mb-1"
-        >
-          <h1>User Card</h1>
-          <div class="flex flex-wrap gap-1 text-sm">
-            <span
-              class="pill-xs"
-              :class="{
-                'text-red-100 bg-red-500': card?.cardStatus === 'DISABLED',
-                'text-green-100 bg-green-500': card?.cardStatus === 'ENABLED',
-              }"
-              >{{ card?.cardStatus }}
-            </span>
-            <span
-              class="pill-xs"
-              :class="{
-                'text-gray-100 bg-gray-500': card?.lockStatus === 'LOCKED',
-                'text-green-100 bg-green-500': card?.lockStatus === 'UNLOCKED',
-              }"
-              >{{ card?.lockStatus }}
-            </span>
-            <span class="pill-xs bg-blue-500 text-blue-100"
-              >{{ card?.dailyLimit ? card?.dailyLimit + " LIMIT" : "NO LIMIT" }}
-            </span>
-          </div>
-        </div>
-
-        <div class="flex justify-center my-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
-            <div class="flex jusfity-center">
-              <BankingCardFront v-if="card" :card="card" />
-            </div>
-            <div class="flex jusfity-center">
-              <BankingCardBack v-if="card" :card="card" />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <BankingTransactions
-            :id="card.id"
-            :currency="currency"
-            :fetch="
-              (id: number, page: number, size: number) =>
-                transactionStore.fetchCardTransactions(id, page, size)
-            "
-          />
-        </div>
-      </div>
-    </div>
-    <div v-else>
-      <Spinner v-if="!isViewReady" />
-    </div>
-
-    <div
-      v-if="!card && isViewReady"
-      class="flex justify-center items-center p-4 rounded shadow bg-red-50"
-    >
-      <div class="text-center">
-        <h1 class="text-2xl font-bold mb-4">Card not found</h1>
-        <p class="text-red-600">Please check the card ID and try again.</p>
-        <p class="text-red-600">
-          If you think this is a mistake, please contact support.
-        </p>
-      </div>
-    </div>
-  </div>
+    <BankingCardDailyLimitModal :ref="modals.dailyLimitModal" /> -->
 </template>
