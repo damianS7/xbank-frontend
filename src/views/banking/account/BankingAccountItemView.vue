@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAccountStore } from "@/stores/account";
 import { useCardStore } from "@/stores/card";
 import CustomAlert from "@/components/CustomAlert.vue";
 import BankingAccount from "@/views/banking/account/components/BankingAccount.vue";
 import BankingAccountCards from "@/views/banking/account/components/BankingAccountCards.vue";
-import BankingTransactions from "@/components/BankingTransactions.vue";
+import BankingAccountTransactions from "@/views/banking/account/BankingAccountTransactions.vue";
 import { useTransactionStore } from "@/stores/transaction";
 import { useModalStore } from "@/stores/modal";
+import Button from "@/components/ui/button/Button.vue";
+import Badge from "@/components/ui/badge/Badge.vue";
+import type { BankingCardType } from "@/types/BankingCard";
+import type { BankingAccountTransferForm } from "@/types/form/BankingAccountTransferForm";
 const route = useRoute();
 const accountStore = useAccountStore();
 const transactionStore = useTransactionStore();
@@ -16,6 +20,7 @@ const cardStore = useCardStore();
 const accountId = parseInt(route.params.id as string, 10);
 const account = computed(() => accountStore.getBankingAccount(accountId));
 const transactionRefs = ref();
+
 // alert
 const alert = ref();
 
@@ -23,17 +28,23 @@ const alert = ref();
 const modalStore = useModalStore();
 
 async function transferTo() {
-  const transferData = (await modalStore.open("TransferModal", {
-    title: "Transfer to",
-  })) as string;
+  const transfer: BankingAccountTransferForm = (await modalStore.open(
+    "BankingAccountTransfer",
+    {
+      title: "Transfer to",
+    }
+  )) as BankingAccountTransferForm;
 
-  if (!transferData || !transferData.accountNumber) {
+  // if transfer modal is cancelled ...
+  if (!transfer) {
     return;
   }
 
   const password = (await modalStore.open("ConfirmPassword", {
-    title: "Open account",
+    title: "Confirm password",
   })) as string;
+
+  // if password modal is cancelled ...
   if (!password) {
     return;
   }
@@ -41,9 +52,9 @@ async function transferTo() {
   await transactionStore
     .createBankingTransaction(
       accountId.toString(),
-      transferData.accountNumber,
-      transferData.amount,
-      transferData.description,
+      transfer.accountNumber,
+      transfer.amount,
+      transfer.description,
       "TRANSFER_TO",
       password
     )
@@ -59,20 +70,8 @@ async function transferTo() {
 
 // Set alias for the banking account
 async function setAlias(alias: string) {
-  if (alias.length < 5) {
-    alert.value?.error("Alias must be at least 5 characters long.");
-    return;
-  }
-
-  const password = await modals.confirmPassword.value.open();
-
-  if (!password) {
-    alert.value?.error("Invalid password format.");
-    return;
-  }
-
   await accountStore
-    .updateBankingAccountAlias(accountId.toString(), alias, password)
+    .updateBankingAccountAlias(accountId.toString(), alias)
     .then((newAccount) => {
       accountStore.setAccount(newAccount);
     })
@@ -83,7 +82,10 @@ async function setAlias(alias: string) {
 
 // Request a new banking card
 async function requestCard() {
-  const cardType = await modals.requestCard.value.open();
+  const cardType = (await modalStore.open("RequestBankingCard", {
+    title: "Request card",
+  })) as BankingCardType;
+
   if (!cardType) {
     return;
   }
@@ -98,65 +100,59 @@ async function requestCard() {
       alert.value?.exception(error);
     });
 }
-
-onMounted(() => {
-  // isViewReady.value = true;
-});
 </script>
 <template>
-  <div v-if="account">
-    <CustomAlert ref="alert" />
-
-    <div class="flex flex-col sm:flex-row sm:justify-end gap-1 mb-6">
-      <button @click="transferTo" class="btn-sm btn-blue">TRANSFER TO</button>
-      <button @click="requestCard" class="btn-sm btn-blue">REQUEST CARD</button>
-    </div>
-
-    <div class="main-container">
-      <div>
-        <h1
-          class="flex flex-col sm:flex-row items-center text-2xl font-bold gap-1"
-        >
-          <span class="flex items-center">Banking account</span>
-
-          <span
-            class="text-xs rounded-full px-1"
-            :class="{
-              'text-orange-100 bg-orange-500':
-                account?.accountStatus === 'CLOSED',
-              'text-red-100 bg-red-500': account?.accountStatus === 'SUSPENDED',
-              'text-green-100 bg-green-500': account?.accountStatus === 'OPEN',
-            }"
-            >{{ account?.accountStatus }}
-          </span>
-        </h1>
-      </div>
-
-      <div>
-        <BankingAccount
-          v-if="account"
-          :id="account.id"
-          @update="setAlias"
-          :editable="true"
-        />
-      </div>
-
-      <div class="my-6">
-        <BankingAccountCards :accountId="account.id" />
-      </div>
-
-      <div>
-        <BankingTransactions
-          :id="account.id"
-          :currency="account.accountCurrency"
-          ref="transactionRefs"
-          :fetch="
-            (id: number, page: number, size: number) =>
-              transactionStore.fetchAccountTransactions(id, page, size)
+  <div v-if="account" class="grid grid-rows-[auto_1fr] h-full">
+    <section
+      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2 gap-2"
+    >
+      <div class="flex gap-2 items-center">
+        <span>Banking account</span>
+        <Badge
+          size="sm"
+          :variant="
+            account?.accountStatus === 'ACTIVE'
+              ? 'default'
+              : ['CLOSED', 'SUSPENDED'].includes(account?.accountStatus || '')
+                ? 'destructive'
+                : 'default'
           "
-        />
+        >
+          {{ account?.accountStatus }}
+        </Badge>
       </div>
-    </div>
+      <div class="flex gap-2 items-center">
+        <Button @click="transferTo" size="sm">TRANSFER TO</Button>
+        <Button @click="requestCard" size="sm">REQUEST CARD</Button>
+      </div>
+    </section>
+
+    <section
+      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
+    >
+      <CustomAlert ref="alert" />
+
+      <BankingAccount
+        v-if="account"
+        :id="account.id"
+        @update="setAlias"
+        :editable="true"
+      />
+
+      <BankingAccountCards :accountId="account.id" />
+
+      <BankingAccountTransactions
+        :id="account.id"
+        :currency="account.accountCurrency"
+        ref="transactionRefs"
+        :fetch="
+          (id: number, page: number, size: number) =>
+            transactionStore.fetchAccountTransactions(id, page, size)
+        "
+      />
+    </section>
   </div>
-  <div v-else>Loading account</div>
+  <div class="grid grid-rows-[auto_1fr] h-full p-4" v-else>
+    <p class="text-center">No account found.</p>
+  </div>
 </template>

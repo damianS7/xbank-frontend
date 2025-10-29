@@ -2,21 +2,21 @@
 <script setup lang="ts">
 import { Dialog } from "@/components/ui/dialog";
 import { useModalStore } from "@/stores/modal";
-import TransferModal from "@/views/banking/account/components/BankingAccountTransferModal.vue";
-import RequestBankingCard from "@/views/banking/account/components/BankingAccountRequestCardModal.vue";
+import BankingAccountTransfer from "@/views/banking/account/components/modal/BankingAccountTransferModal.vue";
+import RequestBankingCard from "@/views/banking/account/components/modal/BankingAccountRequestCardModal.vue";
 import ConfirmMessage from "@/components/modal/ConfirmMessageModal.vue";
 import ConfirmPassword from "@/components/modal/ConfirmPasswordModal.vue";
 import ConfirmNewPassword from "@/views/customer/profile/components/ProfileNewPasswordConfirmModal.vue";
-import OpenAccount from "@/views/banking/account/components/BankingAccountOpenModal.vue";
+import OpenAccountModal from "@/views/banking/account/components/modal/BankingAccountOpenModal.vue";
 const modalStore = useModalStore();
 
 const modals = {
-  OpenAccount,
+  OpenAccountModal,
   ConfirmMessage,
   ConfirmPassword,
   ConfirmNewPassword,
   RequestBankingCard,
-  TransferModal,
+  BankingAccountTransfer,
 };
 
 function handleUpdateOpen() {
