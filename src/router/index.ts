@@ -56,7 +56,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/banking/card/:id",
-        name: "card",
+        name: "banking-card",
         component: BankingCardItemView,
       },
       {
