@@ -4,17 +4,12 @@ import CustomAlert from "@/components/CustomAlert.vue";
 import { computed, ref } from "vue";
 import ProfileEditableField from "./components/ProfileEditableField.vue";
 import ProfilePhoto from "./components/ProfilePhotoUploader.vue";
-import type { GenderType } from "@/types/Gender";
+import { genderOptions } from "@/types/Gender";
 import { useModalStore } from "@/stores/modal";
 
 // store
 const modalStore = useModalStore();
 const customerStore = useCustomerStore();
-const genderTypes: GenderType[] = ["MALE", "FEMALE"];
-const genderOptions = genderTypes.map((value) => ({
-  value,
-  label: value.charAt(0) + value.slice(1).toLowerCase(),
-}));
 
 // message to show
 const alert = ref<InstanceType<typeof CustomAlert>>();
@@ -203,12 +198,14 @@ async function updateEmail(newEmail: string) {
 <template>
   <div class="grid grid-rows-[auto_1fr] h-full">
     <section
-      class="flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
+      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2"
     >
       <h1>Profile</h1>
     </section>
 
-    <section class="overflow-scroll h-full">
+    <section
+      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
+    >
       <CustomAlert class="mb-4" ref="alert" />
       <div class="flex justify-center">
         <ProfilePhoto @update="updatePhoto" />
@@ -222,7 +219,7 @@ async function updateEmail(newEmail: string) {
           :key="index"
           :index="index"
           :field="field"
-          @update="updateField(field)"
+          @update="updateField"
         />
       </div>
     </section>
