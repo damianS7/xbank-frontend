@@ -10,8 +10,8 @@ const appInit = useAppInit();
   <div v-else class="flex flex-col h-screen overflow-hidden">
     <SidebarProvider>
       <Sidebar />
-      <div class="flex w-full h-full p-4 overflow-hidden sm:max-w-4xl mx-auto">
-        <main class="flex flex-1 flex-col p-4">
+      <div class="flex w-full h-full p-4 overflow-hidden">
+        <main class="flex flex-1 flex-col">
           <router-view />
         </main>
       </div>
