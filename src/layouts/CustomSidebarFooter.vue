@@ -7,7 +7,7 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-vue-next";
-
+import SidebarLink from "@/components/SidebarLink.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -25,7 +25,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const props = defineProps<{
+defineProps<{
   user: {
     name: string;
     email: string;
@@ -33,7 +33,12 @@ const props = defineProps<{
   };
 }>();
 
-const { isMobile } = useSidebar();
+const { isMobile, setOpen } = useSidebar();
+const links = [
+  { to: "notifications", icon: BadgeCheck, label: "Accounts" },
+  { to: "notifications", icon: CreditCard, label: "Billing" },
+  { to: "notifications", icon: Bell, label: "Notifications" },
+];
 </script>
 <template>
   <SidebarMenu>
@@ -41,6 +46,8 @@ const { isMobile } = useSidebar();
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <SidebarMenuButton
+            @mouseenter="setOpen(true)"
+            @mouseleave="setOpen(false)"
             size="lg"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
@@ -75,30 +82,17 @@ const { isMobile } = useSidebar();
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <Sparkles />
-              Upgrade to Pro
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <BadgeCheck />
-              Account
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <CreditCard />
-              Billing
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Bell />
-              Notifications
+            <DropdownMenuItem v-for="item in links" :key="item.label">
+              <SidebarLink
+                :to="item.to"
+                :icon="item.icon"
+                :label="item.label"
+              />
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <LogOut />
-            Log out
+            <SidebarLink to="logout" :icon="LogOut" label="Logout" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

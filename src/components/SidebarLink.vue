@@ -10,8 +10,8 @@ defineProps<{
   <RouterLink
     :to="{ name: to }"
     :class="[
-      'items-center rounded',
-      $route.name === to ? 'bg-gray-200' : 'hover:bg-gray-200',
+      'flex gap-2 items-center rounded',
+      $route.name === to ? 'bg-gray-200' : '',
     ]"
   >
     <component :is="icon" />

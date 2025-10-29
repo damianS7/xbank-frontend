@@ -48,7 +48,6 @@ const { setOpen } = useSidebar();
   >
     <SidebarContent>
       <SidebarGroup>
-        <SidebarGroupLabel>Application</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem v-for="item in links" :key="item.label">

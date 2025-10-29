@@ -19,10 +19,18 @@ import ModalManager from "@/components/modal/ModalManager.vue";
 header,
 nav,
 main {
-  @apply bg-gray-100;
+  @apply bg-neutral-50;
 }
 
 main {
-  @apply p-4 rounded shadow;
+  @apply rounded shadow;
+}
+
+.pg-section-content {
+  @apply p-4;
+}
+
+.pg-section-header {
+  @apply p-2;
 }
 </style>
