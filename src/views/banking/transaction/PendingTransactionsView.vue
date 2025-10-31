@@ -8,6 +8,9 @@ interface PendingTransaction {
   createdAt: string;
 }
 
+// message to show
+const alert = ref();
+
 const pendingTransactions = ref<PendingTransaction[]>([
   {
     id: 1,
@@ -49,14 +52,18 @@ function formatAmount(amount: number): string {
 }
 </script>
 <template>
-  <div class="main-container">
+  <div class="grid grid-rows-[auto_1fr] h-full">
     <section
-      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1 mb-4"
+      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2"
     >
       <h1>Pending Transactions</h1>
     </section>
 
-    <section v-if="pendingTransactions.length">
+    <section
+      v-if="pendingTransactions.length"
+      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
+    >
+      <CustomAlert ref="alert" />
       <table class="w-full table-auto border-collapse">
         <thead class="bg-gray-100">
           <tr>
@@ -95,8 +102,7 @@ function formatAmount(amount: number): string {
         </tbody>
       </table>
     </section>
-
-    <section v-else class="text-gray-500 text-center mt-8">
+    <section v-else class="text-gray-500 text-center">
       No pending transactions.
     </section>
   </div>
