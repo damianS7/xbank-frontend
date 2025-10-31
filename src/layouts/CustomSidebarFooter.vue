@@ -46,8 +46,6 @@ const links = [
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <SidebarMenuButton
-            @mouseenter="setOpen(true)"
-            @mouseleave="setOpen(false)"
             size="lg"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
