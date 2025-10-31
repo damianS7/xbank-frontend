@@ -35,7 +35,9 @@ function nextCard() {
 
     <section class="flex flex-col items-center justify-center mt-4">
       <div class="flex flex-col items-center">
-        <router-link :to="`/card/${currentCard.id}`">
+        <router-link
+          :to="{ name: 'banking-card', params: { id: currentCard.id } }"
+        >
           <BankingCardFront class="shadow-md w-full" :card="currentCard" />
         </router-link>
       </div>
