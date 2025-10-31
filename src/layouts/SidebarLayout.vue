@@ -34,8 +34,8 @@ const links = [
     label: "Pending Transactions",
   },
   { to: "profile", icon: Profile, label: "Profile" },
-  { to: "settings", icon: Settings, label: "Settings" },
   { to: "notifications", icon: Bell, label: "Notifications" },
+  { to: "settings", icon: Settings, label: "Settings" },
 ];
 
 const { setOpen } = useSidebar();
