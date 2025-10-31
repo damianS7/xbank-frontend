@@ -5,7 +5,7 @@ import { useAccountStore } from "@/stores/account";
 import { useCardStore } from "@/stores/card";
 import CustomAlert from "@/components/CustomAlert.vue";
 import BankingAccount from "@/views/banking/account/components/BankingAccount.vue";
-import BankingAccountCards from "@/views/banking/account/components/BankingAccountCards.vue";
+import BankingAccountCards from "@/views/banking/account/components/BankingAccountCardList.vue";
 import BankingAccountTransactions from "@/views/banking/account/BankingAccountTransactions.vue";
 import { useTransactionStore } from "@/stores/transaction";
 import { useModalStore } from "@/stores/modal";

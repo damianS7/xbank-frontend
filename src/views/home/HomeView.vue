@@ -2,12 +2,12 @@
 import { useAccountStore } from "@/stores/account";
 import { computed } from "vue";
 import { BankingAccountCurrencies as currencies } from "@/types/BankingAccount";
-import BankingAccountCurrencyChart from "@/views/home/BankingAccountCurrencyChart.vue";
+import BankingAccountCurrencyChart from "@/views/home/components/BankingAccountCurrencyChart.vue";
 
 const accountStore = useAccountStore();
 const accounts = computed(() => accountStore.bankingAccounts);
 
-function totalBalance(currency: string) {
+function totalAccountBalanceByCurrency(currency: string) {
   return accounts.value.reduce((total, account) => {
     return account.accountCurrency === currency
       ? total + account.balance
@@ -33,7 +33,7 @@ function totalBalance(currency: string) {
 
     <!-- Balance -->
     <div class="grid grid-cols-1 md:grid-cols-2 dash-item-group">
-      <h3 class="font-semibold md:col-span-2">Account balances</h3>
+      <h3 class="font-semibold md:col-span-2">Account balances by currency</h3>
       <div
         v-for="(currency, index) in currencies"
         :key="index"
@@ -45,7 +45,7 @@ function totalBalance(currency: string) {
         <div class="flex justify-between mt-4 text-sm dash-item">
           <span>Total</span>
           <span class="text-green-600 justify-end">
-            {{ totalBalance(currency) }} {{ currency }}
+            {{ totalAccountBalanceByCurrency(currency) }} {{ currency }}
           </span>
         </div>
       </div>
@@ -56,7 +56,7 @@ function totalBalance(currency: string) {
 @reference "tailwindcss";
 
 .dash-item-group {
-  @apply bg-gray-50 gap-4 p-4 shadow rounded;
+  @apply gap-4 p-4 rounded;
 }
 
 .dash-item {
