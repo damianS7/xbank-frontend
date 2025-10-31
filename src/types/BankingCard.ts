@@ -1,12 +1,31 @@
 import type { BankingTransaction } from "./BankingTransaction";
 
-export type BankingCardType = "DEBIT" | "CREDIT";
-export type BankingCardStatus = "ENABLED" | "DISABLED";
-export type BankingCardLockStatus = "UNLOCKED" | "LOCKED";
+// Banking Card Types
+export const cardTypes = ["DEBIT", "CREDIT"] as const;
+export type BankingCardType = (typeof cardTypes)[number];
+export const cardOptions = cardTypes.map((value) => ({
+  value,
+  label: value.charAt(0) + value.slice(1),
+}));
+
+// Banking Card Status
+export const cardStatusValues = ["ENABLED", "DISABLED"] as const;
+export type BankingCardStatus = (typeof cardStatusValues)[number];
+export const cardStatusOptions = cardStatusValues.map((value) => ({
+  value,
+  label: value.charAt(0) + value.slice(1),
+}));
+
+// Banking Card Lock Status
+export const cardLockStatusValues = ["UNLOCKED", "LOCKED"] as const;
+export const cardLockStatusOptions = cardLockStatusValues.map((value) => ({
+  value,
+  label: value.charAt(0) + value.slice(1),
+}));
 
 export interface BankingCard {
   id: number;
-  bankingAccountId: number; // o puedes usar BankingAccount si necesitas toda la info
+  bankingAccountId: number;
   cardNumber: string;
   cardCVV: string;
   cardPIN: string;
