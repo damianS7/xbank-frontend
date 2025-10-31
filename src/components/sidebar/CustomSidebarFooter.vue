@@ -7,7 +7,7 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-vue-next";
-import SidebarLink from "@/components/SidebarLink.vue";
+import SidebarLink from "@/components/sidebar/SidebarLink.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,

@@ -9,7 +9,7 @@ import {
   ReceiptText,
   Bell,
 } from "lucide-vue-next";
-import SidebarLink from "@/components/SidebarLink.vue";
+import SidebarLink from "@/components/sidebar/SidebarLink.vue";
 import {
   Sidebar,
   SidebarHeader,
@@ -23,7 +23,7 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
 import { useCustomerStore } from "@/stores/customer";
-import CustomSidebarFooter from "./CustomSidebarFooter.vue";
+import CustomSidebarFooter from "@/components/sidebar/CustomSidebarFooter.vue";
 const links = [
   { to: "home", icon: Home, label: "Home" },
   { to: "banking-accounts", icon: Accounts, label: "Accounts" },
