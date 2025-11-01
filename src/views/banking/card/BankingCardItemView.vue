@@ -12,6 +12,10 @@ import { useAccountStore } from "@/stores/account";
 import { useTransactionStore } from "@/stores/transaction";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useModalStore } from "@/stores/modal";
+import PageLayout from "@/layouts/PageLayout.vue";
+
+// ---
+
 const accountStore = useAccountStore();
 const transactionStore = useTransactionStore();
 const cardStore = useCardStore();
@@ -130,63 +134,63 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <div v-if="card" class="grid grid-rows-[auto_1fr] h-full">
-    <section
-      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2 gap-2"
-    >
-      <div class="flex items-center gap-2">
-        <span>Banking card</span>
-        <Badge
-          size="sm"
-          :variant="card?.cardStatus === 'ENABLED' ? 'default' : 'destructive'"
-        >
-          {{ card?.cardStatus }}
-        </Badge>
-        <Badge
-          :variant="card.lockStatus === 'UNLOCKED' ? 'default' : 'destructive'"
-          >{{ card?.lockStatus }}
-        </Badge>
-        <Badge :variant="card.dailyLimit > 0 ? 'destructive' : 'default'"
-          >{{ card?.dailyLimit ? card?.dailyLimit + " LIMIT" : "NO LIMIT" }}
-        </Badge>
-      </div>
-      <div class="flex gap-2">
-        <Button @click="setPin" size="sm"> SET PIN </Button>
-        <Button @click="setLock" size="sm">
-          {{ card?.lockStatus === "LOCKED" ? "UNLOCK" : "LOCK" }} CARD
-        </Button>
-        <Button @click="setDailyLimit" size="sm"> SET DAILY LIMIT </Button>
-      </div>
-    </section>
-
-    <section
-      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
-    >
-      <CustomAlert ref="alert" />
-      <div v-if="card && isViewReady">
-        <div>
-          <div class="flex justify-center my-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
-              <div class="flex jusfity-center">
-                <BankingCardFront v-if="card" :card="card" />
-              </div>
-              <div class="flex jusfity-center">
-                <BankingCardBack v-if="card" :card="card" />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <BankingTransactions
-              :id="card.id"
-              :currency="card.currency"
-              :fetch="
-                (id: number, page: number, size: number) =>
-                  transactionStore.fetchCardTransactions(id, page, size)
+  <PageLayout>
+    <template #header>
+      <div class="flex flex-1 items-center justify-between">
+        <div class="flex flex-1 items-center gap-2">
+          <h1>Banking card</h1>
+          <div v-if="card" class="flex flex-1 items-center gap-1">
+            <Badge
+              size="sm"
+              :variant="
+                card?.cardStatus === 'ENABLED' ? 'default' : 'destructive'
               "
-            />
+            >
+              {{ card?.cardStatus }}
+            </Badge>
+            <Badge
+              :variant="
+                card.lockStatus === 'UNLOCKED' ? 'default' : 'destructive'
+              "
+              >{{ card?.lockStatus }}
+            </Badge>
+            <Badge :variant="card.dailyLimit > 0 ? 'destructive' : 'default'"
+              >{{ card?.dailyLimit ? card?.dailyLimit + " LIMIT" : "NO LIMIT" }}
+            </Badge>
           </div>
         </div>
+        <div class="flex gap-2">
+          <Button @click="setPin" size="sm"> PIN </Button>
+          <Button @click="setLock" size="sm">
+            {{ card?.lockStatus === "LOCKED" ? "UNLOCK" : "LOCK" }} CARD
+          </Button>
+          <Button @click="setDailyLimit" size="sm"> DAILY LIMIT </Button>
+        </div>
+      </div>
+    </template>
+
+    <template #content>
+      <CustomAlert ref="alert" />
+      <div v-if="card && isViewReady">
+        <div class="flex justify-center my-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
+            <div class="flex jusfity-center">
+              <BankingCardFront v-if="card" :card="card" />
+            </div>
+            <div class="flex jusfity-center">
+              <BankingCardBack v-if="card" :card="card" />
+            </div>
+          </div>
+        </div>
+
+        <BankingTransactions
+          :id="card.id"
+          :currency="card.currency"
+          :fetch="
+            (id: number, page: number, size: number) =>
+              transactionStore.fetchCardTransactions(id, page, size)
+          "
+        />
       </div>
       <div v-else>
         <Spinner v-if="!isViewReady" />
@@ -204,13 +208,6 @@ onMounted(async () => {
           </p>
         </div>
       </div>
-    </section>
-  </div>
-  <!-- <ConfirmPasswordModal :ref="modals.confirmPassword" />
-    <BankingCardSetPinModal :ref="modals.setPinModal" />
-    <BankingCardLockModal
-      :ref="modals.lockModal"
-      :cardEnabled="card?.cardStatus === 'ENABLED'"
-    />
-    <BankingCardDailyLimitModal :ref="modals.dailyLimitModal" /> -->
+    </template>
+  </PageLayout>
 </template>
