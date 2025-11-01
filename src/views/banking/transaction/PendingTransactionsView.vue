@@ -58,9 +58,12 @@ function formatAmount(amount: number): string {
       <h1>Pending Transactions</h1>
     </template>
 
-    <template v-if="pendingTransactions.length > 100" #content>
+    <template #content>
       <CustomAlert ref="alert" />
-      <table class="w-full table-auto border-collapse">
+      <table
+        v-if="pendingTransactions.length"
+        class="w-full table-auto border-collapse"
+      >
         <thead class="bg-gray-100">
           <tr>
             <th class="p-2 border text-left">Date</th>
@@ -97,9 +100,9 @@ function formatAmount(amount: number): string {
           </tr>
         </tbody>
       </table>
-    </template>
-    <template v-else #content>
-      <span class="text-gray-600 text-center">No pending transactions.</span>
+      <div v-else class="text-gray-600 text-center">
+        No pending transactions.
+      </div>
     </template>
   </PageLayout>
 </template>

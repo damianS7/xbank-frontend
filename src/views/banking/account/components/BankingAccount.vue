@@ -3,6 +3,13 @@ import { defineProps, defineEmits, ref, computed } from "vue";
 import { useCardStore } from "@/stores/card";
 import { CreditCard, SquarePen, Save, SaveOff } from "lucide-vue-next";
 import { useAccountStore } from "@/stores/account";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 const emit = defineEmits(["update"]);
 const cardStore = useCardStore();
 const accountStore = useAccountStore();
@@ -33,7 +40,7 @@ function formatIban(iban: string): string {
 }
 </script>
 <template>
-  <div v-if="account" class="bg-gray-50 p-4 rounded-xl shadow mt-6 w-full">
+  <div v-if="account" class="bg-white p-4 rounded shadow w-full">
     <div
       class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2"
     >
@@ -42,19 +49,25 @@ function formatIban(iban: string): string {
       </span>
 
       <div class="flex flex-wrap gap-1">
-        <span
-          class="relative flex items-center gap-1 pill pill-blue group cursor-pointer"
+        <Badge>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger class="flex items-center gap-2">
+                {{ cardStore.countCardsByAccount(account.id) }}<CreditCard />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Total cards for this account</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </Badge>
+        <Badge>{{ account.accountType }}</Badge>
+        <Badge
+          v-if="account.accountStatus === 'CLOSED'"
+          variant="destructive"
+          >{{ account.accountStatus }}</Badge
         >
-          {{ cardStore.countCardsByAccount(account.id) }}
-          <CreditCard />
-          <span
-            class="absolute top-full left-1/2 -translate-x-1/2 mt-1 scale-0 group-hover:scale-100 transition-all duration-200 bg-gray-800 text-white text-xs px-2 py-1 rounded shadow z-10 whitespace-nowrap"
-          >
-            Total cards for this account
-          </span>
-        </span>
-        <span class="pill pill-blue">{{ account.accountType }}</span>
-        <span class="pill pill-blue">{{ account.accountStatus }}</span>
+        <Badge v-else>{{ account.accountStatus }}</Badge>
       </div>
     </div>
 
@@ -64,7 +77,7 @@ function formatIban(iban: string): string {
       <!-- Alias -->
       <div class="flex items-center gap-2 text-sm font-bold text-gray-700">
         <div>
-          <div v-if="!formFields.isEditing" class="flex gap-1">
+          <div v-if="!formFields.isEditing" class="flex gap-1 items-center">
             {{ account.alias || "" }}
             <SquarePen
               @click="formFields.isEditing = true"
@@ -73,7 +86,11 @@ function formatIban(iban: string): string {
             />
           </div>
           <div class="flex gap-1 items-center" v-else>
-            <input type="text" class="w-auto p-1" v-model="formFields.value" />
+            <input
+              type="text"
+              class="w-auto p-1 border rounded"
+              v-model="formFields.value"
+            />
             <Save
               class="text-green-500 cursor-pointer"
               @click="

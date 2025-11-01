@@ -13,6 +13,10 @@ import Button from "@/components/ui/button/Button.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 import type { BankingCardType } from "@/types/BankingCard";
 import type { BankingAccountTransferForm } from "@/types/form/BankingAccountTransferForm";
+import PageLayout from "@/layouts/PageLayout.vue";
+
+// ----
+
 const route = useRoute();
 const accountStore = useAccountStore();
 const transactionStore = useTransactionStore();
@@ -102,13 +106,12 @@ async function requestCard() {
 }
 </script>
 <template>
-  <div v-if="account" class="grid grid-rows-[auto_1fr] h-full">
-    <section
-      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2 gap-2"
-    >
+  <PageLayout>
+    <template #header>
       <div class="flex gap-2 items-center">
-        <span>Banking account</span>
+        <h1>Banking account</h1>
         <Badge
+          v-if="account"
           size="sm"
           :variant="
             account?.accountStatus === 'ACTIVE'
@@ -122,37 +125,40 @@ async function requestCard() {
         </Badge>
       </div>
       <div class="flex gap-2 items-center">
-        <Button @click="transferTo" size="sm">TRANSFER TO</Button>
-        <Button @click="requestCard" size="sm">REQUEST CARD</Button>
+        <Button @click="transferTo" size="sm">Transfer</Button>
+        <Button @click="requestCard" size="sm">Request card</Button>
       </div>
-    </section>
+    </template>
 
-    <section
-      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
-    >
+    <template #content>
       <CustomAlert ref="alert" />
 
-      <BankingAccount
-        v-if="account"
-        :id="account.id"
-        @update="setAlias"
-        :editable="true"
-      />
+      <div class="flex flex-col gap-2" v-if="account">
+        <BankingAccount
+          v-if="account"
+          :id="account.id"
+          @update="setAlias"
+          :editable="true"
+        />
 
-      <BankingAccountCards :accountId="account.id" />
+        <BankingAccountCards :accountId="account.id" />
 
-      <BankingAccountTransactions
-        :id="account.id"
-        :currency="account.accountCurrency"
-        ref="transactionRefs"
-        :fetch="
-          (id: number, page: number, size: number) =>
-            transactionStore.fetchAccountTransactions(id, page, size)
-        "
-      />
-    </section>
-  </div>
-  <div class="grid grid-rows-[auto_1fr] h-full p-4" v-else>
-    <p class="text-center">No account found.</p>
-  </div>
+        <BankingAccountTransactions
+          :id="account.id"
+          :currency="account.accountCurrency"
+          ref="transactionRefs"
+          :fetch="
+            (id: number, page: number, size: number) =>
+              transactionStore.fetchAccountTransactions(id, page, size)
+          "
+        />
+      </div>
+
+      <div v-else-if="!account" class="text-gray-600 text-center">
+        Loading account ...
+      </div>
+
+      <div v-else class="text-gray-600 text-center">No account found ...</div>
+    </template>
+  </PageLayout>
 </template>

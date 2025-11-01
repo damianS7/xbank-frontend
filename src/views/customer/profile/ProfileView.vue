@@ -6,6 +6,7 @@ import ProfileEditableField from "./components/ProfileEditableField.vue";
 import ProfilePhoto from "./components/ProfilePhotoUploader.vue";
 import { genderOptions } from "@/types/Gender";
 import { useModalStore } from "@/stores/modal";
+import PageLayout from "@/layouts/PageLayout.vue";
 
 // store
 const modalStore = useModalStore();
@@ -196,16 +197,12 @@ async function updateEmail(newEmail: string) {
 }
 </script>
 <template>
-  <div class="grid grid-rows-[auto_1fr] h-full">
-    <section
-      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2"
-    >
+  <PageLayout>
+    <template #header>
       <h1>Profile</h1>
-    </section>
+    </template>
 
-    <section
-      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
-    >
+    <template #content>
       <CustomAlert class="mb-4" ref="alert" />
       <div class="flex justify-center">
         <ProfilePhoto @update="updatePhoto" />
@@ -222,6 +219,15 @@ async function updateEmail(newEmail: string) {
           @update="updateField"
         />
       </div>
-    </section>
-  </div>
+
+      <div
+        v-else-if="!customerStore.customer"
+        class="text-gray-600 text-center"
+      >
+        Loading profile ...
+      </div>
+
+      <div v-else class="text-gray-600 text-center">No profile to show ...</div>
+    </template>
+  </PageLayout>
 </template>

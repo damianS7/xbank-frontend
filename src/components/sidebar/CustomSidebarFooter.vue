@@ -35,9 +35,9 @@ defineProps<{
 
 const { isMobile, setOpen } = useSidebar();
 const links = [
-  { to: "notifications", icon: BadgeCheck, label: "Accounts" },
-  { to: "notifications", icon: CreditCard, label: "Billing" },
-  { to: "notifications", icon: Bell, label: "Notifications" },
+  { to: "settings", icon: BadgeCheck, label: "Accounts" },
+  { to: "settings", icon: CreditCard, label: "Billing" },
+  { to: "settings", icon: Bell, label: "Settings" },
 ];
 </script>
 <template>

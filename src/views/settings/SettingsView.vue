@@ -4,6 +4,7 @@ import { onMounted, ref } from "vue";
 import Button from "@/components/ui/button/Button.vue";
 import { useSettingStore } from "@/stores/setting";
 import Switch from "@/components/ui/switch/Switch.vue";
+import PageLayout from "@/layouts/PageLayout.vue";
 
 // store
 const settingStore = useSettingStore();
@@ -16,19 +17,13 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <div class="grid grid-rows-[auto_1fr] h-full">
-    <section
-      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2"
-    >
+  <PageLayout>
+    <template #header>
       <h1>Settings</h1>
-      <Button @click="settingStore.updateSettings()" size="sm"
-        >Save settings</Button
-      >
-    </section>
+      <Button @click="settingStore.updateSettings()" size="sm">Save</Button>
+    </template>
 
-    <section
-      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
-    >
+    <template v-if="settingStore.settings" #content>
       <CustomAlert class="mb-4" ref="alert" />
       <form class="space-y-6">
         <!-- Enable 2FA -->
@@ -74,6 +69,6 @@ onMounted(async () => {
           </select>
         </div>
       </form>
-    </section>
-  </div>
+    </template>
+  </PageLayout>
 </template>

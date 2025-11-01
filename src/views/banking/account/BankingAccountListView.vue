@@ -9,6 +9,7 @@ import type {
   BankingAccountCurrency,
   BankingAccountType,
 } from "@/types/BankingAccount";
+import PageLayout from "@/layouts/PageLayout.vue";
 const accountStore = useAccountStore();
 
 // message to show
@@ -46,25 +47,30 @@ async function openAccount() {
 }
 </script>
 <template>
-  <div class="grid grid-rows-[auto_1fr] h-full">
-    <section
-      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2"
-    >
+  <PageLayout>
+    <template #header>
       <h1>Accounts</h1>
       <Button @click="openAccount" size="sm">Open account</Button>
-    </section>
+    </template>
 
-    <section
-      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
-    >
+    <template #content>
       <CustomAlert ref="alert" />
-      <div v-for="account in accounts" :key="account.id">
+
+      <div v-if="accounts" v-for="account in accounts" :key="account.id">
         <router-link
           :to="{ name: 'banking-account', params: { id: account.id } }"
         >
           <BankingAccount :id="account.id" />
         </router-link>
       </div>
-    </section>
-  </div>
+
+      <div v-else-if="!accounts" class="text-gray-600 text-center">
+        Loading accounts ...
+      </div>
+
+      <div v-else class="text-gray-600 text-center">
+        No accounts to show ...
+      </div>
+    </template>
+  </PageLayout>
 </template>

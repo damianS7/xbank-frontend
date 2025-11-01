@@ -164,7 +164,7 @@ onMounted(async () => {
     >
       <CustomAlert ref="alert" />
       <div v-if="card && isViewReady">
-        <div class="main-container">
+        <div>
           <div class="flex justify-center my-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
               <div class="flex jusfity-center">
@@ -179,7 +179,7 @@ onMounted(async () => {
           <div>
             <BankingTransactions
               :id="card.id"
-              :currency="currency"
+              :currency="card.currency"
               :fetch="
                 (id: number, page: number, size: number) =>
                   transactionStore.fetchCardTransactions(id, page, size)
