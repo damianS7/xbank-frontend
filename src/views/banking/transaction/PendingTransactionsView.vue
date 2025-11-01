@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import PageLayout from "@/layouts/PageLayout.vue";
 
 interface PendingTransaction {
   id: number;
@@ -52,17 +53,12 @@ function formatAmount(amount: number): string {
 }
 </script>
 <template>
-  <div class="grid grid-rows-[auto_1fr] h-full">
-    <section
-      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2"
-    >
+  <PageLayout>
+    <template #header>
       <h1>Pending Transactions</h1>
-    </section>
+    </template>
 
-    <section
-      v-if="pendingTransactions.length"
-      class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
-    >
+    <template v-if="pendingTransactions.length > 100" #content>
       <CustomAlert ref="alert" />
       <table class="w-full table-auto border-collapse">
         <thead class="bg-gray-100">
@@ -101,9 +97,9 @@ function formatAmount(amount: number): string {
           </tr>
         </tbody>
       </table>
-    </section>
-    <section v-else class="text-gray-500 text-center">
-      No pending transactions.
-    </section>
-  </div>
+    </template>
+    <template v-else #content>
+      <span class="text-gray-600 text-center">No pending transactions.</span>
+    </template>
+  </PageLayout>
 </template>
