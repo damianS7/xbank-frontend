@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import CustomAlert from "@/components/CustomAlert.vue";
-import { computed, ref } from "vue";
-import { useModalStore } from "@/stores/modal";
+import { onMounted, ref } from "vue";
 import Button from "@/components/ui/button/Button.vue";
+import { useSettingStore } from "@/stores/setting";
+import Switch from "@/components/ui/switch/Switch.vue";
 
 // store
-const modalStore = useModalStore();
+const settingStore = useSettingStore();
 
 // message to show
 const alert = ref<InstanceType<typeof CustomAlert>>();
+
+onMounted(async () => {
+  await settingStore.initialize();
+});
 </script>
 <template>
   <div class="grid grid-rows-[auto_1fr] h-full">
@@ -16,46 +21,56 @@ const alert = ref<InstanceType<typeof CustomAlert>>();
       class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2"
     >
       <h1>Settings</h1>
-      <Button size="sm">Save settings</Button>
+      <Button @click="settingStore.updateSettings()" size="sm"
+        >Save settings</Button
+      >
     </section>
 
     <section
       class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
     >
       <CustomAlert class="mb-4" ref="alert" />
-
       <form class="space-y-6">
         <!-- Enable 2FA -->
         <div class="flex items-center justify-between">
           <label class="text-lg font-medium"
             >Enable Two-Factor Authentication (2FA)</label
           >
-          <input type="checkbox" class="w-5 h-5 accent-blue-500" />
+          <!-- <input
+            type="checkbox"
+            v-model="settingStore.settings.TWO_FACTOR_AUTH"
+            class="w-5 h-5 accent-blue-500"
+          /> -->
+
+          <Switch
+            v-model="settingStore.settings.TWO_FACTOR_AUTH"
+            class="data-[state=checked]:bg-blue-500"
+          />
         </div>
 
         <!-- Email Notifications -->
         <div class="flex items-center justify-between">
           <label class="text-lg font-medium">Email Notifications</label>
-          <input type="checkbox" class="w-5 h-5 accent-blue-500" />
+          <!-- <input
+            type="checkbox"
+            v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
+            class="w-5 h-5 accent-blue-500"
+          /> -->
+          <Switch
+            v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
+            class="data-[state=checked]:bg-blue-500"
+          />
         </div>
 
         <!-- Language Selector -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between">
           <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-          <select class="border rounded p-2 w-full sm:w-auto">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-          </select>
-        </div>
-
-        <!-- Theme Selector -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between">
-          <label class="text-lg font-medium mb-2 sm:mb-0">Theme</label>
-          <select class="border rounded p-2 w-full sm:w-auto">
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-            <option value="system">System</option>
+          <select
+            class="border rounded p-2 w-full sm:w-auto"
+            v-model="settingStore.settings.LANG"
+          >
+            <option value="ES">Español</option>
+            <option value="EN">English</option>
           </select>
         </div>
       </form>

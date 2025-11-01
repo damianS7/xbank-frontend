@@ -1,7 +1,6 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 // import { useSettingStore } from "@/stores/setting";
-// import { useNotificationStore } from "@/stores/notification";
 import { authService } from "@/services/authService";
 import { useCustomerStore } from "@/stores/customer";
 import { useAccountStore } from "@/stores/account";
