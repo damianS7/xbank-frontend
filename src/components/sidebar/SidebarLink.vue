@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
+import NotificationBubble from "./NotificationBubble.vue";
 defineProps<{
   to: string;
   icon?: unknown;
@@ -15,6 +16,7 @@ defineProps<{
     ]"
   >
     <component :is="icon" />
+    <NotificationBubble v-if="to === 'notifications'" />
     <span>{{ label }}</span>
   </RouterLink>
 </template>
