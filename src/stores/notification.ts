@@ -48,6 +48,8 @@ export const useNotificationStore = defineStore("notification", () => {
       notifications.value = notifications.value.filter(
         (notification) => notification.id !== id
       );
+
+      pagination.value.totalElements -= 1;
     });
   }
 
