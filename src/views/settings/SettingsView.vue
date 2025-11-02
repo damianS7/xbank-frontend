@@ -31,14 +31,8 @@ onMounted(async () => {
           <label class="text-lg font-medium"
             >Enable Two-Factor Authentication (2FA)</label
           >
-          <!-- <input
-            type="checkbox"
-            v-model="settingStore.settings.TWO_FACTOR_AUTH"
-            class="w-5 h-5 accent-blue-500"
-          /> -->
-
           <Switch
-            v-model="settingStore.settings.TWO_FACTOR_AUTH"
+            v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
             class="data-[state=checked]:bg-blue-500"
           />
         </div>
@@ -62,7 +56,7 @@ onMounted(async () => {
           <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
           <select
             class="border rounded p-2 w-full sm:w-auto"
-            v-model="settingStore.settings.LANG"
+            v-model="settingStore.settings.LANGUAGE"
           >
             <option value="ES">Español</option>
             <option value="EN">English</option>

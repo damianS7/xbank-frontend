@@ -1,3 +1,4 @@
+import type { SettingsUpdateRequest } from "@/types/request/SettingsUpdateRequest";
 import { ApiResponse } from "@/types/response/ApiResponse";
 import type { Setting } from "@/types/Setting";
 
@@ -31,11 +32,11 @@ export const settingService = {
     return json;
   },
 
-  async updateSettings(settings: Record<string, object>): Promise<Setting> {
+  async updateSettings(request: SettingsUpdateRequest): Promise<Setting> {
     const response = await fetch(`${API}/settings`, {
       method: "PATCH",
       headers: authHeader(),
-      body: JSON.stringify({ settings }),
+      body: JSON.stringify(request),
     });
 
     // json response
