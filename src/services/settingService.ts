@@ -29,7 +29,7 @@ export const settingService = {
       );
     }
 
-    return json;
+    return json.settings;
   },
 
   async updateSettings(request: SettingsUpdateRequest): Promise<Setting> {
@@ -50,6 +50,6 @@ export const settingService = {
       );
     }
 
-    return json;
+    return json.settings;
   },
 };
