@@ -5,6 +5,11 @@ import Button from "@/components/ui/button/Button.vue";
 import { useSettingStore } from "@/stores/setting";
 import Switch from "@/components/ui/switch/Switch.vue";
 import PageLayout from "@/layouts/PageLayout.vue";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SettingsGeneralTab from "./components/SettingsGeneralTab.vue";
+import SettingsAccountTab from "./components/SettingsAccountTab.vue";
+import SettingsSecurityTab from "./components/SettingsSecurityTab.vue";
+import SettingsNotificationsTab from "./components/SettingsNotificationsTab.vue";
 
 // store
 const settingStore = useSettingStore();
@@ -24,45 +29,28 @@ onMounted(async () => {
     </template>
 
     <template v-if="settingStore.settings" #content>
-      <CustomAlert class="mb-4" ref="alert" />
-      <form class="space-y-6">
-        <!-- Enable 2FA -->
-        <div class="flex items-center justify-between">
-          <label class="text-lg font-medium"
-            >Enable Two-Factor Authentication (2FA)</label
-          >
-          <Switch
-            v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
-            class="data-[state=checked]:bg-blue-500"
-          />
+      <CustomAlert ref="alert" />
+      <Tabs
+        default-value="account"
+        class="grid grid-cols-[max(160px)_1fr] gap-4"
+        orientation="horizontal"
+      >
+        <div>
+          <TabsList class="grid grid-cols-1 w-full h-auto rounded-md shadow">
+            <TabsTrigger value="general"> General </TabsTrigger>
+            <TabsTrigger value="account"> Account </TabsTrigger>
+            <TabsTrigger value="security"> Security </TabsTrigger>
+            <TabsTrigger value="notifications"> Notifications </TabsTrigger>
+          </TabsList>
         </div>
 
-        <!-- Email Notifications -->
-        <div class="flex items-center justify-between">
-          <label class="text-lg font-medium">Email Notifications</label>
-          <!-- <input
-            type="checkbox"
-            v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
-            class="w-5 h-5 accent-blue-500"
-          /> -->
-          <Switch
-            v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
-            class="data-[state=checked]:bg-blue-500"
-          />
+        <div>
+          <SettingsGeneralTab />
+          <SettingsAccountTab />
+          <SettingsSecurityTab />
+          <SettingsNotificationsTab />
         </div>
-
-        <!-- Language Selector -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between">
-          <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-          <select
-            class="border rounded p-2 w-full sm:w-auto"
-            v-model="settingStore.settings.LANGUAGE"
-          >
-            <option value="ES">Español</option>
-            <option value="EN">English</option>
-          </select>
-        </div>
-      </form>
+      </Tabs>
     </template>
   </PageLayout>
 </template>
