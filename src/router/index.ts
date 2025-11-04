@@ -12,13 +12,13 @@ import BankingAccountItemView from "@/views/banking/account/BankingAccountItemVi
 import BankingCardListView from "@/views/banking/card/BankingCardListView.vue";
 import BankingCardItemView from "@/views/banking/card/BankingCardItemView.vue";
 import SettingsView from "@/views/settings/SettingsView.vue";
-import ProfileView from "@/views/customer/profile/ProfileView.vue";
-import RegisterView from "@/views/customer/account/RegisterView.vue";
+import ProfileView from "@/views/profile/ProfileView.vue";
+import RegisterView from "@/views/auth/RegisterView.vue";
 import PendingTransactionsView from "@/views/banking/transaction/PendingTransactionsView.vue";
-import VerificationView from "@/views/customer/account/verification/VerificationView.vue";
-import ResendVerificationView from "@/views/customer/account/verification/ResendVerificationView.vue";
-import ResetPasswordView from "@/views/customer/account/password/reset/ResetPasswordView.vue";
-import ResetPasswordSetView from "@/views/customer/account/password/reset/ResetPasswordSetView.vue";
+import VerificationView from "@/views/auth/verification/VerificationView.vue";
+import ResendVerificationView from "@/views/auth/verification/ResendVerificationView.vue";
+import ResetPasswordView from "@/views/auth/password/reset/ResetPasswordView.vue";
+import ResetPasswordSetView from "@/views/auth/password/reset/ResetPasswordSetView.vue";
 import { useAuthStore } from "@/stores/auth";
 import NotificationView from "@/views/notification/NotificationListView.vue";
 
