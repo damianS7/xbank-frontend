@@ -12,7 +12,7 @@ defineProps<{
     :to="{ name: to }"
     :class="[
       'flex gap-2 items-center rounded',
-      $route.name === to ? 'bg-gray-200' : '',
+      // $route.name === to ? 'bg-gray-200' : '',
     ]"
   >
     <component :is="icon" />
@@ -20,3 +20,10 @@ defineProps<{
     <span>{{ label }}</span>
   </RouterLink>
 </template>
+<style scoped>
+@reference "tailwindcss";
+.router-link-active,
+.router-link-exact-active {
+  @apply bg-gray-200;
+}
+</style>
