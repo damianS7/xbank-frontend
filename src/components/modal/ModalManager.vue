@@ -6,7 +6,7 @@ import BankingAccountTransfer from "@/views/banking/account/components/modal/Ban
 import RequestBankingCard from "@/views/banking/account/components/modal/BankingAccountRequestCardModal.vue";
 import ConfirmMessage from "@/components/modal/ConfirmMessageModal.vue";
 import ConfirmPassword from "@/components/modal/ConfirmPasswordModal.vue";
-import ConfirmNewPassword from "@/views/customer/profile/components/ProfileNewPasswordConfirmModal.vue";
+import ConfirmNewPassword from "@/views/profile/components/ProfileNewPasswordConfirmModal.vue";
 import OpenAccountModal from "@/views/banking/account/components/modal/BankingAccountOpenModal.vue";
 import BankingCardSetPin from "@/views/banking/card/components/modal/BankingCardSetPinModal.vue";
 import BankingCardDailyLimit from "@/views/banking/card/components/modal/BankingCardDailyLimitModal.vue";
