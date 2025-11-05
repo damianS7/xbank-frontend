@@ -67,7 +67,7 @@ export const transactionService = {
   async createBankingTransaction(
     fromBankingAccountId: string,
     toBankingAccountNumber: string,
-    amount: string,
+    amount: number,
     description: string,
     transactionType: string,
     password: string
