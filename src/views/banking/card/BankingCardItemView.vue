@@ -1,32 +1,28 @@
 <script setup lang="ts">
 import CustomAlert from "@/components/CustomAlert.vue";
-import { onMounted, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useCardStore } from "@/stores/card";
 import BankingCardFront from "@/views/banking/card/components/BankingCardFront.vue";
 import BankingCardBack from "@/views/banking/card/components/BankingCardBack.vue";
 import Button from "@/components/ui/button/Button.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
-import BankingTransactions from "@/views/banking/account/BankingAccountTransactions.vue";
+import BankingCardTransactions from "./components/BankingCardTransactions.vue";
 import { useAccountStore } from "@/stores/account";
-import { useTransactionStore } from "@/stores/transaction";
-import Spinner from "@/components/ui/spinner/Spinner.vue";
 import { useModalStore } from "@/stores/modal";
 import PageLayout from "@/layouts/PageLayout.vue";
 
 // ---
 
+// store
 const accountStore = useAccountStore();
-const transactionStore = useTransactionStore();
 const cardStore = useCardStore();
+const modalStore = useModalStore();
+
 const route = useRoute();
-const isViewReady = ref(false);
 
 // alert
 const alert = ref();
-
-// modals to show
-const modalStore = useModalStore();
 
 const cardId = parseInt(route.params.id as string, 10);
 const card = computed(() => cardStore.getBankingCard(cardId));
@@ -128,10 +124,6 @@ async function setDailyLimit() {
       alert.value.exception(error.message);
     });
 }
-
-onMounted(async () => {
-  isViewReady.value = true;
-});
 </script>
 <template>
   <PageLayout>
@@ -143,7 +135,7 @@ onMounted(async () => {
             <Badge
               size="sm"
               :variant="
-                card?.cardStatus === 'ENABLED' ? 'default' : 'destructive'
+                card?.cardStatus === 'ENABLED' ? 'success' : 'destructive'
               "
             >
               {{ card?.cardStatus }}
@@ -162,42 +154,27 @@ onMounted(async () => {
         <div class="flex gap-2">
           <Button @click="setPin" size="sm"> PIN </Button>
           <Button @click="setLock" size="sm">
-            {{ card?.lockStatus === "LOCKED" ? "UNLOCK" : "LOCK" }} CARD
+            {{ card?.lockStatus === "LOCKED" ? "UNLOCK" : "LOCK" }}
           </Button>
-          <Button @click="setDailyLimit" size="sm"> DAILY LIMIT </Button>
+          <Button @click="setDailyLimit" size="sm"> LIMIT </Button>
         </div>
       </div>
     </template>
 
     <template #content>
       <CustomAlert ref="alert" />
-      <div v-if="card && isViewReady">
-        <div class="flex justify-center my-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
-            <div class="flex jusfity-center">
-              <BankingCardFront v-if="card" :card="card" />
-            </div>
-            <div class="flex jusfity-center">
-              <BankingCardBack v-if="card" :card="card" />
-            </div>
+      <slot v-if="card">
+        <div class="flex justify-center">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <BankingCardFront :card="card" />
+            <BankingCardBack :card="card" />
           </div>
         </div>
-
-        <BankingTransactions
-          :id="card.id"
-          :currency="card.currency"
-          :fetch="
-            (id: number, page: number, size: number) =>
-              transactionStore.fetchCardTransactions(id, page, size)
-          "
-        />
-      </div>
-      <div v-else>
-        <Spinner v-if="!isViewReady" />
-      </div>
+        <BankingCardTransactions :card-id="card.id" :currency="currency" />
+      </slot>
 
       <div
-        v-if="!card && isViewReady"
+        v-if="!card"
         class="flex justify-center items-center p-4 rounded shadow bg-red-50"
       >
         <div class="text-center">
