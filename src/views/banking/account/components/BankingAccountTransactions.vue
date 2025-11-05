@@ -65,8 +65,8 @@ onMounted(() => {
   if (!props.id) {
     return;
   }
+
   fetchTransactions();
-  // isViewReady.value = true;
 });
 </script>
 <template>
