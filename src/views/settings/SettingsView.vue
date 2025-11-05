@@ -3,9 +3,8 @@ import CustomAlert from "@/components/CustomAlert.vue";
 import { onMounted, ref } from "vue";
 import Button from "@/components/ui/button/Button.vue";
 import { useSettingStore } from "@/stores/setting";
-import Switch from "@/components/ui/switch/Switch.vue";
 import PageLayout from "@/layouts/PageLayout.vue";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SettingsGeneralTab from "./components/SettingsGeneralTab.vue";
 import SettingsAccountTab from "./components/SettingsAccountTab.vue";
 import SettingsSecurityTab from "./components/SettingsSecurityTab.vue";
@@ -17,6 +16,15 @@ const settingStore = useSettingStore();
 // message to show
 const alert = ref<InstanceType<typeof CustomAlert>>();
 
+async function saveSettings() {
+  try {
+    await settingStore.updateSettings();
+    alert.value?.success("Settings saved successfully", { timeout: 5 });
+  } catch (exception: any) {
+    alert.value?.exception(exception);
+  }
+}
+
 onMounted(async () => {
   await settingStore.initialize();
 });
@@ -25,7 +33,7 @@ onMounted(async () => {
   <PageLayout>
     <template #header>
       <h1>Settings</h1>
-      <Button @click="settingStore.updateSettings()" size="sm">Save</Button>
+      <Button @click="saveSettings" size="sm">Save</Button>
     </template>
 
     <template v-if="settingStore.settings" #content>
