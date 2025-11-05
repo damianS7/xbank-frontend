@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CustomAlert from "@/components/CustomAlert.vue";
-import BankingAccount from "@/views/banking/account/components/BankingAccount.vue";
+import BankingAccountListItem from "@/views/banking/account/components/BankingAccountListItem.vue";
 import { computed, ref } from "vue";
 import { useAccountStore } from "@/stores/account";
 import Button from "@/components/ui/button/Button.vue";
@@ -60,7 +60,7 @@ async function openAccount() {
         <router-link
           :to="{ name: 'banking-account', params: { id: account.id } }"
         >
-          <BankingAccount :id="account.id" />
+          <BankingAccountListItem :id="account.id" />
         </router-link>
       </div>
 

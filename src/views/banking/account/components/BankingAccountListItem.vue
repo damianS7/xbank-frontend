@@ -67,7 +67,7 @@ function formatIban(iban: string): string {
           variant="destructive"
           >{{ account.accountStatus }}</Badge
         >
-        <Badge v-else>{{ account.accountStatus }}</Badge>
+        <Badge v-else variant="success">{{ account.accountStatus }}</Badge>
       </div>
     </div>
 
