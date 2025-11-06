@@ -128,8 +128,12 @@ async function setDailyLimit() {
 <template>
   <PageLayout>
     <template #header>
-      <div class="flex flex-1 items-center justify-between">
-        <div class="flex flex-1 items-center gap-2">
+      <div
+        class="flex flex-col justify-center sm:flex-row items-center sm:justify-between gap-2"
+      >
+        <div
+          class="flex flex-col justify-center sm:flex-row sm:justify-between items-center gap-2"
+        >
           <h1>Banking card</h1>
           <div v-if="card" class="flex flex-1 items-center gap-1">
             <Badge
@@ -164,11 +168,9 @@ async function setDailyLimit() {
     <template #content>
       <CustomAlert ref="alert" />
       <slot v-if="card">
-        <div class="flex justify-center">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <BankingCardFront :card="card" />
-            <BankingCardBack :card="card" />
-          </div>
+        <div class="flex gap-1 justify-center">
+          <BankingCardFront :card="card" />
+          <BankingCardBack :card="card" />
         </div>
         <BankingCardTransactions :card-id="card.id" :currency="currency" />
       </slot>
