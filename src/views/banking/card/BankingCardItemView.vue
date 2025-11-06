@@ -168,9 +168,15 @@ async function setDailyLimit() {
     <template #content>
       <CustomAlert ref="alert" />
       <slot v-if="card">
-        <div class="flex gap-1 justify-center">
-          <BankingCardFront :card="card" />
-          <BankingCardBack :card="card" />
+        <div
+          class="flex flex-col sm:flex-row justify-center items-center gap-1"
+        >
+          <div class="aspect-[1.585/1] w-full sm:w-1/2 max-w-sm">
+            <BankingCardFront :card="card" />
+          </div>
+          <div class="aspect-[1.585/1] w-full sm:w-1/2 max-w-sm">
+            <BankingCardBack :card="card" />
+          </div>
         </div>
         <BankingCardTransactions :card-id="card.id" :currency="currency" />
       </slot>

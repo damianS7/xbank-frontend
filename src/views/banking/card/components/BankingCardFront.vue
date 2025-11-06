@@ -15,7 +15,7 @@ function formatCardNumber(number: string): string {
 <template>
   <svg
     viewBox="0 0 400 250"
-    class="rounded-xl shadow-lg"
+    class="w-full rounded-xl shadow-lg"
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
     xmlns:xlink="http://www.w3.org/1999/xlink"
