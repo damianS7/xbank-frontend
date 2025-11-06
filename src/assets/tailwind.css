@@ -7,8 +7,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-success: hsl(142 71% 45%);
-  --color-success-foreground: hsl(144 70% 10%);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-alert: var(--alert);
+  --color-alert-foreground: var(--alert-foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -78,6 +80,12 @@
 
     --destructive: hsl(0, 84.2%, 60.2%);
     --destructive-foreground: hsl(210, 40%, 98%);
+
+    --success: hsl(142 71% 45%);
+    --success-foreground: hsl(144 70% 10%);
+
+    --alert: hsl(46, 84%, 46%);
+    --alert-foreground: hsl(210, 40%, 98%);
 
     --border: hsl(214.3, 31.8%, 91.4%);
     --input: hsl(64, 32%, 91%);
