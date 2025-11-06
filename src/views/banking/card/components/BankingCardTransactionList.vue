@@ -37,7 +37,9 @@ defineProps<{
           </span>
         </div>
 
-        <div class="flex text-sm font-medium justify-between items-center">
+        <div
+          class="flex flex-col sm:flex-row text-sm font-medium justify-between items-center"
+        >
           <span class="flex gap-1 items-center">
             <Badge variant="default">
               {{ transaction.transactionType.replace(/_/g, " ") }}</Badge
