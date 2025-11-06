@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-rows-[auto_1fr] h-full border shadow rounded-md">
     <section
-      class="pg-section-header flex items-center justify-between text-xl font-bold border-b border-gray-300 p-2 gap-2"
+      class="pg-section-header text-xl font-bold border-b border-gray-300 p-2"
     >
       <slot name="header"></slot>
     </section>

@@ -49,8 +49,10 @@ async function openAccount() {
 <template>
   <PageLayout>
     <template #header>
-      <h1>Accounts</h1>
-      <Button @click="openAccount" size="sm">Open account</Button>
+      <div class="flex justify-between items-center">
+        <h1>Accounts</h1>
+        <Button @click="openAccount" size="sm">Open account</Button>
+      </div>
     </template>
 
     <template #content>

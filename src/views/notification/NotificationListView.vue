@@ -16,10 +16,12 @@ const alert = ref();
 <template>
   <PageLayout>
     <template #header>
-      <h1>Notifications</h1>
-      <Button @click="notificationStore.clearNotifications" size="sm"
-        >Clear</Button
-      >
+      <div class="flex items-center justify-between">
+        <h1>Notifications</h1>
+        <Button @click="notificationStore.clearNotifications" size="sm"
+          >Clear</Button
+        >
+      </div>
     </template>
 
     <template #content>

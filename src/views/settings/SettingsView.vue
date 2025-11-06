@@ -5,6 +5,7 @@ import Button from "@/components/ui/button/Button.vue";
 import { useSettingStore } from "@/stores/setting";
 import PageLayout from "@/layouts/PageLayout.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SettingsPrivacyTab from "./components/SettingsPrivacyTab.vue";
 import SettingsGeneralTab from "./components/SettingsGeneralTab.vue";
 import SettingsAccountTab from "./components/SettingsAccountTab.vue";
 import SettingsSecurityTab from "./components/SettingsSecurityTab.vue";
@@ -32,8 +33,10 @@ onMounted(async () => {
 <template>
   <PageLayout>
     <template #header>
-      <h1>Settings</h1>
-      <Button @click="saveSettings" size="sm">Save</Button>
+      <div class="flex items-center justify-between">
+        <h1>Settings</h1>
+        <Button @click="saveSettings" size="sm">Save</Button>
+      </div>
     </template>
 
     <template v-if="settingStore.settings" #content>
@@ -48,6 +51,7 @@ onMounted(async () => {
             <TabsTrigger value="general"> General </TabsTrigger>
             <TabsTrigger value="account"> Account </TabsTrigger>
             <TabsTrigger value="security"> Security </TabsTrigger>
+            <TabsTrigger value="privacy"> Privacy </TabsTrigger>
             <TabsTrigger value="notifications"> Notifications </TabsTrigger>
           </TabsList>
         </div>
@@ -55,6 +59,7 @@ onMounted(async () => {
         <div>
           <SettingsGeneralTab />
           <SettingsAccountTab />
+          <SettingsPrivacyTab />
           <SettingsSecurityTab />
           <SettingsNotificationsTab />
         </div>
