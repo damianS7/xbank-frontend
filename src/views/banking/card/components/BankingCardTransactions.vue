@@ -47,7 +47,7 @@ async function fetchTransactions() {
   //   }
   // }
   return await transactionStore
-    .fetchCardTransactions(props.cardId, currentPage.value, 2)
+    .fetchCardTransactions(props.cardId, currentPage.value, 6)
     .catch((error: any) => {
       console.error(error.message);
     });
@@ -61,7 +61,7 @@ async function fetchTransactions() {
   />
   <div
     v-if="pagination && pagination.totalPages && pagination.totalPages > 0"
-    class="flex items-center justify-end text-sm mt-4 text-white bg-blue-600 p-1 rounded"
+    class="flex items-center justify-end text-sm text-white bg-blue-600 p-1 rounded"
   >
     <button class="mx-2 rounded-md">
       <ChevronLeft @click="previousPage" class="cursor-pointer" />

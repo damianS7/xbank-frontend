@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import type { BankingTransaction } from "@/types/BankingTransaction";
+import Badge from "@/components/ui/badge/Badge.vue";
 
 defineProps<{
   transactions: BankingTransaction[];
@@ -8,34 +9,52 @@ defineProps<{
 }>();
 </script>
 <template>
-  <div class="p-4 bg-white rounded shadow w-full">
-    <h3 class="sm:text-lg font-semibold text-gray-800 border-b pb-2 mb-4">
+  <div class="flex flex-col gap-4 p-4 bg-white rounded shadow w-full">
+    <h3 class="sm:text-lg font-semibold text-gray-800 border-b pb-2">
       Transactions
     </h3>
-    <ul v-if="transactions?.length > 0" class="space-y-2">
+    <ul v-if="transactions?.length > 0" class="flex flex-col gap-2">
       <li
         v-for="(transaction, index) in transactions"
         :key="index"
-        class="flex flex-col sm:flex-row sm:justify-between sm:items-start bg-gray-50 hover:bg-gray-100 p-3 rounded-md"
+        class="grid grid-cols-1 items-center gap-2 bg-gray-50 hover:bg-gray-100 p-3 rounded-md"
       >
-        <div class="flex flex-col text-sm font-medium text-left">
-          <span>{{ transaction.description }}</span>
-          <span class="text-xs pill-xs pill-blue w-fit">
-            {{ transaction.transactionType.replace(/_/g, " ") }}</span
-          >
-        </div>
-
-        <div class="flex flex-col text-sm font-medium text-right sm:w-1/2">
+        <div
+          class="flex justify-between gap-1 items-center text-sm font-medium"
+        >
+          <span class="flex gap-1">
+            <span>{{ transaction.description }}</span>
+          </span>
           <span
             v-if="
-              ['DEPOSIT', 'TRANSFER_FROM'].includes(transaction.transactionType)
+              ['CARD_CHARGE', 'WITHDRAWAL'].includes(
+                transaction.transactionType
+              )
             "
-            class="text-green-600"
+            class="text-red-600"
           >
-            +{{ transaction.amount }} {{ currency }}
-          </span>
-          <span v-else class="text-red-600">
             -{{ transaction.amount }} {{ currency }}
+          </span>
+        </div>
+
+        <div class="flex text-sm font-medium justify-between items-center">
+          <span class="flex gap-1 items-center">
+            <Badge variant="default">
+              {{ transaction.transactionType.replace(/_/g, " ") }}</Badge
+            >
+            <Badge
+              :variant="
+                transaction.transactionStatus === 'COMPLETED'
+                  ? 'success'
+                  : transaction.transactionStatus === 'PENDING'
+                    ? 'alert'
+                    : transaction.transactionStatus === 'FAILED'
+                      ? 'destructive'
+                      : 'default'
+              "
+            >
+              {{ transaction.transactionStatus }}
+            </Badge>
           </span>
           <span class="text-xs text-gray-500">
             {{
