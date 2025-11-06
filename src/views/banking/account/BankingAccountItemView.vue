@@ -4,9 +4,9 @@ import { useRoute } from "vue-router";
 import { useAccountStore } from "@/stores/account";
 import { useCardStore } from "@/stores/card";
 import CustomAlert from "@/components/CustomAlert.vue";
-import BankingAccount from "@/views/banking/account/components/BankingAccount.vue";
+import { ClipboardCopy, SquarePen, Save, SaveOff } from "lucide-vue-next";
 import BankingAccountCards from "@/views/banking/account/components/BankingAccountCardList.vue";
-import BankingAccountTransactions from "@/views/banking/account/BankingAccountTransactions.vue";
+import BankingAccountTransactions from "@/views/banking/account/components/BankingAccountTransactions.vue";
 import { useTransactionStore } from "@/stores/transaction";
 import { useModalStore } from "@/stores/modal";
 import Button from "@/components/ui/button/Button.vue";
@@ -74,6 +74,8 @@ async function transferTo() {
 
 // Set alias for the banking account
 async function setAlias(alias: string) {
+  formFields.value.isEditing = false;
+
   await accountStore
     .updateBankingAccountAlias(accountId.toString(), alias)
     .then((newAccount) => {
@@ -104,29 +106,60 @@ async function requestCard() {
       alert.value?.exception(error);
     });
 }
+
+const formFields = ref({
+  name: "alias",
+  type: "text",
+  placeholder: "Alias",
+  value: account.value?.alias,
+  error: "",
+  isEditing: false,
+  edited: false,
+});
+
+function formatIban(iban: string): string {
+  return iban.replace(/(.{4})/g, "$1 ").trim();
+}
+
+async function toClipboard(text: string) {
+  await navigator.clipboard.writeText(text);
+}
 </script>
 <template>
   <PageLayout>
     <template #header>
-      <div class="flex gap-2 items-center">
-        <h1>Banking account</h1>
-        <Badge
-          v-if="account"
-          size="sm"
-          :variant="
-            account?.accountStatus === 'ACTIVE'
-              ? 'default'
-              : ['CLOSED', 'SUSPENDED'].includes(account?.accountStatus || '')
-                ? 'destructive'
-                : 'default'
-          "
+      <div
+        class="flex flex-col justify-center sm:flex-row items-center sm:justify-between gap-2"
+      >
+        <div
+          class="flex flex-col justify-center sm:flex-row sm:justify-between items-center gap-2"
         >
-          {{ account?.accountStatus }}
-        </Badge>
-      </div>
-      <div class="flex gap-2 items-center">
-        <Button @click="transferTo" size="sm">Transfer</Button>
-        <Button @click="requestCard" size="sm">Request card</Button>
+          <h1>Banking account</h1>
+          <div v-if="account" class="flex flex-1 items-center gap-1">
+            <Badge
+              size="sm"
+              :variant="
+                account?.accountStatus === 'ACTIVE'
+                  ? 'success'
+                  : ['CLOSED', 'SUSPENDED'].includes(
+                        account?.accountStatus || ''
+                      )
+                    ? 'destructive'
+                    : 'default'
+              "
+            >
+              {{ account?.accountStatus }}
+            </Badge>
+            <Badge>{{ account?.accountType }}</Badge>
+          </div>
+        </div>
+        <div
+          v-if="account?.accountStatus === 'ACTIVE'"
+          class="flex gap-2 items-center"
+        >
+          <Button @click="transferTo" size="sm">Transfer</Button>
+          <Button @click="requestCard" size="sm">Request card</Button>
+        </div>
       </div>
     </template>
 
@@ -134,12 +167,84 @@ async function requestCard() {
       <CustomAlert ref="alert" />
 
       <div class="flex flex-col gap-2" v-if="account">
-        <BankingAccount
-          v-if="account"
-          :id="account.id"
-          @update="setAlias"
-          :editable="true"
-        />
+        <div v-if="account" class="bg-white p-4 rounded shadow w-full">
+          <div
+            class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2"
+          >
+            <span
+              class="flex items-center gap-2 text-xl font-semibold text-gray-800 break-all"
+            >
+              IBAN {{ formatIban(account.accountNumber) }}
+              <ClipboardCopy
+                @click="toClipboard(account.accountNumber)"
+                :size="18"
+              />
+            </span>
+          </div>
+
+          <div
+            class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mt-4"
+          >
+            <!-- Alias -->
+            <div
+              class="flex items-center gap-2 text-sm font-bold text-gray-700"
+            >
+              <div>
+                <div
+                  v-if="!formFields.isEditing"
+                  class="flex gap-1 items-center"
+                >
+                  {{ account.alias || "" }}
+                  <SquarePen
+                    @click="formFields.isEditing = true"
+                    class="cursor-pointer"
+                  />
+                </div>
+                <div class="flex gap-1 items-center" v-else>
+                  <input
+                    type="text"
+                    class="w-auto p-1 border rounded"
+                    v-model="formFields.value"
+                  />
+                  <Save
+                    class="text-green-500 cursor-pointer"
+                    @click="
+                      () => {
+                        formFields.isEditing = false;
+                        setAlias(formFields.value);
+                      }
+                    "
+                  />
+                  <SaveOff
+                    class="text-red-500 cursor-pointer"
+                    @click="formFields.isEditing = false"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-2xl font-bold text-green-600">
+                {{ account.balance.toLocaleString() }}
+                {{ account.accountCurrency }}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex justify-end items-center mt-2">
+            <span class="text-sm text-gray-500">
+              Created at
+              {{
+                account.createdAt.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              }}
+            </span>
+          </div>
+        </div>
 
         <BankingAccountCards :accountId="account.id" />
 
