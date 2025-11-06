@@ -151,7 +151,7 @@ async function setDailyLimit() {
             </Badge>
           </div>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-1">
           <Button @click="setPin" size="sm"> PIN </Button>
           <Button @click="setLock" size="sm">
             {{ card?.lockStatus === "LOCKED" ? "UNLOCK" : "LOCK" }}
