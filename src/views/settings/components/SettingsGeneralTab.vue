@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSettingStore } from "@/stores/setting";
 import Switch from "@/components/ui/switch/Switch.vue";
+import Button from "@/components/ui/button/Button.vue";
 import { TabsContent } from "@/components/ui/tabs";
 import {
   Card,
@@ -10,6 +11,22 @@ import {
   CardFooter,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Field,
+  FieldSet,
+  FieldGroup,
+  FieldLabel,
+  FieldDescription,
+} from "@/components/ui/field";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // store
 const settingStore = useSettingStore();
@@ -17,48 +34,71 @@ const settingStore = useSettingStore();
 <template>
   <TabsContent value="general" class="">
     <Card>
-      <CardHeader>
-        <CardTitle>Account</CardTitle>
-        <CardDescription> CardDescription </CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-2">
-        <form class="space-y-6">
-          <!-- Enable 2FA -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium"
-              >Enable Two-Factor Authentication (2FA)</label
-            >
-            <Switch
-              v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Email Notifications -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium">Email Notifications</label>
-            <Switch
-              v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
-              class="data-[state=checked]:bg-blue-500"
-            />
+      <CardContent>
+        <form class="grid gap-6">
+          <!-- theme Selector -->
+          <div class="grid sm:grid-cols-[1fr_120px] items-center gap-4">
+            <Field orientation="horizontal" class="flex justify-between">
+              <FieldContent>
+                <FieldLabel for="language">Theme</FieldLabel>
+                <FieldDescription> Select the app theme. </FieldDescription>
+              </FieldContent>
+            </Field>
+            <Select v-model="settingStore.settings.theme">
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Select a theme" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Theme</SelectLabel>
+                  <SelectItem value="LIGHT"> Light </SelectItem>
+                  <SelectItem value="DARK"> Dark </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
 
           <!-- Language Selector -->
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between"
-          >
-            <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-            <select
-              class="border rounded p-2 w-full sm:w-auto"
-              v-model="settingStore.settings.LANGUAGE"
+          <div class="grid sm:grid-cols-[1fr_120px] items-center gap-4">
+            <Field orientation="horizontal" class="flex justify-between">
+              <FieldContent>
+                <FieldLabel for="language">Language</FieldLabel>
+                <FieldDescription> Select the app language. </FieldDescription>
+              </FieldContent>
+            </Field>
+            <Select v-model="settingStore.settings.language">
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Select a language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Language</SelectLabel>
+                  <SelectItem value="EN"> EN </SelectItem>
+                  <SelectItem value="ES"> ES </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <!-- Cache clear -->
+          <div class="grid sm:grid-cols-[1fr_120px] items-center gap-4">
+            <Field orientation="horizontal" class="flex justify-between">
+              <FieldContent>
+                <FieldLabel for="cache">Delete cache</FieldLabel>
+                <FieldDescription>
+                  It clear session storage data.
+                </FieldDescription>
+              </FieldContent>
+            </Field>
+            <Button
+              size="xs"
+              variant="destructive"
+              class="data-[state=checked]:bg-blue-500"
+              >Delete</Button
             >
-              <option value="ES">Español</option>
-              <option value="EN">English</option>
-            </select>
           </div>
         </form>
       </CardContent>
-      <CardFooter> </CardFooter>
     </Card>
   </TabsContent>
 </template>

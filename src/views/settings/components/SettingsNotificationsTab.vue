@@ -10,229 +10,57 @@ import {
   CardFooter,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Field,
+  FieldSet,
+  FieldGroup,
+  FieldLabel,
+  FieldDescription,
+} from "@/components/ui/field";
+import Button from "@/components/ui/button/Button.vue";
 // store
 const settingStore = useSettingStore();
 </script>
 <template>
-  <TabsContent value="notifications" class="">
+  <TabsContent value="notifications">
     <Card>
-      <CardHeader>
-        <CardTitle>Account</CardTitle>
-        <CardDescription> CardDescription </CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-2">
-        <form class="space-y-6">
-          <!-- Enable 2FA -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium"
-              >Enable Two-Factor Authentication (2FA)</label
-            >
-            <Switch
-              v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
+      <CardContent>
+        <form class="grid gap-6">
           <!-- Email Notifications -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium">Email Notifications</label>
+          <div class="grid grid-cols-[1fr_auto] items-center gap-4">
+            <Field orientation="horizontal" class="flex justify-between">
+              <FieldContent>
+                <FieldLabel for="email_notification"
+                  >Email notifications</FieldLabel
+                >
+                <FieldDescription>
+                  Enable or disable emails with notifications.
+                </FieldDescription>
+              </FieldContent>
+            </Field>
             <Switch
-              v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
+              v-model="settingStore.settings.emailNotifications"
               class="data-[state=checked]:bg-blue-500"
             />
           </div>
 
-          <!-- Language Selector -->
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between"
-          >
-            <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-            <select
-              class="border rounded p-2 w-full sm:w-auto"
-              v-model="settingStore.settings.LANGUAGE"
-            >
-              <option value="ES">Español</option>
-              <option value="EN">English</option>
-            </select>
-          </div>
-        </form>
-        <form class="space-y-6">
-          <!-- Enable 2FA -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium"
-              >Enable Two-Factor Authentication (2FA)</label
-            >
+          <!-- App Notifications -->
+          <div class="grid grid-cols-[1fr_auto] items-center gap-4">
+            <Field orientation="horizontal" class="flex justify-between">
+              <FieldContent>
+                <FieldLabel for="2fa">App notifications</FieldLabel>
+                <FieldDescription>
+                  Enable or disable app with notifications.
+                </FieldDescription>
+              </FieldContent>
+            </Field>
             <Switch
-              v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
+              v-model="settingStore.settings.appNotifications"
               class="data-[state=checked]:bg-blue-500"
             />
-          </div>
-
-          <!-- Email Notifications -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium">Email Notifications</label>
-            <Switch
-              v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Language Selector -->
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between"
-          >
-            <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-            <select
-              class="border rounded p-2 w-full sm:w-auto"
-              v-model="settingStore.settings.LANGUAGE"
-            >
-              <option value="ES">Español</option>
-              <option value="EN">English</option>
-            </select>
-          </div>
-        </form>
-        <form class="space-y-6">
-          <!-- Enable 2FA -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium"
-              >Enable Two-Factor Authentication (2FA)</label
-            >
-            <Switch
-              v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Email Notifications -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium">Email Notifications</label>
-            <Switch
-              v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Language Selector -->
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between"
-          >
-            <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-            <select
-              class="border rounded p-2 w-full sm:w-auto"
-              v-model="settingStore.settings.LANGUAGE"
-            >
-              <option value="ES">Español</option>
-              <option value="EN">English</option>
-            </select>
-          </div>
-        </form>
-        <form class="space-y-6">
-          <!-- Enable 2FA -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium"
-              >Enable Two-Factor Authentication (2FA)</label
-            >
-            <Switch
-              v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Email Notifications -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium">Email Notifications</label>
-            <Switch
-              v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Language Selector -->
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between"
-          >
-            <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-            <select
-              class="border rounded p-2 w-full sm:w-auto"
-              v-model="settingStore.settings.LANGUAGE"
-            >
-              <option value="ES">Español</option>
-              <option value="EN">English</option>
-            </select>
-          </div>
-        </form>
-        <form class="space-y-6">
-          <!-- Enable 2FA -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium"
-              >Enable Two-Factor Authentication (2FA)</label
-            >
-            <Switch
-              v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Email Notifications -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium">Email Notifications</label>
-            <Switch
-              v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Language Selector -->
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between"
-          >
-            <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-            <select
-              class="border rounded p-2 w-full sm:w-auto"
-              v-model="settingStore.settings.LANGUAGE"
-            >
-              <option value="ES">Español</option>
-              <option value="EN">English</option>
-            </select>
-          </div>
-        </form>
-        <form class="space-y-6">
-          <!-- Enable 2FA -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium"
-              >Enable Two-Factor Authentication (2FA)</label
-            >
-            <Switch
-              v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Email Notifications -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium">Email Notifications</label>
-            <Switch
-              v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
-              class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Language Selector -->
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between"
-          >
-            <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-            <select
-              class="border rounded p-2 w-full sm:w-auto"
-              v-model="settingStore.settings.LANGUAGE"
-            >
-              <option value="ES">Español</option>
-              <option value="EN">English</option>
-            </select>
           </div>
         </form>
       </CardContent>
-      <CardFooter> </CardFooter>
     </Card>
   </TabsContent>
 </template>

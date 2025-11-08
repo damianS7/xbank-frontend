@@ -42,8 +42,8 @@ onMounted(async () => {
     <template v-if="settingStore.settings" #content>
       <CustomAlert ref="alert" />
       <Tabs
-        default-value="account"
-        class="grid grid-cols-[max(160px)_1fr] gap-4"
+        default-value="general"
+        class="grid sm:grid-cols-[max(160px)_1fr] gap-4"
         orientation="horizontal"
       >
         <div>

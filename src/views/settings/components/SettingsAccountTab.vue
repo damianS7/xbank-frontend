@@ -10,6 +10,14 @@ import {
   CardFooter,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Field,
+  FieldSet,
+  FieldGroup,
+  FieldLabel,
+  FieldDescription,
+} from "@/components/ui/field";
+import Button from "@/components/ui/button/Button.vue";
 
 // store
 const settingStore = useSettingStore();
@@ -17,48 +25,46 @@ const settingStore = useSettingStore();
 <template>
   <TabsContent value="account" class="">
     <Card>
-      <CardHeader>
-        <CardTitle>Account</CardTitle>
-        <CardDescription> CardDescription </CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-2">
-        <form class="space-y-6">
-          <!-- Enable 2FA -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium"
-              >Enable Two-Factor Authentication (2FA)</label
-            >
-            <Switch
-              v-model="settingStore.settings.TWO_FACTOR_AUTHENTICATION"
+      <CardContent>
+        <form class="grid gap-6">
+          <!-- Lock account -->
+          <div class="grid sm:grid-cols-[1fr_120px] items-center gap-4">
+            <Field orientation="horizontal" class="flex justify-between">
+              <FieldContent>
+                <FieldLabel for="2fa"> Lock account </FieldLabel>
+                <FieldDescription>
+                  Lock your account for a few days. Useful when you go on
+                  vacation.
+                </FieldDescription>
+              </FieldContent>
+            </Field>
+            <Button
+              size="xs"
+              variant="default"
               class="data-[state=checked]:bg-blue-500"
-            />
+              >Lock account</Button
+            >
           </div>
 
-          <!-- Email Notifications -->
-          <div class="flex items-center justify-between">
-            <label class="text-lg font-medium">Email Notifications</label>
-            <Switch
-              v-model="settingStore.settings.EMAIL_NOTIFICATIONS"
+          <!-- close account -->
+          <div class="grid sm:grid-cols-[1fr_120px] items-center gap-4">
+            <Field orientation="horizontal" class="flex justify-between">
+              <FieldContent>
+                <FieldLabel for="2fa"> Close account </FieldLabel>
+                <FieldDescription>
+                  It closes the account forever.
+                </FieldDescription>
+              </FieldContent>
+            </Field>
+            <Button
+              size="xs"
+              variant="destructive"
               class="data-[state=checked]:bg-blue-500"
-            />
-          </div>
-
-          <!-- Language Selector -->
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between"
-          >
-            <label class="text-lg font-medium mb-2 sm:mb-0">Language</label>
-            <select
-              class="border rounded p-2 w-full sm:w-auto"
-              v-model="settingStore.settings.LANGUAGE"
+              >Delete account</Button
             >
-              <option value="ES">Español</option>
-              <option value="EN">English</option>
-            </select>
           </div>
         </form>
       </CardContent>
-      <CardFooter> </CardFooter>
     </Card>
   </TabsContent>
 </template>
