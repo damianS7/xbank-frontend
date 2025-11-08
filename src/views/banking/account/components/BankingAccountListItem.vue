@@ -44,41 +44,14 @@ function formatIban(iban: string): string {
     <div
       class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2"
     >
-      <span class="text-sm sm:text-base font-semibold text-gray-800 break-all">
-        IBAN {{ formatIban(account.accountNumber) }}
-      </span>
-
-      <div class="flex flex-wrap gap-1">
-        <Badge>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger class="flex items-center gap-2">
-                {{ cardStore.countCardsByAccount(account.id) }}<CreditCard />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Total cards for this account</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </Badge>
-        <Badge>{{ account.accountType }}</Badge>
-        <Badge
-          v-if="account.accountStatus === 'CLOSED'"
-          variant="destructive"
-          >{{ account.accountStatus }}</Badge
-        >
-        <Badge v-else variant="success">{{ account.accountStatus }}</Badge>
-      </div>
-    </div>
-
-    <div
-      class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mt-4"
-    >
       <!-- Alias -->
       <div class="flex items-center gap-2 text-sm font-bold text-gray-700">
         <div>
           <div v-if="!formFields.isEditing" class="flex gap-1 items-center">
-            {{ account.alias || "" }}
+            {{
+              account.alias?.toLocaleUpperCase() ||
+              account.accountType.toLocaleUpperCase()
+            }}
             <SquarePen
               @click="formFields.isEditing = true"
               v-if="editable"
@@ -107,6 +80,36 @@ function formatIban(iban: string): string {
           </div>
         </div>
       </div>
+
+      <div class="flex flex-wrap gap-1">
+        <Badge>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger class="flex items-center gap-2">
+                {{ cardStore.countCardsByAccount(account.id) }}<CreditCard />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Total cards for this account</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </Badge>
+        <Badge>{{ account.accountType }}</Badge>
+        <Badge
+          v-if="account.accountStatus === 'CLOSED'"
+          variant="destructive"
+          >{{ account.accountStatus }}</Badge
+        >
+        <Badge v-else variant="success">{{ account.accountStatus }}</Badge>
+      </div>
+    </div>
+
+    <div
+      class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mt-4"
+    >
+      <span class="text-sm sm:text-base font-semibold text-gray-800 break-all">
+        IBAN {{ formatIban(account.accountNumber) }}
+      </span>
       <div class="text-right">
         <p class="text-lg sm:text-xl font-bold text-green-600">
           {{ account.balance.toLocaleString() }} {{ account.accountCurrency }}
