@@ -1,6 +1,11 @@
 export interface Setting {
-  EMAIL_NOTIFICATIONS: boolean;
-  TWO_FACTOR_AUTHENTICATION: boolean;
-  TWO_FACTOR_CODE: string;
-  LANGUAGE: string;
+  emailNotifications: boolean;
+  appNotifications: boolean;
+  multifactor: boolean;
+  multifactorMethod: string;
+  language: string;
+  theme: string;
+  signOperations: boolean;
+  signOperationsPIN: string;
+  sessionTimeout: number;
 }
