@@ -9,8 +9,6 @@ import { computed, ref } from "vue";
 import { accountService } from "@/services/accountService";
 import type { BankingAccountCreateRequest } from "@/types/request/BankingAccountCreateRequest";
 import type { BankingAccountCardRequest } from "@/types/request/BankingAccountCardRequest";
-import { set } from "zod";
-import type { BankingAccountUpdateRequest } from "@/types/request/BankingAccountUpdateRequest";
 import type { BankingAccountAliasUpdateRequest } from "@/types/request/BankingAccountAliasUpdateRequest";
 export const useAccountStore = defineStore("account", () => {
   const bankingAccounts = ref<BankingAccount[]>([]);
@@ -22,7 +20,7 @@ export const useAccountStore = defineStore("account", () => {
 
   const countCards = computed(() => {
     return bankingAccounts.value.reduce((total, account) => {
-      return total + (account.accountCards?.length || 0);
+      return total + (account.totalCards || 0);
     }, 0);
   });
 

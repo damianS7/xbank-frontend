@@ -21,6 +21,7 @@ export interface BankingAccount {
   alias: string;
   accountTransactions: BankingTransaction[];
   accountCards: BankingCard[];
+  totalCards?: number;
   accountNumber: string;
   balance: number;
   accountType: BankingAccountType;
