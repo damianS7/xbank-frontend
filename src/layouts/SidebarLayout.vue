@@ -51,7 +51,7 @@ const { setOpen } = useSidebar();
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem v-for="item in links" :key="item.label">
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton asChild :is-active="$route.name === item.to">
                 <SidebarLink
                   :to="item.to"
                   :icon="item.icon"

@@ -21,9 +21,9 @@ defineProps<{
   </RouterLink>
 </template>
 <style scoped>
-@reference "tailwindcss";
+/* @reference "tailwindcss";
 .router-link-active,
 .router-link-exact-active {
   @apply bg-gray-200;
-}
+} */
 </style>
