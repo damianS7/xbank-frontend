@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import {
-  BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  Settings,
+  UserPen as Profile,
 } from "lucide-vue-next";
 import SidebarLink from "@/components/sidebar/SidebarLink.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,9 +34,9 @@ defineProps<{
 
 const { isMobile, setOpen } = useSidebar();
 const links = [
-  { to: "settings", icon: BadgeCheck, label: "Accounts" },
-  { to: "settings", icon: CreditCard, label: "Billing" },
-  { to: "settings", icon: Bell, label: "Settings" },
+  { to: "profile", icon: Profile, label: "Profile" },
+  { to: "notifications", icon: Bell, label: "Notifications" },
+  { to: "settings", icon: Settings, label: "Settings" },
 ];
 </script>
 <template>
@@ -81,11 +80,13 @@ const links = [
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem v-for="item in links" :key="item.label">
-              <SidebarLink
-                :to="item.to"
-                :icon="item.icon"
-                :label="item.label"
-              />
+              <RouterLink
+                :to="{ name: item.to }"
+                :class="['flex gap-2 items-center']"
+              >
+                <component :is="item.icon" />
+                <span>{{ item.label }}</span>
+              </RouterLink>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
