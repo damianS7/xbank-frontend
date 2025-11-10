@@ -1,22 +1,32 @@
 <script setup lang="ts">
-import CustomAlert from "@/components/CustomAlert.vue";
+// vue core
 import { onMounted, ref } from "vue";
-import Button from "@/components/ui/button/Button.vue";
-import { useSettingStore } from "@/stores/setting";
+
+// layout
 import PageLayout from "@/layouts/PageLayout.vue";
+
+// ui
+import Button from "@/components/ui/button/Button.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+// components
+import CustomAlert from "@/components/CustomAlert.vue";
 import SettingsPrivacyTab from "./components/SettingsPrivacyTab.vue";
 import SettingsGeneralTab from "./components/SettingsGeneralTab.vue";
 import SettingsAccountTab from "./components/SettingsAccountTab.vue";
 import SettingsSecurityTab from "./components/SettingsSecurityTab.vue";
 import SettingsNotificationsTab from "./components/SettingsNotificationsTab.vue";
 
-// store
-const settingStore = useSettingStore();
+// stores
+import { useModalStore } from "@/stores/modal";
+import { useSettingStore } from "@/stores/setting";
 
-// message to show
+// state
+const modalStore = useModalStore();
+const settingStore = useSettingStore();
 const alert = ref<InstanceType<typeof CustomAlert>>();
 
+// methods
 async function saveSettings() {
   try {
     await settingStore.updateSettings();
@@ -24,6 +34,41 @@ async function saveSettings() {
   } catch (exception: any) {
     alert.value?.exception(exception);
   }
+}
+
+async function deleteCache() {
+  const confirm = (await modalStore.open("ConfirmMessage", {
+    title: "Are you sure",
+    message: "Do you wish to delete local cache?",
+  })) as string;
+
+  // if(confirm)
+  // emit message to parent
+}
+
+async function lockAccount() {
+  // const days = (await modalStore.open("LockAccountDays", {
+  //   title: "Are you sure",
+  //   message: "Do you wish to lock your account?",
+  // })) as string;
+
+  const confirm = (await modalStore.open("ConfirmMessage", {
+    title: "Are you sure",
+    message: "Do you wish to lock your account?",
+  })) as string;
+
+  // if(confirm)
+  // emit message to parent
+}
+
+async function closeAccount() {
+  const confirm = (await modalStore.open("ConfirmMessage", {
+    title: "Are you sure",
+    message: "Do you wish to delete close your account?",
+  })) as string;
+
+  // if(confirm)
+  // emit message to parent
 }
 
 onMounted(async () => {
@@ -57,8 +102,11 @@ onMounted(async () => {
         </div>
 
         <div>
-          <SettingsGeneralTab />
-          <SettingsAccountTab />
+          <SettingsGeneralTab @deleteCache="deleteCache" />
+          <SettingsAccountTab
+            @lockAccount="lockAccount"
+            @closeAccount="closeAccount"
+          />
           <SettingsPrivacyTab />
           <SettingsSecurityTab />
           <SettingsNotificationsTab />
