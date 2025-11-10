@@ -20,7 +20,7 @@ import ResendVerificationView from "@/views/auth/verification/ResendVerification
 import ResetPasswordView from "@/views/auth/password/reset/ResetPasswordView.vue";
 import ResetPasswordSetView from "@/views/auth/password/reset/ResetPasswordSetView.vue";
 import { useAuthStore } from "@/stores/auth";
-import NotificationView from "@/views/notification/NotificationListView.vue";
+import NotificationView from "@/views/notifications/NotificationListView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
