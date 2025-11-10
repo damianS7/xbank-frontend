@@ -26,7 +26,7 @@ const settingStore = useSettingStore();
   <TabsContent value="privacy" class="">
     <Card>
       <CardContent>
-        <form class="grid gap-6">
+        <div class="grid gap-6">
           <div class="grid grid-cols-[1fr_120px] items-center gap-4">
             <Field orientation="horizontal">
               <FieldContent>
@@ -40,7 +40,7 @@ const settingStore = useSettingStore();
               >Close</Button
             >
           </div>
-        </form>
+        </div>
       </CardContent>
     </Card>
   </TabsContent>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { useSettingStore } from "@/stores/setting";
-import Switch from "@/components/ui/switch/Switch.vue";
+// ui
 import { TabsContent } from "@/components/ui/tabs";
 import {
   Card,
@@ -18,15 +17,12 @@ import {
   FieldDescription,
 } from "@/components/ui/field";
 import Button from "@/components/ui/button/Button.vue";
-
-// store
-const settingStore = useSettingStore();
 </script>
 <template>
   <TabsContent value="account" class="">
     <Card>
       <CardContent>
-        <form class="grid gap-6">
+        <div class="grid gap-6">
           <!-- Lock account -->
           <div class="grid sm:grid-cols-[1fr_120px] items-center gap-4">
             <Field orientation="horizontal" class="flex justify-between">
@@ -42,6 +38,7 @@ const settingStore = useSettingStore();
               size="xs"
               variant="default"
               class="data-[state=checked]:bg-blue-500"
+              @click="$emit('lockAccount')"
               >Lock account</Button
             >
           </div>
@@ -60,10 +57,11 @@ const settingStore = useSettingStore();
               size="xs"
               variant="destructive"
               class="data-[state=checked]:bg-blue-500"
+              @click="$emit('closeAccount')"
               >Delete account</Button
             >
           </div>
-        </form>
+        </div>
       </CardContent>
     </Card>
   </TabsContent>

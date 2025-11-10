@@ -25,7 +25,7 @@ const settingStore = useSettingStore();
   <TabsContent value="notifications">
     <Card>
       <CardContent>
-        <form class="grid gap-6">
+        <div class="grid gap-6">
           <!-- Email Notifications -->
           <div class="grid grid-cols-[1fr_auto] items-center gap-4">
             <Field orientation="horizontal" class="flex justify-between">
@@ -59,7 +59,7 @@ const settingStore = useSettingStore();
               class="data-[state=checked]:bg-blue-500"
             />
           </div>
-        </form>
+        </div>
       </CardContent>
     </Card>
   </TabsContent>

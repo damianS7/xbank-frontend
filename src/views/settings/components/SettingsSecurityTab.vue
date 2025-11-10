@@ -41,7 +41,7 @@ const settingStore = useSettingStore();
   <TabsContent value="security">
     <Card>
       <CardContent>
-        <form class="grid gap-6">
+        <div class="grid gap-6">
           <!-- Sign operations -->
           <div class="grid grid-cols-[1fr_auto] items-center gap-4">
             <Field orientation="horizontal">
@@ -153,7 +153,7 @@ const settingStore = useSettingStore();
               </NumberFieldContent>
             </NumberField>
           </div>
-        </form>
+        </div>
       </CardContent>
     </Card>
   </TabsContent>

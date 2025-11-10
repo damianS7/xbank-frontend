@@ -1,6 +1,11 @@
 <script setup lang="ts">
+// vue core
+import { ref } from "vue";
+
+// store
 import { useSettingStore } from "@/stores/setting";
-import Switch from "@/components/ui/switch/Switch.vue";
+
+// ui
 import Button from "@/components/ui/button/Button.vue";
 import { TabsContent } from "@/components/ui/tabs";
 import {
@@ -28,14 +33,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// store
+// state
 const settingStore = useSettingStore();
 </script>
 <template>
-  <TabsContent value="general" class="">
+  <TabsContent value="general">
     <Card>
       <CardContent>
-        <form class="grid gap-6">
+        <div class="grid gap-6">
           <!-- theme Selector -->
           <div class="grid sm:grid-cols-[1fr_120px] items-center gap-4">
             <Field orientation="horizontal" class="flex justify-between">
@@ -94,10 +99,11 @@ const settingStore = useSettingStore();
               size="xs"
               variant="destructive"
               class="data-[state=checked]:bg-blue-500"
+              @click="$emit('deleteCache')"
               >Delete</Button
             >
           </div>
-        </form>
+        </div>
       </CardContent>
     </Card>
   </TabsContent>
