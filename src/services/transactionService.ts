@@ -12,6 +12,28 @@ const authHeader = () => {
 };
 
 export const transactionService = {
+  async fetchTransaction(transactionId: number): Promise<BankingTransaction> {
+    const response = await fetch(
+      `${API}/banking/transactions/${transactionId}`,
+      {
+        method: "GET",
+        headers: authHeader(),
+      }
+    );
+
+    const json = await response.json();
+
+    if (response.status !== 200) {
+      throw new ApiResponse(
+        json.message || "Failed to fetch transaction.",
+        response.status,
+        json.errors
+      );
+    }
+
+    return json;
+  },
+
   async fetchAccountTransactions(
     accountId: number,
     page: number,

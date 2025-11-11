@@ -1,42 +1,22 @@
 <script setup lang="ts">
-import { computed, defineProps, onMounted, ref, type Ref } from "vue";
+import { defineProps, onMounted } from "vue";
 import { ChevronRight, ChevronLeft } from "lucide-vue-next";
-import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
 import { useTransactionStore } from "@/stores/transaction";
 import BankingCardTransactionList from "@/views/banking/card/components/BankingCardTransactionList.vue";
+import { usePagination } from "@/composables/usePagination";
 
 const props = defineProps<{
   cardId: number;
   currency: string;
 }>();
 
+const { nextPage, previousPage, currentPage, pagination } =
+  usePagination(fetchTransactions);
+
 const transactionStore = useTransactionStore();
 
-// pagination
-const currentPage = ref(0); // Spring usa 0-indexed
-const pagination: Ref<PaginatedResponse> = computed(() => {
-  return transactionStore.pagination;
-}) as Ref<PaginatedResponse>;
-
-function previousPage() {
-  if (currentPage.value > 0) {
-    currentPage.value--;
-    fetchTransactions();
-  }
-}
-
-function nextPage() {
-  if (currentPage.value < pagination.value?.totalPages - 1) {
-    currentPage.value++;
-    fetchTransactions();
-  }
-}
-
-onMounted(async () => {
-  await fetchTransactions();
-});
 async function fetchTransactions() {
-  // if (transactionStore.pagination) {
+  // if (pagination.value) {
   //   // check if the page its already fetched
   //   const pageFetched =
   //     pagination.value.pageable.pageNumber === currentPage.value;
@@ -47,11 +27,19 @@ async function fetchTransactions() {
   //   }
   // }
   return await transactionStore
-    .fetchCardTransactions(props.cardId, currentPage.value, 6)
+    .fetchCardTransactions(props.cardId, currentPage.value, 6, true)
+    .then((paginatedResponse: any) => {
+      pagination.value = paginatedResponse;
+    })
     .catch((error: any) => {
       console.error(error.message);
     });
 }
+
+onMounted(async () => {
+  transactionStore.resetStore();
+  await fetchTransactions();
+});
 </script>
 <template>
   <BankingCardTransactionList
