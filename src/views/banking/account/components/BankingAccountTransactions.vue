@@ -1,72 +1,59 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, type PropType, type Ref } from "vue";
+import { onMounted, type PropType } from "vue";
 import { defineProps } from "vue";
 import { ChevronRight, ChevronLeft } from "lucide-vue-next";
 import { useTransactionStore } from "@/stores/transaction";
-import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
+import { usePagination } from "@/composables/usePagination";
 
-const props = defineProps({
+const account = defineProps({
   id: {
     type: Number,
     required: true,
   },
   currency: { type: String, required: true },
-  fetch: {
-    type: Function as PropType<
-      (id: number, page: number, size: number) => Promise<any>
-    >,
-    required: true,
-  },
 });
+
+const { nextPage, previousPage, currentPage, pagination } =
+  usePagination(fetchTransactions);
 
 // store
 const transactionStore = useTransactionStore();
 
-// pagination
-const currentPage = ref(0); // Spring usa 0-indexed
-const pagination: Ref<PaginatedResponse> = computed(() => {
-  return transactionStore.pagination;
-}) as Ref<PaginatedResponse>;
-
-function previousPage() {
-  if (currentPage.value > 0) {
-    currentPage.value--;
-    fetchTransactions();
-  }
-}
-
-function nextPage() {
-  if (currentPage.value < pagination.value?.totalPages - 1) {
-    currentPage.value++;
-    fetchTransactions();
-  }
-}
-
 async function fetchTransactions() {
-  if (transactionStore.pagination) {
-    // check if the page its already fetched
-    const pageFetched =
-      pagination.value.pageable.pageNumber === currentPage.value;
+  // if (pagination) {
+  //   // check if the page its already fetched
+  //   const pageFetched =
+  //     pagination.value.pageable.pageNumber === currentPage.value;
 
-    // if its fetched we assign to the paginator and prevents to fetch from endpoint
-    if (pageFetched) {
-      return;
-    }
-  }
+  //   // if its fetched we assign to the paginator and prevents to fetch from endpoint
+  //   if (pageFetched) {
+  //     return;
+  //   }
+  // }
 
-  return await props
-    .fetch(props.id, currentPage.value, 2)
+  // return await props
+  //   .fetch(props.id, currentPage.value, 2)
+  //   .catch((error: any) => {
+  //     console.error(error.message);
+  //   });
+
+  return await transactionStore
+    .fetchAccountTransactions(account.id, currentPage.value, 6, true)
+    .then((paginatedResponse: any) => {
+      pagination.value = paginatedResponse;
+    })
     .catch((error: any) => {
       console.error(error.message);
     });
 }
 
-onMounted(() => {
-  if (!props.id) {
+onMounted(async () => {
+  if (!account.id) {
     return;
   }
 
-  fetchTransactions();
+  transactionStore.resetStore();
+  await fetchTransactions();
 });
 </script>
 <template>
