@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import PageLayout from "@/layouts/PageLayout.vue";
+import CustomAlert from "@/components/CustomAlert.vue";
 
 interface PendingTransaction {
   id: number;

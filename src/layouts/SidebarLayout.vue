@@ -29,9 +29,9 @@ const links = [
   { to: "banking-accounts", icon: Accounts, label: "Accounts" },
   { to: "banking-cards", icon: CreditCard, label: "Cards" },
   {
-    to: "banking-transactions",
+    to: "pending-operations",
     icon: ReceiptText,
-    label: "Pending Transactions",
+    label: "Pending Operations",
   },
   { to: "profile", icon: Profile, label: "Profile" },
   { to: "notifications", icon: Bell, label: "Notifications" },

@@ -14,13 +14,14 @@ import BankingCardItemView from "@/views/banking/card/BankingCardItemView.vue";
 import SettingsView from "@/views/settings/SettingsView.vue";
 import ProfileView from "@/views/profile/ProfileView.vue";
 import RegisterView from "@/views/auth/RegisterView.vue";
-import PendingTransactionsView from "@/views/banking/transaction/PendingTransactionsView.vue";
+import PendingOperations from "@/views/banking/transaction/PendingOperationsView.vue";
 import VerificationView from "@/views/auth/verification/VerificationView.vue";
 import ResendVerificationView from "@/views/auth/verification/ResendVerificationView.vue";
 import ResetPasswordView from "@/views/auth/password/reset/ResetPasswordView.vue";
 import ResetPasswordSetView from "@/views/auth/password/reset/ResetPasswordSetView.vue";
 import { useAuthStore } from "@/stores/auth";
 import NotificationView from "@/views/notifications/NotificationListView.vue";
+import BankingTransactionItemView from "@/views/banking/transaction/BankingTransactionItemView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -45,9 +46,14 @@ const routes: Array<RouteRecordRaw> = [
         component: BankingAccountItemView,
       },
       {
-        path: "/banking/transactions",
-        name: "banking-transactions",
-        component: PendingTransactionsView,
+        path: "/operations/pending",
+        name: "pending-operations",
+        component: PendingOperations,
+      },
+      {
+        path: "/banking/transactions/:id",
+        name: "banking-transaction",
+        component: BankingTransactionItemView,
       },
       {
         path: "/banking/cards",
