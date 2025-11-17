@@ -7,6 +7,7 @@
     </section>
 
     <section
+      id="page-section-content"
       class="pg-section-content flex flex-col gap-4 overflow-auto h-full"
     >
       <slot name="content"></slot>

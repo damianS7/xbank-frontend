@@ -1,17 +1,72 @@
 <script setup lang="ts">
-import CustomAlert from "@/components/CustomAlert.vue";
-import { computed, onMounted, ref } from "vue";
-import Button from "@/components/ui/button/Button.vue";
-import { useNotificationStore } from "@/stores/notification";
-import NotificationListItem from "./components/NotificationListItem.vue";
-import PageLayout from "@/layouts/PageLayout.vue";
+// vue core
+import { computed, onMounted, ref, type Ref } from "vue";
 
 // store
+import { useNotificationStore } from "@/stores/notification";
+
+// ui
+import Button from "@/components/ui/button/Button.vue";
+import Spinner from "@/components/ui/spinner/Spinner.vue";
+
+// components
+import PageLayout from "@/layouts/PageLayout.vue";
+import NotificationListItem from "./components/NotificationListItem.vue";
+import CustomAlert from "@/components/CustomAlert.vue";
+
+// composables
+import { useScrollBottonDetect } from "@/composables/useScrollBottomDetect";
+import { usePagination } from "@/composables/usePagination";
+
+// types
+import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
+
+// setup
 const notificationStore = useNotificationStore();
 const notifications = computed(() => notificationStore.notifications);
+const mountedComponent = ref(false);
 
-// message to show
+// alert ref
 const alert = ref();
+
+// pagination
+const notificationScroll: Ref<HTMLDivElement | HTMLElement | null> = ref(null);
+
+// HTMLDivElement
+const { currentPage, nextPage, pagination } = usePagination(fetchNotifications);
+
+// methods
+async function doOnBottom() {
+  if (
+    pagination.value &&
+    pagination.value.totalPages &&
+    currentPage.value >= pagination.value.totalPages - 1
+  ) {
+    return;
+  }
+  // next page
+  nextPage();
+}
+
+async function fetchNotifications() {
+  return await notificationStore
+    .fetchNotifications(currentPage.value, true)
+    .then((response: PaginatedResponse | any) => {
+      pagination.value = response;
+    });
+}
+
+const { isScrollOnBottom } = useScrollBottonDetect(
+  notificationScroll,
+  doOnBottom
+);
+
+onMounted(async () => {
+  notificationStore.resetStore();
+  await fetchNotifications();
+  notificationScroll.value = document.getElementById("page-section-content");
+  mountedComponent.value = true;
+});
 </script>
 <template>
   <PageLayout>
@@ -28,7 +83,7 @@ const alert = ref();
       <CustomAlert ref="alert" />
 
       <div
-        v-if="notifications && notifications.length > 0"
+        v-if="mountedComponent && notifications && notifications.length > 0"
         class="flex flex-col gap-2"
       >
         <NotificationListItem
@@ -38,11 +93,19 @@ const alert = ref();
         />
       </div>
 
-      <div v-else-if="!notifications" class="text-gray-600 text-center">
-        Loading notifications ...
+      <div
+        v-else-if="!mountedComponent"
+        class="flex items-center gap-2 text-gray-600 justify-center"
+      >
+        <Spinner class="text-primary" /> Loading notifications ...
       </div>
 
-      <div v-else class="text-gray-600 text-center">
+      <div
+        v-else-if="
+          mountedComponent && notifications && notifications.length === 0
+        "
+        class="text-gray-600 text-center"
+      >
         No notifications to show ...
       </div>
     </template>

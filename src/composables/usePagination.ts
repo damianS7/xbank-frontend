@@ -3,7 +3,7 @@ import { onMounted, ref } from "vue";
 
 export function usePagination(onPageUpdate: () => any) {
   // pagination
-  const currentPage = ref(0); // Spring usa 0-indexed
+  const currentPage = ref(0); // Spring uses 0-indexed
   const pagination = ref<PaginatedResponse>();
 
   function previousPage() {
