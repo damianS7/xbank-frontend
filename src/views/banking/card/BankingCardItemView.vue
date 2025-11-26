@@ -156,6 +156,7 @@ async function setDailyLimit() {
           </div>
         </div>
         <div class="flex gap-1">
+          <Button @click="setPin" size="sm"> NFC </Button>
           <Button @click="setPin" size="sm"> PIN </Button>
           <Button @click="setLock" size="sm">
             {{ card?.lockStatus === "LOCKED" ? "UNLOCK" : "LOCK" }}
