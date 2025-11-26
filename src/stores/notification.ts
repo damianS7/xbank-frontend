@@ -1,46 +1,43 @@
-// stores/customerStore.ts
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import type { Notification } from "@/types/Notification";
+import type { Notification } from "@/types/notification/Notification";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { notificationService } from "@/services/notificationService";
 import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
+
 const API = import.meta.env.VITE_APP_API_URL;
 
 export const useNotificationStore = defineStore("notification", () => {
-  let eventSource: typeof EventSourcePolyfill;
-  const initialized = ref(false);
   const notifications = ref<Notification[]>([]);
-  const pagination = ref<PaginatedResponse | null>(null);
+  const unreadNotificationsCount = ref(0);
+  const initialized = ref(false);
+  let eventSource: typeof EventSourcePolyfill;
 
   const countNotifications = computed(() => {
-    if (!pagination.value) {
-      return notifications.value.length;
-    }
-    return pagination.value.totalElements;
+    return unreadNotificationsCount.value;
   });
 
   function resetStore() {
     eventSource?.close();
     notifications.value = [];
-    pagination.value = null;
     initialized.value = false;
   }
 
-  async function fetchNotifications(page: number = 0): Promise<void> {
-    notificationService
-      .fetchNotifications(page)
-      .then((fetchedNotifications) => {
-        fetchedNotifications.content = fetchedNotifications.content.map(
-          (notification: any) => ({
-            ...notification,
-            createdAt: new Date(notification.createdAt),
-          })
-        );
+  async function fetchNotifications(
+    page: number = 0,
+    returnPaginated: boolean = false
+  ): Promise<Notification[] | PaginatedResponse> {
+    const response: PaginatedResponse =
+      await notificationService.fetchNotifications(page);
 
-        notifications.value.push(...fetchedNotifications.content);
-        pagination.value = fetchedNotifications;
-      });
+    response.content = response.content.map((notification: any) => ({
+      ...notification,
+      createdAt: new Date(notification.createdAt),
+    }));
+
+    notifications.value.push(...response.content);
+    unreadNotificationsCount.value = response.totalElements;
+    return returnPaginated ? response : notifications.value;
   }
 
   async function deleteNotification(id: number): Promise<void> {
@@ -49,8 +46,17 @@ export const useNotificationStore = defineStore("notification", () => {
         (notification) => notification.id !== id
       );
 
-      pagination.value.totalElements -= 1;
+      updateUnreadCount(-1);
     });
+  }
+
+  function updateUnreadCount(count: number) {
+    // check < 0
+    if (unreadNotificationsCount.value + count < 0) {
+      unreadNotificationsCount.value = 0;
+      return;
+    }
+    unreadNotificationsCount.value += count;
   }
 
   async function initialize() {
@@ -74,7 +80,8 @@ export const useNotificationStore = defineStore("notification", () => {
         if (typeof notification.message === "string") {
           // notifications.value.push(notification);
           notifications.value.unshift(notification);
-          pagination.value!.totalElements += 1;
+
+          updateUnreadCount(+1);
         }
       } catch (error) {}
     };
@@ -83,9 +90,20 @@ export const useNotificationStore = defineStore("notification", () => {
   }
 
   async function clearNotifications() {
-    notificationService.deleteNotifications().then(() => {
+    // notificationService.deleteNotifications().then(() => {
+    //   notifications.value = [];
+    // });
+    const notificationIds: number[] = [];
+
+    notifications.value.map(async (notification) => {
+      notificationIds.push(notification.id);
+    });
+
+    notificationService.deleteNotificationsById(notificationIds).then(() => {
       notifications.value = [];
-      pagination.value = null;
+      updateUnreadCount(-notificationIds.length);
+      // resetStore();
+      // fetchNotifications();
     });
   }
 
@@ -96,7 +114,7 @@ export const useNotificationStore = defineStore("notification", () => {
     countNotifications,
     fetchNotifications,
     deleteNotification,
-    pagination,
     initialized,
+    resetStore,
   };
 });
