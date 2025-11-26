@@ -64,4 +64,20 @@ export const notificationService = {
       );
     }
   },
+  async deleteNotificationsById(notificationIds: number[]) {
+    const response = await fetch(`${API}/notifications/batch`, {
+      method: "DELETE",
+      headers: authHeader(),
+      body: JSON.stringify({ notificationIds }),
+    });
+
+    if (response.status !== 204) {
+      const json = await response.json();
+      throw new ApiResponse(
+        json.message || "Failed to delete notifications.",
+        response.status,
+        json.errors
+      );
+    }
+  },
 };
