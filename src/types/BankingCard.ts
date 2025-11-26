@@ -18,6 +18,7 @@ export const cardStatusOptions = cardStatusValues.map((value) => ({
 
 // Banking Card Lock Status
 export const cardLockStatusValues = ["UNLOCKED", "LOCKED"] as const;
+export type BankingCardLockStatus = (typeof cardLockStatusValues)[number];
 export const cardLockStatusOptions = cardLockStatusValues.map((value) => ({
   value,
   label: value.charAt(0) + value.slice(1),
@@ -29,6 +30,7 @@ export interface BankingCard {
   cardNumber: string;
   cardCVV: string;
   cardPIN: string;
+  currency: string;
   dailyLimit: number;
   expiredDate: Date;
   cardType: BankingCardType;
