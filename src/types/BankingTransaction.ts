@@ -1,13 +1,16 @@
-export enum BankingTransactionTypeEnum {
+export enum BankingTransactionType {
   CARD_CHARGE = "CARD_CHARGE",
   DEPOSIT = "DEPOSIT",
   WITHDRAWAL = "WITHDRAWAL",
   TRANSFER_FROM = "TRANSFER_FROM",
   TRANSFER_TO = "TRANSFER_TO",
 }
-export type BankingTransactionType = keyof typeof BankingTransactionTypeEnum;
 
-export type BankingTransactionStatus = "PENDING" | "COMPLETED" | "FAILED";
+export enum BankingTransactionStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
 
 export interface BankingTransaction {
   id: number;
