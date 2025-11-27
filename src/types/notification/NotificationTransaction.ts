@@ -1,7 +1,9 @@
 import type { BankingTransaction } from "../BankingTransaction";
-import type { NotificationType } from "./Notification";
+import type { NotificationBase, NotificationType } from "./NotificationBase";
 
-export interface NotificationTransaction extends Notification {
+export interface NotificationTransaction extends NotificationBase {
   type: NotificationType.TRANSACTION;
-  transaction: BankingTransaction;
+  metadata: {
+    transaction: BankingTransaction;
+  };
 }

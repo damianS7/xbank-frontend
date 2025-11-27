@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { Notification } from "@/types/notification/Notification";
+import type { Notification } from "@/types/notification/NotificationBase";
+import { NotificationType } from "@/types/notification/NotificationBase";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-vue-next";
 import { Bell } from "lucide-vue-next";
@@ -19,15 +20,15 @@ defineProps<{
       <div class="flex items-center gap-1">
         <Badge variant="default">
           <Bell :size="16" />
-          <slot v-if="notification.type === 'TRANSACTION'">
+          <slot v-if="notification.type === NotificationType.TRANSACTION">
             <router-link
               :to="{
                 name: 'banking-transaction',
-                params: { id: notification.metadata.transactionId },
+                params: { id: notification.metadata.transaction.id },
               }"
             >
               {{
-                notification.metadata.transactionType?.replace(
+                notification.metadata.transaction.transactionType?.replace(
                   /(_TO|_FROM|_CHARGE)$/,
                   ""
                 )
@@ -62,29 +63,11 @@ defineProps<{
       class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 p-2 ml-2"
     >
       <span class="text-sm sm:text-base italic text-gray-600 break-all">
-        <slot v-if="notification.type === 'TRANSACTION'">
-          <!-- TRANSFER FROM -->
-          <slot
-            v-if="notification.metadata.transactionType === 'TRANSFER_FROM'"
-          >
-            You have received {{ notification.metadata.amount }} from
-            {{ notification.metadata.transferFrom }}
-          </slot>
-
-          <!-- TRANSFER TO -->
-          <slot v-if="notification.metadata.transactionType === 'TRANSFER_TO'">
-            You have sent {{ notification.metadata.amount }}
-            {{ notification.metadata.currency }} to
-            {{ notification.metadata.transferTo }}
-          </slot>
-
-          <!-- CARD CHARGE -->
-          <slot v-if="notification.metadata.transactionType === 'CARD_CHARGE'">
-            You have spent {{ notification.metadata.amount }}
-          </slot>
+        <slot v-if="notification.type === NotificationType.TRANSACTION">
+          {{ notification.metadata.transaction.description }}
         </slot>
         <slot v-else>
-          {{ notification.message }}
+          {{ notification.metadata.message }}
         </slot>
       </span>
     </div>
