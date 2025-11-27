@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import type { Notification } from "@/types/notification/Notification";
+import type { Notification } from "@/types/notification/NotificationBase";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { notificationService } from "@/services/notificationService";
 import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
@@ -77,12 +77,10 @@ export const useNotificationStore = defineStore("notification", () => {
       // console.log("🔔 Notification received:", event.data);
       try {
         const notification: Notification = JSON.parse(event.data);
-        if (typeof notification.message === "string") {
-          // notifications.value.push(notification);
-          notifications.value.unshift(notification);
+        // notifications.value.push(notification);
+        notifications.value.unshift(notification);
 
-          updateUnreadCount(+1);
-        }
+        updateUnreadCount(+1);
       } catch (error) {}
     };
 
