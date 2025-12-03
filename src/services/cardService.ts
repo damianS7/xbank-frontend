@@ -12,7 +12,7 @@ const authHeader = () => {
 
 export const cardService = {
   async fetchCards(): Promise<BankingCard[]> {
-    const response = await fetch(`${API}/customers/me/banking/cards`, {
+    const response = await fetch(`${API}/banking/cards`, {
       method: "GET",
       headers: authHeader(),
     });
@@ -40,14 +40,11 @@ export const cardService = {
     pin: string,
     password: string
   ): Promise<BankingCard> {
-    const response = await fetch(
-      `${API}/customers/me/banking/cards/${cardId}/pin`,
-      {
-        method: "PATCH",
-        headers: authHeader(),
-        body: JSON.stringify({ pin, password }),
-      }
-    );
+    const response = await fetch(`${API}/banking/cards/${cardId}/pin`, {
+      method: "PATCH",
+      headers: authHeader(),
+      body: JSON.stringify({ pin, password }),
+    });
 
     const json = await response.json();
 
@@ -68,14 +65,11 @@ export const cardService = {
     dailyLimit: number,
     password: string
   ): Promise<BankingCard> {
-    const response = await fetch(
-      `${API}/customers/me/banking/cards/${cardId}/daily-limit`,
-      {
-        method: "PATCH",
-        headers: authHeader(),
-        body: JSON.stringify({ dailyLimit, password }),
-      }
-    );
+    const response = await fetch(`${API}/banking/cards/${cardId}/daily-limit`, {
+      method: "PATCH",
+      headers: authHeader(),
+      body: JSON.stringify({ dailyLimit, password }),
+    });
 
     const json = await response.json();
 
@@ -96,14 +90,11 @@ export const cardService = {
     lockStatus: BankingCardLockStatus,
     password: string
   ): Promise<BankingCard> {
-    const response = await fetch(
-      `${API}/customers/me/banking/cards/${cardId}/lock-status`,
-      {
-        method: "PATCH",
-        headers: authHeader(),
-        body: JSON.stringify({ lockStatus, password }),
-      }
-    );
+    const response = await fetch(`${API}/banking/cards/${cardId}/lock-status`, {
+      method: "PATCH",
+      headers: authHeader(),
+      body: JSON.stringify({ lockStatus, password }),
+    });
 
     const json = await response.json();
 

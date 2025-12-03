@@ -40,7 +40,7 @@ export const transactionService = {
     size: number
   ): Promise<PaginatedResponse> {
     const response = await fetch(
-      `${API}/customers/me/banking/accounts/${accountId}/transactions?page=${page}&size=${size}&sort=createdAt,DESC`,
+      `${API}/banking/accounts/${accountId}/transactions?page=${page}&size=${size}&sort=createdAt,DESC`,
       {
         method: "GET",
         headers: authHeader(),
@@ -66,7 +66,7 @@ export const transactionService = {
     size: number
   ): Promise<PaginatedResponse> {
     const response = await fetch(
-      `${API}/customers/me/banking/cards/${cardId}/transactions?page=${page}&size=${size}&sort=createdAt,DESC`,
+      `${API}/banking/cards/${cardId}/transactions?page=${page}&size=${size}&sort=createdAt,DESC`,
       {
         method: "GET",
         headers: authHeader(),
@@ -95,7 +95,7 @@ export const transactionService = {
     password: string
   ): Promise<BankingTransaction> {
     const response = await fetch(
-      `${API}/customers/me/banking/accounts/${fromBankingAccountId}/transactions`,
+      `${API}/banking/accounts/${fromBankingAccountId}/transactions`,
       {
         method: "POST",
         headers: authHeader(),

@@ -17,7 +17,7 @@ const authHeader = () => {
 
 export const accountService = {
   async fetchAccounts(): Promise<BankingAccount[]> {
-    const response = await fetch(`${API}/customers/me/banking/accounts`, {
+    const response = await fetch(`${API}/banking/accounts`, {
       method: "GET",
       headers: authHeader(),
     });
@@ -39,14 +39,11 @@ export const accountService = {
   async requestBankingAccount(
     request: BankingAccountCreateRequest
   ): Promise<BankingAccount> {
-    const response = await fetch(
-      `${API}/customers/me/banking/accounts/request`,
-      {
-        method: "POST",
-        headers: authHeader(),
-        body: JSON.stringify(request),
-      }
-    );
+    const response = await fetch(`${API}/banking/accounts/request`, {
+      method: "POST",
+      headers: authHeader(),
+      body: JSON.stringify(request),
+    });
 
     const json = await response.json();
 
@@ -67,7 +64,7 @@ export const accountService = {
     request: BankingAccountCardRequest
   ): Promise<BankingCard> {
     const response = await fetch(
-      `${API}/customers/me/banking/accounts/` + accountId + "/cards/request",
+      `${API}/banking/accounts/` + accountId + "/cards/request",
       {
         method: "POST",
         headers: authHeader(),
@@ -94,7 +91,7 @@ export const accountService = {
     request: BankingAccountAliasUpdateRequest
   ): Promise<BankingAccount> {
     const response = await fetch(
-      `${API}/customers/me/banking/accounts/` + accountId + "/alias",
+      `${API}/banking/accounts/` + accountId + "/alias",
       {
         method: "PATCH",
         headers: authHeader(),
