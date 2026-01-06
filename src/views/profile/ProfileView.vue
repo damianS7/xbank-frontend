@@ -46,7 +46,7 @@ const formFields = computed(() => [
     edited: false,
   },
   {
-    name: "phone",
+    name: "phoneNumber",
     type: "text",
     placeholder: "Phone",
     value: customerStore.customer.phone,
