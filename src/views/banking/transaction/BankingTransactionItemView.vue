@@ -51,18 +51,16 @@ onMounted(async () => {
           <Badge
             size="sm"
             :variant="
-              transaction.transactionStatus === 'COMPLETED'
+              transaction.status === 'COMPLETED'
                 ? 'success'
-                : ['PENDING', 'REJECTED'].includes(
-                      transaction?.transactionStatus || ''
-                    )
+                : ['PENDING', 'REJECTED'].includes(transaction?.status || '')
                   ? 'destructive'
                   : 'default'
             "
           >
-            {{ transaction?.transactionStatus }}
+            {{ transaction?.status }}
           </Badge>
-          <Badge>{{ transaction?.transactionType }}</Badge>
+          <Badge>{{ transaction?.type }}</Badge>
         </div>
       </div>
     </template>
@@ -80,16 +78,16 @@ onMounted(async () => {
                 {{ transaction.description || "Transaction" }}
               </h2>
               <p class="text-sm text-muted-foreground">
-                {{ formatType(transaction.transactionType) }}
-                <span v-if="transaction.transactionStatus">
+                {{ formatType(transaction.type) }}
+                <span v-if="transaction.status">
                   <Badge
                     :variant="
-                      transaction.transactionStatus === 'COMPLETED'
+                      transaction.status === 'COMPLETED'
                         ? 'success'
                         : 'secondary'
                     "
                   >
-                    {{ transaction.transactionStatus }} @
+                    {{ transaction.status }} @
                     {{ formatDate(transaction.updatedAt) }}
                   </Badge>
                 </span>
@@ -144,7 +142,9 @@ onMounted(async () => {
               <span class="font-medium text-muted-foreground"
                 >Balance after:</span
               >
-              <span class="ml-2">{{ transaction.lastBalance.toFixed(2) }}</span>
+              <span class="ml-2">{{
+                transaction.balanceAfter.toFixed(2)
+              }}</span>
             </div>
 
             <div>

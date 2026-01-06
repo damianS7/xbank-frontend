@@ -26,11 +26,7 @@ defineProps<{
             <span>{{ transaction.description }}</span>
           </span>
           <span
-            v-if="
-              ['CARD_CHARGE', 'WITHDRAWAL'].includes(
-                transaction.transactionType
-              )
-            "
+            v-if="['CARD_CHARGE', 'WITHDRAWAL'].includes(transaction.type)"
             class="text-red-600"
           >
             -{{ transaction.amount }} {{ currency }}
@@ -42,20 +38,20 @@ defineProps<{
         >
           <span class="flex gap-1 items-center">
             <Badge variant="default">
-              {{ transaction.transactionType.replace(/_/g, " ") }}</Badge
+              {{ transaction.type.replace(/_/g, " ") }}</Badge
             >
             <Badge
               :variant="
-                transaction.transactionStatus === 'COMPLETED'
+                transaction.status === 'COMPLETED'
                   ? 'success'
-                  : transaction.transactionStatus === 'PENDING'
+                  : transaction.status === 'PENDING'
                     ? 'alert'
-                    : transaction.transactionStatus === 'FAILED'
+                    : transaction.status === 'FAILED'
                       ? 'destructive'
                       : 'default'
               "
             >
-              {{ transaction.transactionStatus }}
+              {{ transaction.status }}
             </Badge>
           </span>
           <span class="text-xs text-gray-500">

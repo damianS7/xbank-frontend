@@ -34,7 +34,7 @@ const data = computed(() =>
 
     return {
       date: formattedDate, // x axis
-      Balance: transaction.lastBalance, // categoría (nombre visible)
+      Balance: transaction.balanceAfter, // categoría (nombre visible)
     };
   })
 );

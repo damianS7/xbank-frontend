@@ -5,12 +5,14 @@ import type { BankingAccountCardRequest } from "@/types/request/BankingAccountCa
 import type { BankingCard } from "@/types/BankingCard";
 import type { BankingAccountUpdateRequest } from "@/types/request/BankingAccountUpdateRequest";
 import type { BankingAccountAliasUpdateRequest } from "@/types/request/BankingAccountAliasUpdateRequest";
+import type { BankingTransaction } from "@/types/BankingTransaction";
 
 const API = import.meta.env.VITE_APP_API_URL;
 const authHeader = () => {
   const token = localStorage.getItem("token");
   return {
     "Content-Type": "application/json",
+    "Accept-Language": localStorage.getItem("lang") ?? "en",
     Authorization: `Bearer ${token}`,
   };
 };
@@ -39,7 +41,7 @@ export const accountService = {
   async requestBankingAccount(
     request: BankingAccountCreateRequest
   ): Promise<BankingAccount> {
-    const response = await fetch(`${API}/banking/accounts/request`, {
+    const response = await fetch(`${API}/banking/accounts`, {
       method: "POST",
       headers: authHeader(),
       body: JSON.stringify(request),
@@ -64,7 +66,7 @@ export const accountService = {
     request: BankingAccountCardRequest
   ): Promise<BankingCard> {
     const response = await fetch(
-      `${API}/banking/accounts/` + accountId + "/cards/request",
+      `${API}/banking/accounts/` + accountId + "/cards",
       {
         method: "POST",
         headers: authHeader(),
@@ -111,5 +113,39 @@ export const accountService = {
     }
 
     return json as BankingAccount;
+  },
+
+  async transferTo(
+    fromBankingAccountId: string,
+    toBankingAccountNumber: string,
+    amount: number,
+    description: string,
+    password: string
+  ): Promise<BankingTransaction> {
+    const response = await fetch(
+      `${API}/banking/accounts/${fromBankingAccountId}/transfer`,
+      {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({
+          toBankingAccountNumber,
+          description,
+          amount,
+          password,
+        }),
+      }
+    );
+
+    const json = await response.json();
+
+    if (response.status !== 201) {
+      throw new ApiResponse(
+        json.message || "Failed to transfer.",
+        response.status,
+        json.errors
+      );
+    }
+
+    return json;
   },
 };

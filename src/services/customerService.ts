@@ -13,7 +13,7 @@ const authHeader = () => {
 
 export const customerService = {
   async fetchCustomer(): Promise<Customer> {
-    const response = await fetch(`${API}/customers`, {
+    const response = await fetch(`${API}/profiles`, {
       method: "GET",
       headers: authHeader(),
     });
@@ -31,7 +31,7 @@ export const customerService = {
     return json;
   },
   async fetchProfileImage(customerId: number): Promise<Blob> {
-    const response = await fetch(`${API}/customers/${customerId}/image`, {
+    const response = await fetch(`${API}/profiles/${customerId}/image`, {
       method: "GET",
       headers: authHeader(),
     });
@@ -52,7 +52,7 @@ export const customerService = {
     formData.append("file", file);
     formData.append("currentPassword", currentPassword);
 
-    const response = await fetch(`${API}/customers/image`, {
+    const response = await fetch(`${API}/profiles/image`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ export const customerService = {
     currentPassword: string,
     fieldsToUpdate: Record<string, any>
   ): Promise<Customer> {
-    const response = await fetch(`${API}/customers`, {
+    const response = await fetch(`${API}/profiles`, {
       method: "PATCH",
       headers: authHeader(),
       body: JSON.stringify({ currentPassword, fieldsToUpdate }),
@@ -96,7 +96,7 @@ export const customerService = {
     currentPassword: string,
     newEmail: string
   ): Promise<Customer> {
-    const response = await fetch(`${API}/customers/email`, {
+    const response = await fetch(`${API}/users/email`, {
       method: "PATCH",
       headers: authHeader(),
       body: JSON.stringify({ currentPassword, newEmail }),
@@ -115,7 +115,7 @@ export const customerService = {
     return json;
   },
   async updatePassword(currentPassword: string, newPassword: string) {
-    const response = await fetch(`${API}/customers/password`, {
+    const response = await fetch(`${API}/users/password`, {
       method: "PATCH",
       headers: authHeader(),
       body: JSON.stringify({ currentPassword, newPassword }),
@@ -131,7 +131,7 @@ export const customerService = {
     }
   },
   async register(fields: CustomerRegisterRequest) {
-    const response = await fetch(`${API}/customers/register`, {
+    const response = await fetch(`${API}/users/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(fields),

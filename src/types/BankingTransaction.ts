@@ -18,9 +18,10 @@ export interface BankingTransaction {
   cardId?: number;
   amount: number;
   currency: string;
-  lastBalance: number;
-  transactionType: BankingTransactionType;
-  transactionStatus: BankingTransactionStatus;
+  balanceBefore: number;
+  balanceAfter: number;
+  type: BankingTransactionType;
+  status: BankingTransactionStatus;
   description: string;
   createdAt: Date;
   updatedAt: Date;

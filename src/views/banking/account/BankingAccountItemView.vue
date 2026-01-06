@@ -14,6 +14,7 @@ import Badge from "@/components/ui/badge/Badge.vue";
 import type { BankingCardType } from "@/types/BankingCard";
 import type { BankingAccountTransferForm } from "@/types/form/BankingAccountTransferForm";
 import PageLayout from "@/layouts/PageLayout.vue";
+import { accountService } from "@/services/accountService";
 
 // ----
 
@@ -53,18 +54,18 @@ async function transferTo() {
     return;
   }
 
-  await transactionStore
-    .createBankingTransaction(
+  await accountService
+    .transferTo(
       accountId.toString(),
       transfer.accountNumber,
       transfer.amount,
       transfer.description,
-      "TRANSFER_TO",
       password
     )
     .then((transaction) => {
-      accountStore.setBalance(accountId, transaction.lastBalance);
-      transactionRefs.value.reloadTransactions();
+      accountStore.setBalance(accountId, transaction.balanceAfter);
+      // TODO check this
+      // transactionRefs.value.reloadTransactions();
       alert.value?.success("Transfered funds.");
     })
     .catch((error) => {

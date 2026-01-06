@@ -18,10 +18,13 @@ export const useSettingStore = defineStore("setting", () => {
     const updatedSettings: Setting =
       await settingService.updateSettings(request);
     settings.value = updatedSettings;
+
+    localStorage.setItem("lang", settings.value.language);
   }
 
   async function initialize() {
     await fetchSettings().then(() => {
+      localStorage.setItem("lang", settings.value.language);
       initialized.value = true;
     });
   }

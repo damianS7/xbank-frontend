@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { onMounted, type PropType } from "vue";
+import { onMounted } from "vue";
 import { defineProps } from "vue";
 import { ChevronRight, ChevronLeft } from "lucide-vue-next";
 import { useTransactionStore } from "@/stores/transaction";
 import { usePagination } from "@/composables/usePagination";
+import Badge from "@/components/ui/badge/Badge.vue";
+import { BankingTransactionStatus } from "@/types/BankingTransaction";
 
 const account = defineProps({
   id: {
@@ -71,23 +73,30 @@ onMounted(async () => {
           <div class="flex flex-col text-sm font-medium text-left">
             <span>{{ transaction.description }}</span>
             <span class="text-xs pill-xs pill-blue w-fit">
-              {{ transaction.transactionType.replace(/_/g, " ") }}</span
+              {{ transaction.type.replace(/_/g, " ") }}</span
             >
           </div>
 
           <div class="flex flex-col text-sm font-medium text-right sm:w-1/2">
-            <span
-              v-if="
-                ['DEPOSIT', 'TRANSFER_FROM'].includes(
-                  transaction.transactionType
-                )
-              "
-              class="text-green-600"
-            >
-              +{{ transaction.amount }} {{ currency }}
-            </span>
-            <span v-else class="text-red-600">
-              -{{ transaction.amount }} {{ currency }}
+            <span>
+              <Badge
+                :variant="
+                  transaction.status === BankingTransactionStatus.PENDING
+                    ? 'alert'
+                    : 'success'
+                "
+              >
+                {{ transaction.status }}
+              </Badge>
+              <span
+                v-if="['DEPOSIT', 'TRANSFER_FROM'].includes(transaction.type)"
+                class="text-green-600"
+              >
+                +{{ transaction.amount }} {{ currency }}
+              </span>
+              <span v-else class="text-red-600">
+                -{{ transaction.amount }} {{ currency }}
+              </span>
             </span>
             <span class="text-xs text-gray-500">
               {{

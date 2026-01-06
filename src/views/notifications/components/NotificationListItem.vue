@@ -28,7 +28,7 @@ defineProps<{
               }"
             >
               {{
-                notification.metadata.transaction.transactionType?.replace(
+                notification.metadata.transaction.type?.replace(
                   /(_TO|_FROM|_CHARGE)$/,
                   ""
                 )
