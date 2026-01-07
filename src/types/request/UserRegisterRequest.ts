@@ -1,6 +1,6 @@
 import type { GenderType } from "@/types/Gender";
 
-export interface CustomerRegisterRequest {
+export interface UserRegisterRequest {
   email: string;
   password: string;
   firstName: string;
