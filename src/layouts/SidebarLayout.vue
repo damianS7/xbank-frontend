@@ -22,7 +22,7 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
-import { useCustomerStore } from "@/stores/customer";
+import { useUserStore } from "@/stores/user";
 import CustomSidebarFooter from "@/components/sidebar/CustomSidebarFooter.vue";
 const links = [
   { to: "home", icon: Home, label: "Home" },
@@ -66,9 +66,9 @@ const { setOpen } = useSidebar();
     <SidebarFooter>
       <CustomSidebarFooter
         :user="{
-          name: useCustomerStore().customer.firstName,
-          email: useCustomerStore().customer.email,
-          avatar: useCustomerStore().customer.photoUrl,
+          name: useUserStore().user.profile.firstName,
+          email: useUserStore().user.email,
+          avatar: useUserStore().user.profile.photoUrl,
         }"
       />
     </SidebarFooter>

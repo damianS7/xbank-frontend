@@ -83,9 +83,9 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/customers/accounts",
+    path: "/users/accounts",
     component: AuthLayout,
-    redirect: "/customers/accounts/login",
+    redirect: "/users/accounts/login",
     meta: { requiresAuth: false, redirectIfAuth: true },
     children: [
       {

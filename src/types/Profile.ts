@@ -1,8 +1,6 @@
-import type { GenderType } from "@/types/Gender";
-export interface Customer {
-  id: number;
-  email: string;
-  password: string;
+import type { GenderType } from "./Gender";
+
+export interface Profile {
   firstName: string;
   lastName: string;
   phone: string;

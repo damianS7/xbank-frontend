@@ -2,14 +2,14 @@ import { onMounted, onUnmounted, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 // import { useSettingStore } from "@/stores/setting";
 import { authService } from "@/services/authService";
-import { useCustomerStore } from "@/stores/customer";
+import { useUserStore } from "@/stores/user";
 import { useAccountStore } from "@/stores/account";
 import { useCardStore } from "@/stores/card";
 import { useNotificationStore } from "@/stores/notification";
 
 export function useAppInit() {
   const authStore = useAuthStore();
-  const customerStore = useCustomerStore();
+  const userStore = useUserStore();
   const bankingAccountStore = useAccountStore();
   const bankingCardStore = useCardStore();
   // const settingStore = useSettingStore();
@@ -48,7 +48,7 @@ export function useAppInit() {
     interval = setInterval(async () => {
       await checkIfTokenIsValid();
     }, tokenValidationInterval);
-    await customerStore.initialize();
+    await userStore.initialize();
     await bankingAccountStore.initialize();
     await bankingCardStore.initialize();
     // await settingStore.initialize();

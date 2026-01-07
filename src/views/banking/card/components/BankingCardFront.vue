@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import type { BankingCard } from "@/types/BankingCard";
-import { useCustomerStore } from "@/stores/customer";
-const customerStore = useCustomerStore();
+import { useUserStore } from "@/stores/user";
+const userStore = useUserStore();
 
 const props = defineProps<{
   card: BankingCard;
@@ -71,7 +71,7 @@ function formatCardNumber(number: string): string {
         {{ formatCardNumber(card?.cardNumber) }}
       </text>
       <text y="20" class="uppercase" fill="white" font-size="14">
-        {{ customerStore?.getFullName }}
+        {{ userStore?.getFullName }}
       </text>
     </g>
 

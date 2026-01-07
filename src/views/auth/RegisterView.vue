@@ -15,12 +15,12 @@ import { ref } from "vue";
 import { z } from "zod";
 import { genderOptions, genderValues, type GenderType } from "@/types/Gender";
 import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
-import { useCustomerStore } from "@/stores/customer";
+import { useUserStore } from "@/stores/user";
 
 const alert = ref<InstanceType<typeof CustomAlert>>();
 
 // store
-const customerStore = useCustomerStore();
+const userStore = useUserStore();
 
 type FieldItem = {
   type: "text" | "email" | "password" | "select" | "date" | "number";
@@ -217,7 +217,7 @@ const onFormSubmit = async () => {
     nationalId: formData.nationalId,
   };
 
-  await customerStore
+  await userStore
     .register(request)
     .then(() => {
       alert.value?.success("Account created.");

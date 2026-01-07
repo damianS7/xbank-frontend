@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCustomerStore as useCustomerStore } from "@/stores/customer";
+import { useUserStore as useUserStore } from "@/stores/user";
 import CustomAlert from "@/components/CustomAlert.vue";
 import { computed, ref } from "vue";
 import ProfileEditableField from "./components/ProfileEditableField.vue";
@@ -10,7 +10,7 @@ import PageLayout from "@/layouts/PageLayout.vue";
 
 // store
 const modalStore = useModalStore();
-const customerStore = useCustomerStore();
+const userStore = useUserStore();
 
 // message to show
 const alert = ref<InstanceType<typeof CustomAlert>>();
@@ -21,7 +21,7 @@ const formFields = computed(() => [
     name: "firstName",
     type: "text",
     placeholder: "First name",
-    value: customerStore.customer.firstName,
+    value: userStore.user.profile.firstName,
     error: "",
     isEditing: false,
     edited: false,
@@ -31,7 +31,7 @@ const formFields = computed(() => [
     name: "lastName",
     type: "text",
     placeholder: "Last name",
-    value: customerStore.customer.lastName,
+    value: userStore.user.profile.lastName,
     error: "",
     isEditing: false,
     edited: false,
@@ -40,7 +40,7 @@ const formFields = computed(() => [
     name: "email",
     type: "email",
     placeholder: "Email",
-    value: customerStore.customer.email,
+    value: userStore.user.email,
     error: "",
     isEditing: false,
     edited: false,
@@ -49,7 +49,7 @@ const formFields = computed(() => [
     name: "phoneNumber",
     type: "text",
     placeholder: "Phone",
-    value: customerStore.customer.phone,
+    value: userStore.user.profile.phone,
     error: "",
     isEditing: false,
     edited: false,
@@ -58,7 +58,7 @@ const formFields = computed(() => [
     name: "gender",
     type: "select",
     placeholder: "Gender",
-    value: customerStore.customer.gender,
+    value: userStore.user.profile.gender,
     options: genderOptions,
     error: "",
     isEditing: false,
@@ -68,7 +68,7 @@ const formFields = computed(() => [
     name: "birthdate",
     type: "date",
     placeholder: "Birthdate",
-    value: customerStore.customer.birthdate,
+    value: userStore.user.profile.birthdate,
     error: "",
     isEditing: false,
     edited: false,
@@ -109,8 +109,8 @@ async function updateField(field: { name: string; value: string }) {
   }
 
   // request for update
-  await customerStore
-    .updateCustomer(currentPassword, {
+  await userStore
+    .updateProfile(currentPassword, {
       [field.name]: field.value,
     })
     .then((_profile) => {
@@ -134,7 +134,7 @@ async function updatePassword(newPassword: string) {
   }
 
   // request for update
-  await customerStore
+  await userStore
     .updatePassword(currentPassword, newPassword)
     .then(() => {
       alert.value?.success("Password successfully updated.");
@@ -156,7 +156,7 @@ async function updatePhoto(photo: any) {
     return;
   }
 
-  await customerStore
+  await userStore
     .uploadPhoto(password, photo)
     .then((_blob) => {
       alert.value?.success("Photo successfully updated.");
@@ -186,7 +186,7 @@ async function updateEmail(newEmail: string) {
   }
 
   // request for update
-  await customerStore
+  await userStore
     .updateEmail(currentPassword, newEmail)
     .then((_user) => {
       alert.value?.success("Field successfully updated.");
@@ -207,10 +207,7 @@ async function updateEmail(newEmail: string) {
       <div class="flex justify-center">
         <ProfilePhoto @update="updatePhoto" />
       </div>
-      <div
-        v-if="customerStore.customer"
-        class="grid grid-cols-1 sm:grid-cols-2 gap-4"
-      >
+      <div v-if="userStore.user" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <ProfileEditableField
           v-for="(field, index) in formFields"
           :key="index"
@@ -220,10 +217,7 @@ async function updateEmail(newEmail: string) {
         />
       </div>
 
-      <div
-        v-else-if="!customerStore.customer"
-        class="text-gray-600 text-center"
-      >
+      <div v-else-if="!userStore.user" class="text-gray-600 text-center">
         Loading profile ...
       </div>
 

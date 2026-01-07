@@ -17,7 +17,7 @@ export type BankingAccountStatus = (typeof BankingAccountStatus)[number];
 
 export interface BankingAccount {
   id: number;
-  customerId: number;
+  userId: number;
   alias: string;
   accountTransactions: BankingTransaction[];
   accountCards: BankingCard[];
