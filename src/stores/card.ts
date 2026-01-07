@@ -87,11 +87,13 @@ export const useCardStore = defineStore("card", () => {
     lockStatus: BankingCardLockStatus,
     password: string
   ): Promise<BankingCard> {
-    const card: BankingCard = await cardService.setLockStatus(
-      cardId,
-      lockStatus,
-      password
-    );
+    let card: BankingCard = undefined as any;
+
+    if (lockStatus === "LOCKED") {
+      card = await cardService.lock(cardId, password);
+    } else {
+      card = await cardService.unlock(cardId, password);
+    }
 
     return {
       ...card,

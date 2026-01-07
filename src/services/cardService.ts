@@ -84,16 +84,11 @@ export const cardService = {
 
     return json;
   },
-
-  async setLockStatus(
-    cardId: number,
-    lockStatus: BankingCardLockStatus,
-    password: string
-  ): Promise<BankingCard> {
-    const response = await fetch(`${API}/banking/cards/${cardId}/lock-status`, {
+  async lock(cardId: number, password: string): Promise<BankingCard> {
+    const response = await fetch(`${API}/banking/cards/${cardId}/lock`, {
       method: "PATCH",
       headers: authHeader(),
-      body: JSON.stringify({ lockStatus, password }),
+      body: JSON.stringify({ password }),
     });
 
     const json = await response.json();
@@ -101,7 +96,27 @@ export const cardService = {
     // if response is not 200, throw an error
     if (response.status !== 200) {
       throw new ApiResponse(
-        json.message || "Failed to set card locking status",
+        json.message || "Failed to lock card",
+        response.status,
+        json.errors
+      );
+    }
+
+    return json;
+  },
+  async unlock(cardId: number, password: string): Promise<BankingCard> {
+    const response = await fetch(`${API}/banking/cards/${cardId}/unlock`, {
+      method: "PATCH",
+      headers: authHeader(),
+      body: JSON.stringify({ password }),
+    });
+
+    const json = await response.json();
+
+    // if response is not 200, throw an error
+    if (response.status !== 200) {
+      throw new ApiResponse(
+        json.message || "Failed to unlock card",
         response.status,
         json.errors
       );

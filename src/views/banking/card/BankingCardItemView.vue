@@ -53,7 +53,7 @@ async function setLock() {
   }
 
   const newCardLockStatus =
-    card.value?.lockStatus === "LOCKED" ? "UNLOCKED" : "LOCKED";
+    card.value?.cardStatus === "LOCKED" ? "UNLOCKED" : "LOCKED";
 
   await cardStore
     .setLockStatus(cardId, newCardLockStatus, password)
@@ -139,16 +139,10 @@ async function setDailyLimit() {
             <Badge
               size="sm"
               :variant="
-                card?.cardStatus === 'ENABLED' ? 'success' : 'destructive'
+                card?.cardStatus === 'ACTIVE' ? 'success' : 'destructive'
               "
             >
               {{ card?.cardStatus }}
-            </Badge>
-            <Badge
-              :variant="
-                card.lockStatus === 'UNLOCKED' ? 'default' : 'destructive'
-              "
-              >{{ card?.lockStatus }}
             </Badge>
             <Badge :variant="card.dailyLimit > 0 ? 'destructive' : 'default'"
               >{{ card?.dailyLimit ? card?.dailyLimit + " LIMIT" : "NO LIMIT" }}
@@ -159,7 +153,7 @@ async function setDailyLimit() {
           <Button @click="setPin" size="sm"> NFC </Button>
           <Button @click="setPin" size="sm"> PIN </Button>
           <Button @click="setLock" size="sm">
-            {{ card?.lockStatus === "LOCKED" ? "UNLOCK" : "LOCK" }}
+            {{ card?.cardStatus === "LOCKED" ? "UNLOCK" : "LOCK" }}
           </Button>
           <Button @click="setDailyLimit" size="sm"> LIMIT </Button>
         </div>
