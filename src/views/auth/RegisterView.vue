@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { ref } from "vue";
 import { z } from "zod";
 import { genderOptions, genderValues, type GenderType } from "@/types/Gender";
-import type { CustomerRegisterRequest } from "@/types/request/CustomerRegisterRequest";
+import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
 import { useCustomerStore } from "@/stores/customer";
 
 const alert = ref<InstanceType<typeof CustomAlert>>();
@@ -203,7 +203,7 @@ const onFormSubmit = async () => {
     return;
   }
 
-  const request: CustomerRegisterRequest = {
+  const request: UserRegisterRequest = {
     email: formData.email,
     password: formData.password,
     firstName: formData.firstName,
