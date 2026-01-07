@@ -14,7 +14,7 @@ import BankingCardItemView from "@/views/banking/card/BankingCardItemView.vue";
 import SettingsView from "@/views/settings/SettingsView.vue";
 import ProfileView from "@/views/profile/ProfileView.vue";
 import RegisterView from "@/views/auth/RegisterView.vue";
-import PendingOperations from "@/views/banking/transaction/PendingOperationsView.vue";
+import Operations from "@/views/operations/OperationsView.vue";
 import VerificationView from "@/views/auth/verification/VerificationView.vue";
 import ResendVerificationView from "@/views/auth/verification/ResendVerificationView.vue";
 import ResetPasswordView from "@/views/auth/password/reset/ResetPasswordView.vue";
@@ -47,8 +47,8 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/operations/pending",
-        name: "pending-operations",
-        component: PendingOperations,
+        name: "operations",
+        component: Operations,
       },
       {
         path: "/banking/transactions/:id",
