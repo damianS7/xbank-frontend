@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CustomAlert from "@/components/CustomAlert.vue";
 import BankingAccountListItem from "@/views/banking/account/components/BankingAccountListItem.vue";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useAccountStore } from "@/stores/account";
 import Button from "@/components/ui/button/Button.vue";
 import { useModalStore } from "@/stores/modal";
@@ -45,6 +45,9 @@ async function openAccount() {
       alert.value.exception(error);
     });
 }
+onMounted(async () => {
+  await accountStore.initialize();
+});
 </script>
 <template>
   <PageLayout>
