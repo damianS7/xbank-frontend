@@ -25,9 +25,9 @@ const transfers = computed<BankingTransfer[]>(
 );
 
 const STATUS_VARIANT_MAP: Record<BankingTransferStatus, BadgeVariants> = {
-  [BankingTransferStatus.PENDING]: "alert",
-  [BankingTransferStatus.REJECTED]: "destructive",
-  [BankingTransferStatus.CONFIRMED]: "success",
+  [BankingTransferStatus.PENDING]: { variant: "alert" },
+  [BankingTransferStatus.REJECTED]: { variant: "destructive" },
+  [BankingTransferStatus.CONFIRMED]: { variant: "success" },
 };
 async function doAction(action: string) {
   const confirm: string = (await modalStore.open("ConfirmMessage", {
@@ -119,7 +119,7 @@ onMounted(async () => {
               {{ transfer.createdAt.toLocaleString() }}
             </td>
             <td class="p-2 border">
-              <Badge :variant="STATUS_VARIANT_MAP[transfer.status]">
+              <Badge :variant="STATUS_VARIANT_MAP[transfer.status].variant">
                 {{ transfer.status }}
               </Badge>
             </td>
