@@ -8,10 +8,9 @@ export enum BankingTransferStatus {
 
 export interface BankingTransfer {
   id: number;
-  accountId: number;
+  fromAccountId: number;
   toAccountNumber: string;
   amount: number;
-  currency: string;
   status: BankingTransferStatus;
   description: string;
   transaction: BankingTransaction;
