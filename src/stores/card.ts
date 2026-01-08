@@ -37,6 +37,13 @@ export const useCardStore = defineStore("card", () => {
     };
   });
 
+  async function activateCard(cardId: number, cvv: string) {
+    const activatedCard = await cardService.activate(cardId, cvv);
+    bankingCards.value = bankingCards.value.map((card) =>
+      card.id === activatedCard.id ? activatedCard : card
+    );
+  }
+
   async function fetchBankingCards() {
     const cards = await cardService.fetchCards();
     return cards.map((card: any) => ({
@@ -147,6 +154,7 @@ export const useCardStore = defineStore("card", () => {
     initialized,
     initialize,
     setCardPin,
+    activateCard,
     setDailyLimit,
     setLockStatus,
     getBankingCard,

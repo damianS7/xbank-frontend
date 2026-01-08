@@ -14,6 +14,7 @@ export const cardStatusValues = [
   "DISABLED",
   "LOCKED",
   "EXPIRED",
+  "PENDING_ACTIVATION",
 ] as const;
 export type BankingCardStatus = (typeof cardStatusValues)[number];
 export const cardStatusOptions = cardStatusValues.map((value) => ({

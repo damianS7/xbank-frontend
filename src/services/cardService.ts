@@ -84,6 +84,26 @@ export const cardService = {
 
     return json;
   },
+  async activate(cardId: number, cvv: string): Promise<BankingCard> {
+    const response = await fetch(`${API}/banking/cards/${cardId}/activate`, {
+      method: "PATCH",
+      headers: authHeader(),
+      body: JSON.stringify({ cvv }),
+    });
+
+    const json = await response.json();
+
+    // if response is not 200, throw an error
+    if (response.status !== 200) {
+      throw new ApiResponse(
+        json.message || "Failed to activate card",
+        response.status,
+        json.errors
+      );
+    }
+
+    return json;
+  },
   async lock(cardId: number, password: string): Promise<BankingCard> {
     const response = await fetch(`${API}/banking/cards/${cardId}/lock`, {
       method: "PATCH",

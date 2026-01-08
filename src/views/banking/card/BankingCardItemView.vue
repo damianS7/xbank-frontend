@@ -152,6 +152,13 @@ async function setDailyLimit() {
           </div>
         </div>
         <div class="flex gap-1">
+          <Button
+            v-if="card?.cardStatus === 'PENDING_ACTIVATION'"
+            @click="cardStore.activateCard(card?.id, card?.cardCVV)"
+            size="sm"
+          >
+            ACTIVATE
+          </Button>
           <Button @click="setPin" size="sm"> PIN </Button>
           <Button @click="setLock" size="sm">
             {{ card?.cardStatus === "LOCKED" ? "UNLOCK" : "LOCK" }}
