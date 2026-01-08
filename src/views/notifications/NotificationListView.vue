@@ -33,7 +33,9 @@ const alert = ref();
 const notificationScroll: Ref<HTMLDivElement | HTMLElement | null> = ref(null);
 
 // HTMLDivElement
-const { currentPage, nextPage, pagination } = usePagination(fetchNotifications);
+const { currentPage, nextPage, pagination } = usePagination(() =>
+  notificationStore.fetchNotifications(currentPage.value)
+);
 
 // methods
 async function doOnBottom() {
@@ -48,22 +50,15 @@ async function doOnBottom() {
   nextPage();
 }
 
-async function fetchNotifications() {
-  return await notificationStore
-    .fetchNotifications(currentPage.value, true)
-    .then((response: PaginatedResponse | any) => {
-      pagination.value = response;
-    });
-}
-
 const { isScrollOnBottom } = useScrollBottonDetect(
   notificationScroll,
   doOnBottom
 );
 
 onMounted(async () => {
-  notificationStore.resetStore();
-  await fetchNotifications();
+  // notificationStore.resetStore();
+  // await fetchNotifications();
+  pagination.value = notificationStore.pagination;
   notificationScroll.value = document.getElementById("page-section-content");
   mountedComponent.value = true;
 });
@@ -82,31 +77,26 @@ onMounted(async () => {
     <template #content>
       <CustomAlert ref="alert" />
 
-      <div
-        v-if="mountedComponent && notifications && notifications.length > 0"
-        class="flex flex-col gap-2"
-      >
+      <div v-if="notifications.length > 0" class="flex flex-col gap-2">
         <NotificationListItem
           v-for="(notification, index) in notifications"
           :notification="notification"
           :key="index"
         />
+        <Button @click="doOnBottom()">Load more ...</Button>
       </div>
 
+      <div
+        v-else-if="notifications.length === 0"
+        class="text-gray-600 text-center"
+      >
+        No notifications to show ...
+      </div>
       <div
         v-else-if="!mountedComponent"
         class="flex items-center gap-2 text-gray-600 justify-center"
       >
         <Spinner class="text-primary" /> Loading notifications ...
-      </div>
-
-      <div
-        v-else-if="
-          mountedComponent && notifications && notifications.length === 0
-        "
-        class="text-gray-600 text-center"
-      >
-        No notifications to show ...
       </div>
     </template>
   </PageLayout>

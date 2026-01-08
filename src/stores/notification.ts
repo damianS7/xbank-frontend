@@ -9,6 +9,7 @@ const API = import.meta.env.VITE_APP_API_URL;
 
 export const useNotificationStore = defineStore("notification", () => {
   const notifications = ref<Notification[]>([]);
+  const pagination = ref<PaginatedResponse>();
   const unreadNotificationsCount = ref(0);
   const initialized = ref(false);
   let eventSource: typeof EventSourcePolyfill;
@@ -24,9 +25,8 @@ export const useNotificationStore = defineStore("notification", () => {
   }
 
   async function fetchNotifications(
-    page: number = 0,
-    returnPaginated: boolean = false
-  ): Promise<Notification[] | PaginatedResponse> {
+    page: number = 0
+  ): Promise<PaginatedResponse> {
     const response: PaginatedResponse =
       await notificationService.fetchNotifications(page);
 
@@ -35,9 +35,10 @@ export const useNotificationStore = defineStore("notification", () => {
       createdAt: new Date(notification.createdAt),
     }));
 
+    pagination.value = response;
     notifications.value.push(...response.content);
     unreadNotificationsCount.value = response.totalElements;
-    return returnPaginated ? response : notifications.value;
+    return response;
   }
 
   async function deleteNotification(id: number): Promise<void> {
@@ -108,6 +109,7 @@ export const useNotificationStore = defineStore("notification", () => {
   return {
     initialize,
     notifications,
+    pagination,
     clearNotifications,
     countNotifications,
     fetchNotifications,
