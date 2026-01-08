@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import NotificationBubble from "./NotificationBubble.vue";
+import TransfersBubble from "./TransfersBubble.vue";
 defineProps<{
   to: string;
   icon?: unknown;
@@ -17,6 +18,7 @@ defineProps<{
   >
     <component :is="icon" />
     <NotificationBubble v-if="to === 'notifications'" />
+    <TransfersBubble v-if="to === 'banking-transfers'" />
     <span>{{ label }}</span>
   </RouterLink>
 </template>

@@ -8,6 +8,8 @@ import {
   Settings,
   ReceiptText,
   Bell,
+  BanknoteArrowDown,
+  ShoppingCart,
 } from "lucide-vue-next";
 import SidebarLink from "@/components/sidebar/SidebarLink.vue";
 import {
@@ -29,9 +31,14 @@ const links = [
   { to: "banking-accounts", icon: Accounts, label: "Accounts" },
   { to: "banking-cards", icon: CreditCard, label: "Cards" },
   {
-    to: "operations",
-    icon: ReceiptText,
-    label: "Operations",
+    to: "banking-transfers",
+    icon: BanknoteArrowDown,
+    label: "Transfers",
+  },
+  {
+    to: "banking-accounts",
+    icon: ShoppingCart,
+    label: "Card spending",
   },
   { to: "profile", icon: Profile, label: "Profile" },
   { to: "notifications", icon: Bell, label: "Notifications" },
