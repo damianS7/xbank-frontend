@@ -114,38 +114,4 @@ export const accountService = {
 
     return json as BankingAccount;
   },
-
-  async transferTo(
-    fromBankingAccountId: string,
-    toBankingAccountNumber: string,
-    amount: number,
-    description: string,
-    password: string
-  ): Promise<BankingTransaction> {
-    const response = await fetch(
-      `${API}/banking/accounts/${fromBankingAccountId}/transfer`,
-      {
-        method: "POST",
-        headers: authHeader(),
-        body: JSON.stringify({
-          toBankingAccountNumber,
-          description,
-          amount,
-          password,
-        }),
-      }
-    );
-
-    const json = await response.json();
-
-    if (response.status !== 201) {
-      throw new ApiResponse(
-        json.message || "Failed to transfer.",
-        response.status,
-        json.errors
-      );
-    }
-
-    return json;
-  },
 };
