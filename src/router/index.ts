@@ -22,6 +22,7 @@ import ResetPasswordSetView from "@/views/auth/password/reset/ResetPasswordSetVi
 import { useAuthStore } from "@/stores/auth";
 import NotificationView from "@/views/notifications/NotificationListView.vue";
 import BankingTransactionItemView from "@/views/banking/transaction/BankingTransactionItemView.vue";
+import BankingCardAuthorizationView from "@/views/banking/card/BankingCardAuthorizationListView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -64,6 +65,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/banking/card/:id",
         name: "banking-card",
         component: BankingCardItemView,
+      },
+      {
+        path: "/banking/cards/authorizations",
+        name: "banking-card-authorizations",
+        component: BankingCardAuthorizationView,
       },
       {
         path: "profile",

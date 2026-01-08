@@ -10,6 +10,7 @@ import {
   Bell,
   BanknoteArrowDown,
   ShoppingCart,
+  Signature,
 } from "lucide-vue-next";
 import SidebarLink from "@/components/sidebar/SidebarLink.vue";
 import {
@@ -36,9 +37,9 @@ const links = [
     label: "Transfers",
   },
   {
-    to: "banking-accounts",
-    icon: ShoppingCart,
-    label: "Card spending",
+    to: "banking-card-authorizations",
+    icon: Signature,
+    label: "Card authorizations",
   },
   { to: "profile", icon: Profile, label: "Profile" },
   { to: "notifications", icon: Bell, label: "Notifications" },
