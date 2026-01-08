@@ -62,6 +62,8 @@ export const useTransferStore = defineStore("transfer", () => {
       password
     );
 
+    transfer.createdAt = new Date(transfer.createdAt);
+
     transfers.value = transfers.value.map((t) =>
       t.id === transfer.id ? transfer : t
     );
@@ -77,6 +79,8 @@ export const useTransferStore = defineStore("transfer", () => {
       transferId,
       password
     );
+
+    transfer.createdAt = new Date(transfer.createdAt);
 
     transfers.value = transfers.value.map((t) =>
       t.id === transfer.id ? transfer : t
