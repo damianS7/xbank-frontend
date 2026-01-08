@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CustomAlert from "@/components/CustomAlert.vue";
-import { ref, computed } from "vue";
+import { ref, computed, type ComputedRef } from "vue";
 import { useRoute } from "vue-router";
 import { useCardStore } from "@/stores/card";
 import BankingCardFront from "@/views/banking/card/components/BankingCardFront.vue";
@@ -26,10 +26,12 @@ const alert = ref();
 
 const cardId = parseInt(route.params.id as string, 10);
 const card = computed(() => cardStore.getBankingCard(cardId));
-const currency = computed(() => {
+const currency: ComputedRef<string> = computed(() => {
   const bankingAccountId = card.value?.bankingAccountId;
-  if (!bankingAccountId) return;
-  return accountStore.getBankingAccount(bankingAccountId)?.accountCurrency;
+  if (!bankingAccountId) return "";
+  return (
+    accountStore.getBankingAccount(bankingAccountId)?.accountCurrency ?? ""
+  );
 });
 
 async function setLock() {
@@ -88,7 +90,7 @@ async function setPin() {
     .setCardPin(cardId, pin, password)
     .then((card) => {
       cardStore.setCard(card);
-      alert.value.success("PIN updated.");
+      alert.value.success("PIN updated", { timeout: 5 });
     })
     .catch((error) => {
       alert.value.exception(error.message);
@@ -118,7 +120,7 @@ async function setDailyLimit() {
     .setDailyLimit(cardId, dailyLimit, password)
     .then((card) => {
       cardStore.setCard(card);
-      alert.value.success("Daily limit updated.");
+      alert.value.success("Daily limit updated", { timeout: 5 });
     })
     .catch((error) => {
       alert.value.exception(error.message);
@@ -150,7 +152,6 @@ async function setDailyLimit() {
           </div>
         </div>
         <div class="flex gap-1">
-          <Button @click="setPin" size="sm"> NFC </Button>
           <Button @click="setPin" size="sm"> PIN </Button>
           <Button @click="setLock" size="sm">
             {{ card?.cardStatus === "LOCKED" ? "UNLOCK" : "LOCK" }}
