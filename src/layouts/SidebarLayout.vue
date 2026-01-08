@@ -36,11 +36,6 @@ const links = [
     icon: BanknoteArrowDown,
     label: "Transfers",
   },
-  {
-    to: "banking-card-authorizations",
-    icon: Signature,
-    label: "Card authorizations",
-  },
   { to: "profile", icon: Profile, label: "Profile" },
   { to: "notifications", icon: Bell, label: "Notifications" },
   { to: "settings", icon: Settings, label: "Settings" },
