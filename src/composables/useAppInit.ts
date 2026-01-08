@@ -7,6 +7,7 @@ import { useAccountStore } from "@/stores/account";
 import { useCardStore } from "@/stores/card";
 import { useNotificationStore } from "@/stores/notification";
 import { useTransferStore } from "@/stores/transfer";
+import { useSettingStore } from "@/stores/setting";
 
 export function useAppInit() {
   const authStore = useAuthStore();
@@ -14,7 +15,7 @@ export function useAppInit() {
   const bankingAccountStore = useAccountStore();
   const bankingCardStore = useCardStore();
   const transferStore = useTransferStore();
-  // const settingStore = useSettingStore();
+  const settingStore = useSettingStore();
   const notificationStore = useNotificationStore();
   const tokenValidationInterval = 60 * 1000; // 60s
   let interval: NodeJS.Timeout;
@@ -54,7 +55,7 @@ export function useAppInit() {
     await bankingAccountStore.initialize();
     await bankingCardStore.initialize();
     await transferStore.initialize();
-    // await settingStore.initialize();
+    await settingStore.initialize();
     await notificationStore.initialize();
     initialized.value = true;
   });
