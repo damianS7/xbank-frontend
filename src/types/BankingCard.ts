@@ -21,7 +21,6 @@ export const cardStatusOptions = cardStatusValues.map((value) => ({
   label: value.charAt(0) + value.slice(1),
 }));
 
-// Banking Card Lock Status
 export interface BankingCard {
   id: number;
   bankingAccountId: number;
