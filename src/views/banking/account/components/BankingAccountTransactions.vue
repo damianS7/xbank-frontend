@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { defineProps } from "vue";
 import { ChevronRight, ChevronLeft } from "lucide-vue-next";
 import { useTransactionStore } from "@/stores/transaction";
 import { usePagination } from "@/composables/usePagination";
 import Badge from "@/components/ui/badge/Badge.vue";
-import { BankingTransactionStatus } from "@/types/BankingTransaction";
+import {
+  BankingTransactionStatus,
+  type BankingTransaction,
+} from "@/types/BankingTransaction";
+import type { BadgeVariants } from "@/components/ui/badge";
 
 const account = defineProps({
   id: {
@@ -20,6 +24,9 @@ const { nextPage, previousPage, currentPage, pagination } =
 
 // store
 const transactionStore = useTransactionStore();
+const transactions = computed<BankingTransaction[]>(
+  () => pagination.value?.content ?? []
+);
 
 async function fetchTransactions() {
   // if (pagination) {
@@ -57,6 +64,13 @@ onMounted(async () => {
   transactionStore.resetStore();
   await fetchTransactions();
 });
+
+const STATUS_VARIANT_MAP: Record<BankingTransactionStatus, BadgeVariants> = {
+  [BankingTransactionStatus.PENDING]: { variant: "alert" },
+  [BankingTransactionStatus.FAILED]: { variant: "destructive" },
+  [BankingTransactionStatus.REJECTED]: { variant: "destructive" },
+  [BankingTransactionStatus.COMPLETED]: { variant: "success" },
+};
 </script>
 <template>
   <div v-if="pagination">
@@ -66,7 +80,7 @@ onMounted(async () => {
       </h3>
       <ul v-if="pagination.content?.length > 0" class="space-y-2">
         <li
-          v-for="(transaction, index) in pagination.content"
+          v-for="(transaction, index) in transactions"
           :key="index"
           class="flex flex-col sm:flex-row sm:justify-between sm:items-start bg-gray-50 hover:bg-gray-100 p-3 rounded-md"
         >
@@ -79,13 +93,7 @@ onMounted(async () => {
 
           <div class="flex flex-col text-sm font-medium text-right sm:w-1/2">
             <span>
-              <Badge
-                :variant="
-                  transaction.status === BankingTransactionStatus.PENDING
-                    ? 'alert'
-                    : 'success'
-                "
-              >
+              <Badge :variant="STATUS_VARIANT_MAP[transaction.status].variant">
                 {{ transaction.status }}
               </Badge>
               <span
