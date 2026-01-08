@@ -8,6 +8,7 @@ export enum BankingTransactionType {
 
 export enum BankingTransactionStatus {
   PENDING = "PENDING",
+  REJECTED = "REJECTED",
   COMPLETED = "COMPLETED",
   FAILED = "FAILED",
 }
