@@ -37,6 +37,28 @@ export const accountService = {
 
     return json as BankingAccount[];
   },
+  async chartData(currency: string): Promise<Object[]> {
+    const response = await fetch(
+      `${API}/banking/accounts/summary/${currency}`,
+      {
+        method: "GET",
+        headers: authHeader(),
+      }
+    );
+
+    const json = await response.json();
+
+    // if response is not 200, throw an error
+    if (response.status !== 200) {
+      throw new ApiResponse(
+        json.message || "Failed to fetch dashboard data",
+        response.status,
+        json.errors
+      );
+    }
+
+    return json as Object[];
+  },
 
   async requestBankingAccount(
     request: BankingAccountCreateRequest

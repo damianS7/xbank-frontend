@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { useAccountStore } from "@/stores/account";
 import { computed, defineProps, onMounted, ref } from "vue";
-import { useTransactionStore } from "@/stores/transaction";
-import type { BankingTransaction } from "@/types/BankingTransaction";
 import { LineChart } from "@/components/ui/chart-line";
+import { accountService } from "@/services/accountService";
+interface CurrencyBalanceEndOfDay {
+  balance: number;
+  createdAt: Date;
+}
 
 const props = defineProps({
   currency: {
@@ -12,17 +14,12 @@ const props = defineProps({
   },
 });
 
-// store
-const accountStore = useAccountStore();
-const transactionStore = useTransactionStore();
-
 // data
-const accounts = computed(() => accountStore.bankingAccounts);
-const transactions = ref<BankingTransaction[]>([]);
+const rawData = ref<CurrencyBalanceEndOfDay[]>([]);
 
 const data = computed(() =>
-  transactions.value.map((transaction) => {
-    const date = new Date(transaction.createdAt);
+  rawData.value.map((transaction) => {
+    const date = transaction.createdAt;
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear().toString().slice(-2);
@@ -34,37 +31,24 @@ const data = computed(() =>
 
     return {
       date: formattedDate, // x axis
-      Balance: transaction.balanceAfter, // categoría (nombre visible)
+      Balance: transaction.balance, // categoría (nombre visible)
     };
   })
 );
 
-async function fetchAllTransactions() {
-  const result: BankingTransaction[] = [];
-  const accountsByCurrency = accounts.value.filter((account) => {
-    if (account.accountCurrency === props.currency) return account;
-  });
-
-  for (const account of accountsByCurrency) {
-    await transactionStore
-      .fetchAccountTransactions(account.id, 0, 100)
-      .then((transactions: any) => {
-        result.push(...transactions);
-      });
-  }
-  return result;
-}
-
 onMounted(async () => {
-  const data = await fetchAllTransactions();
-  transactions.value = data.sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  );
+  const data = await accountService.chartData(props.currency);
+  rawData.value = data
+    .map(([createdAt, balance]: [string, string]) => ({
+      createdAt: new Date(createdAt),
+      balance: Number(balance),
+    }))
+    .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 });
 </script>
 <template>
   <LineChart
-    v-if="transactions"
+    v-if="rawData"
     index="date"
     :data="data"
     :show-legend="false"

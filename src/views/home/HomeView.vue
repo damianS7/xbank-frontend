@@ -3,7 +3,6 @@ import { useAccountStore } from "@/stores/account";
 import { computed } from "vue";
 import { BankingAccountCurrencies as currencies } from "@/types/BankingAccount";
 import BankingAccountCurrencyChart from "@/views/home/components/BankingAccountCurrencyChart.vue";
-import PageLayout from "@/layouts/PageLayout.vue";
 
 const accountStore = useAccountStore();
 const accounts = computed(() => accountStore.bankingAccounts);
