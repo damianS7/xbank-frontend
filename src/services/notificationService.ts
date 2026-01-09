@@ -65,7 +65,7 @@ export const notificationService = {
     }
   },
   async deleteNotificationsById(notificationIds: number[]) {
-    const response = await fetch(`${API}/notifications/batch`, {
+    const response = await fetch(`${API}/notifications`, {
       method: "DELETE",
       headers: authHeader(),
       body: JSON.stringify({ notificationIds }),
