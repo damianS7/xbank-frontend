@@ -64,7 +64,7 @@ async function approve(id: number) {
       alert.value.success("Operation aprroved.", { timeout: 5 });
     })
     .catch((error) => {
-      alert.value.exception(error.message);
+      alert.value.exception(error);
     });
 }
 
@@ -80,7 +80,7 @@ async function reject(id: number) {
       alert.value.success("Operation rejected.", { timeout: 5 });
     })
     .catch((error) => {
-      alert.value.exception(error.message);
+      alert.value.exception(error);
     });
 }
 
