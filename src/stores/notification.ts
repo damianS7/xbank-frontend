@@ -89,9 +89,6 @@ export const useNotificationStore = defineStore("notification", () => {
   }
 
   async function clearNotifications() {
-    // notificationService.deleteNotifications().then(() => {
-    //   notifications.value = [];
-    // });
     const notificationIds: number[] = [];
 
     notifications.value.map(async (notification) => {
