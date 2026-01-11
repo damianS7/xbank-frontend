@@ -62,7 +62,7 @@ defineProps<{
     >
       <span class="text-sm sm:text-base italic text-gray-600 break-all">
         <slot v-if="notification.type === NotificationType.TRANSACTION">
-          <p v-html="t(notification.templateKey, notification.payload)"></p>
+          {{ t(notification.templateKey, notification.payload) }}
         </slot>
       </span>
     </div>

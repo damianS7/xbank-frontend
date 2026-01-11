@@ -1,7 +1,7 @@
 {
   "notification": {
     "transfer": {
-      "sent": "You sent <strong>{amount}</strong> {currency} to {toUser}",
+      "sent": "You sent {amount} {currency} to {toUser}",
       "received": "You received {amount} {currency} from {fromUser}"
     },
     "card": {
