@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import type { Notification } from "@/types/notification/NotificationBase";
-import { NotificationType } from "@/types/notification/NotificationBase";
+import type { Notification } from "@/types/notification/Notification";
+import { NotificationType } from "@/types/notification/Notification";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-vue-next";
 import { Bell } from "lucide-vue-next";
 import { useNotificationStore } from "@/stores/notification";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 // props
 defineProps<{
@@ -24,15 +27,10 @@ defineProps<{
             <router-link
               :to="{
                 name: 'banking-transaction',
-                params: { id: notification.metadata.transaction.id },
+                params: { id: notification.payload.transactionId },
               }"
             >
-              {{
-                notification.metadata.transaction.type?.replace(
-                  /(_TO|_FROM|_CHARGE)$/,
-                  ""
-                )
-              }}
+              {{ notification.type?.replace(/(_TO|_FROM|_CHARGE)$/, "") }}
             </router-link>
           </slot>
           <slot v-else>
@@ -64,10 +62,7 @@ defineProps<{
     >
       <span class="text-sm sm:text-base italic text-gray-600 break-all">
         <slot v-if="notification.type === NotificationType.TRANSACTION">
-          {{ notification.metadata.transaction.description }}
-        </slot>
-        <slot v-else>
-          {{ notification.metadata.message }}
+          <p v-html="t(notification.templateKey, notification.payload)"></p>
         </slot>
       </span>
     </div>

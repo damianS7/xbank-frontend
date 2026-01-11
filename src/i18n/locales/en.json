@@ -1,0 +1,21 @@
+{
+  "notification": {
+    "transfer": {
+      "sent": "You sent <strong>{amount}</strong> {currency} to {toUser}",
+      "received": "You received {amount} {currency} from {fromUser}"
+    },
+    "card": {
+      "payment": {
+        "completed": "Payment of {amount} {currency} at {shopName}"
+      },
+      "withdraw": {
+        "completed": "Withdrawal of {amount} {currency}"
+      }
+    },
+    "account": {
+      "deposit": {
+        "completed": "Deposit of {amount} {currency}"
+      }
+    }
+  }
+}
