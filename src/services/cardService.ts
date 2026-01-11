@@ -1,20 +1,14 @@
 import { ApiResponse } from "@/types/response/ApiResponse";
-import type { BankingCard, BankingCardLockStatus } from "@/types/BankingCard";
+import type { BankingCard } from "@/types/BankingCard";
+import { buildHeaders } from "./api/baseHeaders";
 
 const API = import.meta.env.VITE_APP_API_URL;
-const authHeader = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
 
 export const cardService = {
   async fetchCards(): Promise<BankingCard[]> {
     const response = await fetch(`${API}/banking/cards`, {
       method: "GET",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
     });
 
     const json = await response.json();
@@ -42,7 +36,7 @@ export const cardService = {
   ): Promise<BankingCard> {
     const response = await fetch(`${API}/banking/cards/${cardId}/pin`, {
       method: "PATCH",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({ pin, password }),
     });
 
@@ -67,7 +61,7 @@ export const cardService = {
   ): Promise<BankingCard> {
     const response = await fetch(`${API}/banking/cards/${cardId}/daily-limit`, {
       method: "PATCH",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({ dailyLimit, password }),
     });
 
@@ -87,7 +81,7 @@ export const cardService = {
   async activate(cardId: number, cvv: string): Promise<BankingCard> {
     const response = await fetch(`${API}/banking/cards/${cardId}/activate`, {
       method: "PATCH",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({ cvv }),
     });
 
@@ -107,7 +101,7 @@ export const cardService = {
   async lock(cardId: number, password: string): Promise<BankingCard> {
     const response = await fetch(`${API}/banking/cards/${cardId}/lock`, {
       method: "PATCH",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({ password }),
     });
 
@@ -127,7 +121,7 @@ export const cardService = {
   async unlock(cardId: number, password: string): Promise<BankingCard> {
     const response = await fetch(`${API}/banking/cards/${cardId}/unlock`, {
       method: "PATCH",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({ password }),
     });
 

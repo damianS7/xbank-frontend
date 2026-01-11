@@ -1,15 +1,9 @@
 import { ApiResponse } from "@/types/response/ApiResponse";
 import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
 import type { BankingTransaction } from "@/types/BankingTransaction";
+import { buildHeaders } from "./api/baseHeaders";
 
 const API = import.meta.env.VITE_APP_API_URL;
-const authHeader = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
 
 export const transactionService = {
   async fetchTransaction(transactionId: number): Promise<BankingTransaction> {
@@ -17,7 +11,7 @@ export const transactionService = {
       `${API}/banking/transactions/${transactionId}`,
       {
         method: "GET",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
       }
     );
 
@@ -43,7 +37,7 @@ export const transactionService = {
       `${API}/banking/accounts/${accountId}/transactions?page=${page}&size=${size}&sort=createdAt,DESC`,
       {
         method: "GET",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
       }
     );
 
@@ -69,7 +63,7 @@ export const transactionService = {
       `${API}/banking/cards/${cardId}/transactions?page=${page}&size=${size}&sort=createdAt,DESC`,
       {
         method: "GET",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
       }
     );
 
@@ -98,7 +92,7 @@ export const transactionService = {
       `${API}/banking/accounts/${fromBankingAccountId}/transactions`,
       {
         method: "POST",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
         body: JSON.stringify({
           toBankingAccountNumber,
           transactionType,

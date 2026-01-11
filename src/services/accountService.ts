@@ -6,22 +6,15 @@ import type { BankingCard } from "@/types/BankingCard";
 import type { BankingAccountUpdateRequest } from "@/types/request/BankingAccountUpdateRequest";
 import type { BankingAccountAliasUpdateRequest } from "@/types/request/BankingAccountAliasUpdateRequest";
 import type { BankingTransaction } from "@/types/BankingTransaction";
+import { buildHeaders } from "./api/baseHeaders";
 
 const API = import.meta.env.VITE_APP_API_URL;
-const authHeader = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    "Accept-Language": localStorage.getItem("lang") ?? "en",
-    Authorization: `Bearer ${token}`,
-  };
-};
 
 export const accountService = {
   async fetchAccounts(): Promise<BankingAccount[]> {
     const response = await fetch(`${API}/banking/accounts`, {
       method: "GET",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
     });
 
     const json = await response.json();
@@ -42,7 +35,7 @@ export const accountService = {
       `${API}/banking/accounts/summary/${currency}`,
       {
         method: "GET",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
       }
     );
 
@@ -65,7 +58,7 @@ export const accountService = {
   ): Promise<BankingAccount> {
     const response = await fetch(`${API}/banking/accounts`, {
       method: "POST",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify(request),
     });
 
@@ -91,7 +84,7 @@ export const accountService = {
       `${API}/banking/accounts/` + accountId + "/cards",
       {
         method: "POST",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
         body: JSON.stringify(request),
       }
     );
@@ -118,7 +111,7 @@ export const accountService = {
       `${API}/banking/accounts/` + accountId + "/alias",
       {
         method: "PATCH",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
         body: JSON.stringify(request),
       }
     );

@@ -1,21 +1,15 @@
 import { ApiResponse } from "@/types/response/ApiResponse";
 import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
 import type { BankingTransfer } from "@/types/BankingTransfer";
+import { buildHeaders } from "./api/baseHeaders";
 
 const API = import.meta.env.VITE_APP_API_URL;
-const authHeader = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
 
 export const transferService = {
   async fetchTransfers(): Promise<BankingTransfer[]> {
     const response = await fetch(`${API}/banking/transfers`, {
       method: "GET",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
     });
 
     const json = await response.json();
@@ -39,7 +33,7 @@ export const transferService = {
   ): Promise<BankingTransfer> {
     const response = await fetch(`${API}/banking/transfers`, {
       method: "POST",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({
         fromAccountId,
         toAccountNumber,
@@ -68,7 +62,7 @@ export const transferService = {
       `${API}/banking/transfers/${transferId}/confirm`,
       {
         method: "POST",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
         body: JSON.stringify({
           transferId,
           password,
@@ -93,7 +87,7 @@ export const transferService = {
       `${API}/banking/transfers/${transferId}/reject`,
       {
         method: "POST",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
         body: JSON.stringify({
           transferId,
           password,

@@ -1,21 +1,15 @@
 import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
 import { ApiResponse } from "@/types/response/ApiResponse";
-import type { User } from "@/types/User2";
+import { buildHeaders } from "./api/baseHeaders";
+import type { User } from "@/types/User";
 
 const API = import.meta.env.VITE_APP_API_URL;
-const authHeader = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
 
 export const userService = {
   async fetchUser(): Promise<User> {
     const response = await fetch(`${API}/users`, {
       method: "GET",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
     });
 
     const json = await response.json();
@@ -34,7 +28,7 @@ export const userService = {
   async updateEmail(currentPassword: string, newEmail: string): Promise<User> {
     const response = await fetch(`${API}/users/email`, {
       method: "PATCH",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({ currentPassword, newEmail }),
     });
 
@@ -53,7 +47,7 @@ export const userService = {
   async updatePassword(currentPassword: string, newPassword: string) {
     const response = await fetch(`${API}/users/password`, {
       method: "PATCH",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({ currentPassword, newPassword }),
     });
 

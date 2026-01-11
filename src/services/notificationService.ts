@@ -1,15 +1,9 @@
 // services/notificationService.ts
 import { ApiResponse } from "@/types/response/ApiResponse";
 import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
+import { buildHeaders } from "./api/baseHeaders";
 
 const API = import.meta.env.VITE_APP_API_URL;
-const authHeader = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
 
 export const notificationService = {
   async fetchNotifications(page?: number): Promise<PaginatedResponse> {
@@ -17,7 +11,7 @@ export const notificationService = {
       `${API}/notifications?page=${page}&sort=createdAt,DESC`,
       {
         method: "GET",
-        headers: authHeader(),
+        headers: buildHeaders({ json: true }),
       }
     );
 
@@ -37,7 +31,7 @@ export const notificationService = {
   async deleteNotifications() {
     const response = await fetch(`${API}/notifications`, {
       method: "DELETE",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
     });
 
     if (response.status !== 204) {
@@ -52,7 +46,7 @@ export const notificationService = {
   async deleteNotification(id: number) {
     const response = await fetch(`${API}/notifications/${id}`, {
       method: "DELETE",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
     });
 
     if (response.status !== 204) {
@@ -67,7 +61,7 @@ export const notificationService = {
   async deleteNotificationsById(notificationIds: number[]) {
     const response = await fetch(`${API}/notifications`, {
       method: "DELETE",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({ notificationIds }),
     });
 

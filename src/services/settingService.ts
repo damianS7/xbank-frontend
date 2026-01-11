@@ -1,21 +1,15 @@
 import type { SettingsUpdateRequest } from "@/types/request/SettingsUpdateRequest";
 import { ApiResponse } from "@/types/response/ApiResponse";
 import type { Setting } from "@/types/Setting";
+import { buildHeaders } from "./api/baseHeaders";
 
 const API = import.meta.env.VITE_APP_API_URL;
-const authHeader = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
 
 export const settingService = {
   async fetchSettings(): Promise<Setting> {
     const response = await fetch(`${API}/settings`, {
       method: "GET",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
     });
 
     // json response
@@ -35,7 +29,7 @@ export const settingService = {
   async updateSettings(request: SettingsUpdateRequest): Promise<Setting> {
     const response = await fetch(`${API}/settings`, {
       method: "PATCH",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify(request),
     });
 

@@ -1,21 +1,14 @@
 import { ApiResponse } from "@/types/response/ApiResponse";
-import type { User } from "@/types/User";
 import type { Profile } from "@/types/Profile";
+import { buildHeaders } from "./api/baseHeaders";
 
 const API = import.meta.env.VITE_APP_API_URL;
-const authHeader = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
 
 export const profileService = {
   async fetchProfile(): Promise<Profile> {
     const response = await fetch(`${API}/profiles`, {
       method: "GET",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
     });
 
     const json = await response.json();
@@ -33,7 +26,7 @@ export const profileService = {
   async fetchProfileImage(userId: number): Promise<Blob> {
     const response = await fetch(`${API}/profiles/${userId}/image`, {
       method: "GET",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
     });
 
     if (response.status !== 200) {
@@ -76,7 +69,7 @@ export const profileService = {
   ): Promise<Profile> {
     const response = await fetch(`${API}/profiles`, {
       method: "PATCH",
-      headers: authHeader(),
+      headers: buildHeaders({ json: true }),
       body: JSON.stringify({ currentPassword, fieldsToUpdate }),
     });
 
