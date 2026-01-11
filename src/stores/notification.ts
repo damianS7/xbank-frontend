@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import type { Notification } from "@/types/notification/NotificationBase";
+import { type Notification } from "@/types/notification/Notification";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { notificationService } from "@/services/notificationService";
+import { mapNotification } from "@/types/notification/Notification";
 import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
 
 const API = import.meta.env.VITE_APP_API_URL;
@@ -18,10 +19,63 @@ export const useNotificationStore = defineStore("notification", () => {
     return unreadNotificationsCount.value;
   });
 
-  function resetStore() {
-    eventSource?.close();
+  async function resetStore() {
+    if (eventSource) {
+      eventSource.close();
+      eventSource = null;
+    }
+
     notifications.value = [];
     initialized.value = false;
+  }
+
+  async function initialize() {
+    // if (eventSource && eventSource.readyState === EventSource.OPEN) {
+    //   return;
+    // }
+    await resetStore();
+
+    // initial notifications (stored in db) fetch from the api
+    await fetchNotifications();
+
+    // setup the event source for server-sent events (SSE)
+    eventSource = new EventSourcePolyfill(`${API}/notifications/stream`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      heartbeatTimeout: 35000,
+      reconnectInterval: 5000,
+    });
+
+    eventSource.onclose = () => {
+      console.log("⚠️ SSE connection closed");
+    };
+
+    eventSource.onopen = () => {
+      console.log("✅ SSE connection opened");
+    };
+
+    eventSource.addEventListener("heartbeat", (event: MessageEvent) => {
+      console.log("💓 Heartbeat:", event.data);
+    });
+
+    eventSource.addEventListener("notification", (event: MessageEvent) => {
+      console.log("📨 Notification:", event.data);
+      try {
+        const notification: Notification = mapNotification(
+          JSON.parse(event.data)
+        );
+
+        console.log("🔔 Notification received:", notification);
+        notifications.value.unshift(notification);
+
+        updateUnreadCount(+1);
+      } catch (error) {
+        console.error("❌ JSON parse notification error", error, event.data);
+      }
+    });
+
+    initialized.value = true;
   }
 
   async function fetchNotifications(
@@ -59,35 +113,6 @@ export const useNotificationStore = defineStore("notification", () => {
     }
     unreadNotificationsCount.value += count;
   }
-
-  async function initialize() {
-    resetStore();
-
-    // initial notifications (stored in db) fetch from the api
-    await fetchNotifications();
-
-    // setup the event source for server-sent events (SSE)
-    eventSource = new EventSourcePolyfill(`${API}/notifications/stream`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    // handle incoming messages (notifications)
-    eventSource.onmessage = (event: MessageEvent) => {
-      // console.log("🔔 Notification received:", event.data);
-      try {
-        const notification: Notification = JSON.parse(event.data);
-        // notifications.value.push(notification);
-        notifications.value.unshift(notification);
-
-        updateUnreadCount(+1);
-      } catch (error) {}
-    };
-
-    initialized.value = true;
-  }
-
   async function clearNotifications() {
     const notificationIds: number[] = [];
 
