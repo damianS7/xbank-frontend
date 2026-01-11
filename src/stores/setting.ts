@@ -19,12 +19,12 @@ export const useSettingStore = defineStore("setting", () => {
       await settingService.updateSettings(request);
     settings.value = updatedSettings;
 
-    localStorage.setItem("lang", settings.value.language);
+    localStorage.setItem("lang", settings.value.language.toLocaleLowerCase());
   }
 
   async function initialize() {
     await fetchSettings().then(() => {
-      localStorage.setItem("lang", settings.value.language);
+      localStorage.setItem("lang", settings.value.language.toLocaleLowerCase());
       initialized.value = true;
     });
   }
