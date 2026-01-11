@@ -11,11 +11,7 @@ export enum NotificationType {
 export interface Notification {
   id: number;
   type: NotificationType;
-  // payload: {
-  //   [key: string]: any;
-  // };
-  // payload: Record<string, any>;
-  payload: any;
+  payload: Record<string, any>;
   templateKey: string;
   createdAt: Date;
 }
