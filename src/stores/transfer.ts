@@ -2,19 +2,37 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import type { BankingTransfer } from "@/types/BankingTransfer";
 import { transferService } from "@/services/transferService";
+import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
 export const useTransferStore = defineStore("transfer", () => {
   const initialized = ref(false);
   const transfers = ref<BankingTransfer[]>([]);
+  const pagination = ref<PaginatedResponse>();
 
   async function initialize() {
     await fetchTransfers().then((ftransfers) => {
-      ftransfers.forEach((t) => {
+      ftransfers.content.forEach((t) => {
         t.createdAt = new Date(t.createdAt);
       });
 
-      transfers.value = ftransfers;
+      transfers.value = ftransfers.content;
       initialized.value = true;
     });
+  }
+
+  async function fetchTransfers(page: number = 0): Promise<PaginatedResponse> {
+    const response: PaginatedResponse =
+      await transferService.fetchTransfers(page);
+
+    response.content = response.content.map((transfer: any) => ({
+      ...transfer,
+      createdAt: new Date(transfer.createdAt),
+    }));
+
+    pagination.value = response;
+    // transfers.value.push(...response.content);
+    transfers.value = response.content;
+
+    return response;
   }
 
   const countPendingTransfers = computed(() => {
@@ -28,10 +46,10 @@ export const useTransferStore = defineStore("transfer", () => {
     )
   );
 
-  async function fetchTransfers(): Promise<BankingTransfer[]> {
-    const transfers: BankingTransfer[] = await transferService.fetchTransfers();
-    return transfers;
-  }
+  // async function fetchTransfers(): Promise<BankingTransfer[]> {
+  //   const transfers: BankingTransfer[] = await transferService.fetchTransfers();
+  //   return transfers;
+  // }
 
   async function createTransfer(
     fromAccountId: string,
@@ -94,7 +112,9 @@ export const useTransferStore = defineStore("transfer", () => {
     initialize,
     createTransfer,
     approveTransfer,
+    fetchTransfers,
     rejectTransfer,
+    pagination,
     transfersSortedByDate,
     countPendingTransfers,
   };

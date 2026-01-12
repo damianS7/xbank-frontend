@@ -6,11 +6,14 @@ import { buildHeaders } from "./api/baseHeaders";
 const API = import.meta.env.VITE_APP_API_URL;
 
 export const transferService = {
-  async fetchTransfers(): Promise<BankingTransfer[]> {
-    const response = await fetch(`${API}/banking/transfers`, {
-      method: "GET",
-      headers: buildHeaders({ json: true }),
-    });
+  async fetchTransfers(page?: number): Promise<PaginatedResponse> {
+    const response = await fetch(
+      `${API}/banking/transfers?page=${page}&sort=createdAt,DESC`,
+      {
+        method: "GET",
+        headers: buildHeaders({ json: true }),
+      }
+    );
 
     const json = await response.json();
 

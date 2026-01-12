@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, type Ref } from "vue";
 import Badge from "@/components/ui/badge/Badge.vue";
+import { ChevronRight, ChevronLeft } from "lucide-vue-next";
+import Button from "@/components/ui/button/Button.vue";
 import PageLayout from "@/layouts/PageLayout.vue";
 import CustomAlert from "@/components/CustomAlert.vue";
 import { useTransferStore } from "@/stores/transfer";
@@ -10,6 +12,10 @@ import {
   BankingTransferStatus,
   type BankingTransfer,
 } from "@/types/BankingTransfer";
+
+// composables
+import { useScrollBottonDetect } from "@/composables/useScrollBottomDetect";
+import { usePagination } from "@/composables/usePagination";
 
 // store
 const transferStore = useTransferStore();
@@ -85,18 +91,58 @@ async function reject(id: number) {
 }
 
 function formatAmount(amount: number): string {
-  return `$${amount.toFixed(2)}`;
+  return `${amount.toFixed(2)}`;
 }
+// methods
+async function doOnBottom() {
+  if (
+    pagination.value &&
+    pagination.value.totalPages &&
+    currentPage.value >= pagination.value.totalPages - 1
+  ) {
+    return;
+  }
+  // next page
+  nextPage();
+}
+
+// pagination
+const transferScroll: Ref<HTMLDivElement | HTMLElement | null> = ref(null);
+
+// HTMLDivElement
+const { currentPage, nextPage, pagination, previousPage } = usePagination(() =>
+  transferStore.fetchTransfers(currentPage.value)
+);
+
+const { isScrollOnBottom } = useScrollBottonDetect(transferScroll, doOnBottom);
+
 onMounted(async () => {
-  await transferStore.initialize();
+  // notificationStore.resetStore();
+  // await fetchNotifications();
+  // await transferStore.initialize();
+  pagination.value = transferStore.pagination;
+  transferScroll.value = document.getElementById("page-section-content");
+  // mountedComponent.value = true;
 });
 </script>
 <template>
   <PageLayout>
     <template #header>
-      <h1>Operations</h1>
+      <div class="flex items-center justify-between">
+        <h1>Transfers</h1>
+        <div
+          class="flex items-center p-1 text-white bg-blue-500 rounded text-xs gap-2"
+        >
+          <Button size="xs" class="rounded-lg" @click="previousPage()">
+            <ChevronLeft />
+          </Button>
+          <span> {{ currentPage + 1 }} / {{ pagination?.totalPages }} </span>
+          <Button size="xs" class="rounded-lg" @click="nextPage">
+            <ChevronRight />
+          </Button>
+        </div>
+      </div>
     </template>
-
     <template #content>
       <CustomAlert ref="alert" />
       <table v-if="transfers.length" class="w-full table-auto border-collapse">
@@ -110,6 +156,7 @@ onMounted(async () => {
           </tr>
         </thead>
         <tbody>
+          <!-- TODO paginate -->
           <tr
             v-for="(transfer, index) in transfers"
             :key="index"
