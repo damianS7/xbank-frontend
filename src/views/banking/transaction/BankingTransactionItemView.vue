@@ -5,7 +5,10 @@ import CustomAlert from "@/components/CustomAlert.vue";
 import { useTransactionStore } from "@/stores/transaction";
 import Badge from "@/components/ui/badge/Badge.vue";
 import PageLayout from "@/layouts/PageLayout.vue";
-import type { BankingTransaction } from "@/types/BankingTransaction";
+import {
+  BankingTransactionType,
+  type BankingTransaction,
+} from "@/types/BankingTransaction";
 import Spinner from "@/components/ui/spinner/Spinner.vue";
 
 // ----
@@ -75,34 +78,30 @@ onMounted(async () => {
           >
             <div>
               <h2 class="text-lg font-semibold">
-                {{ transaction.description || "Transaction" }}
-              </h2>
-              <p class="text-sm text-muted-foreground">
                 {{ formatType(transaction.type) }}
-                <span v-if="transaction.status">
-                  <Badge
-                    :variant="
-                      transaction.status === 'COMPLETED'
-                        ? 'success'
-                        : 'secondary'
-                    "
-                  >
-                    {{ transaction.status }} @
-                    {{ formatDate(transaction.updatedAt) }}
-                  </Badge>
-                </span>
-              </p>
+              </h2>
             </div>
 
             <div
               :class="[
                 'text-2xl font-bold',
-                transaction.amount > 0 ? 'text-green-600' : 'text-red-600',
+                transaction.amount > 0 ? '' : 'text-red-600',
               ]"
             >
-              {{ transaction.amount.toFixed(2) }}
+              <span
+                v-if="
+                  transaction.type === BankingTransactionType.DEPOSIT ||
+                  transaction.type === BankingTransactionType.TRANSFER_FROM
+                "
+                class="text-green-600"
+              >
+                +{{ transaction.amount.toFixed(2) }}
+              </span>
+              <span v-else class="text-red-600">
+                -{{ transaction.amount.toFixed(2) }}
+              </span>
               <span class="text-base font-normal ml-1">
-                {{ transaction.currency || "USD" }}
+                {{ transaction.currency || "" }}
               </span>
             </div>
           </div>
@@ -111,45 +110,75 @@ onMounted(async () => {
           <div class="border-t border-border my-4"></div>
 
           <!-- Details -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-            <div>
-              <router-link
-                :to="{
-                  name: 'banking-account',
-                  params: { id: transaction.accountId },
-                }"
-              >
-                <span class="font-medium text-muted-foreground"
-                  >Account ID:</span
+          <div class="grid gap-4 text-sm">
+            <!-- Accounts -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex justify-between gap-2">
+                <span class="font-medium text-muted-foreground">
+                  From account:
+                </span>
+                <router-link
+                  class="text-primary hover:underline break-all"
+                  :to="{
+                    name: 'banking-account',
+                    params: { id: transaction.accountId },
+                  }"
                 >
-                <span class="ml-2">{{ transaction.accountId }}</span>
-              </router-link>
+                  ES00 0000 0000 1111 1111
+                </router-link>
+              </div>
+
+              <div class="flex justify-between gap-2">
+                <span class="font-medium text-muted-foreground">
+                  To account:
+                </span>
+                <span class="break-all"> ES00 0000 0000 1111 2222 </span>
+              </div>
             </div>
 
+            <!-- Card -->
             <div v-if="transaction.cardId">
               <router-link
+                class="flex justify-between gap-2 text-primary hover:underline"
                 :to="{
                   name: 'banking-card',
                   params: { id: transaction.cardId },
                 }"
               >
-                <span class="font-medium text-muted-foreground">Card ID:</span>
-                <span class="ml-2">{{ transaction.cardId }}</span>
+                <span class="font-medium text-muted-foreground">
+                  Card ID:
+                </span>
+                <span>
+                  {{ transaction.cardId }}
+                </span>
               </router-link>
             </div>
 
-            <div>
-              <span class="font-medium text-muted-foreground"
-                >Balance after:</span
-              >
-              <span class="ml-2">{{
-                transaction.balanceAfter.toFixed(2)
-              }}</span>
+            <!-- Balances -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex justify-between gap-2">
+                <span class="font-medium text-muted-foreground">
+                  Balance before:
+                </span>
+                <span>
+                  {{ transaction.balanceBefore.toFixed(2) }}
+                </span>
+              </div>
+
+              <div class="flex justify-between gap-2">
+                <span class="font-medium text-muted-foreground">
+                  Balance after:
+                </span>
+                <span>
+                  {{ transaction.balanceAfter.toFixed(2) }}
+                </span>
+              </div>
             </div>
 
-            <div>
-              <span class="font-medium text-muted-foreground">Created:</span>
-              <span class="ml-2">
+            <!-- Created -->
+            <div class="flex justify-between gap-2">
+              <span class="font-medium text-muted-foreground"> Created: </span>
+              <span>
                 {{ formatDate(transaction.createdAt) }}
               </span>
             </div>
