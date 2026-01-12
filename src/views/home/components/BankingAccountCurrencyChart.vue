@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineProps, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { LineChart } from "@/components/ui/chart-line";
 import { accountService } from "@/services/accountService";
 interface CurrencyBalanceEndOfDay {

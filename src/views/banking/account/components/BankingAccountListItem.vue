@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import { useCardStore } from "@/stores/card";
 import { CreditCard, SquarePen, Save, SaveOff } from "lucide-vue-next";
 import { useAccountStore } from "@/stores/account";

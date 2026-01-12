@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import { SquarePen, Save, SaveOff } from "lucide-vue-next";
 const newPassword = ref("");
 const repeatedPassword = ref("");
