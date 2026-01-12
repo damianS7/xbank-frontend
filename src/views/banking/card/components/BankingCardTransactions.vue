@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onMounted } from "vue";
+import { onMounted } from "vue";
 import { ChevronRight, ChevronLeft } from "lucide-vue-next";
 import { useTransactionStore } from "@/stores/transaction";
 import BankingCardTransactionList from "@/views/banking/card/components/BankingCardTransactionList.vue";
