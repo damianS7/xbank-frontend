@@ -80,6 +80,9 @@ onMounted(async () => {
               <h2 class="text-lg font-semibold">
                 {{ formatType(transaction.type) }}
               </h2>
+              <small>
+                {{ transaction.description }}
+              </small>
             </div>
 
             <div
