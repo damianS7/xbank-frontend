@@ -112,27 +112,44 @@ onMounted(async () => {
           <!-- Details -->
           <div class="grid gap-4 text-sm">
             <!-- Accounts -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div
+              v-if="
+                transaction.type === BankingTransactionType.TRANSFER_FROM ||
+                transaction.type === BankingTransactionType.TRANSFER_TO
+              "
+              class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            >
               <div class="flex justify-between gap-2">
-                <span class="font-medium text-muted-foreground">
-                  From account:
-                </span>
+                <span class="font-medium text-muted-foreground"> From: </span>
                 <router-link
+                  v-if="transaction.type === BankingTransactionType.TRANSFER_TO"
                   class="text-primary hover:underline break-all"
                   :to="{
                     name: 'banking-account',
                     params: { id: transaction.accountId },
                   }"
                 >
-                  ES00 0000 0000 1111 1111
+                  <slot
+                    v-if="
+                      transaction.type === BankingTransactionType.TRANSFER_TO
+                    "
+                  >
+                    ({{ transaction.fromUser }})
+                    {{ transaction.fromAccountNumber }}
+                  </slot>
                 </router-link>
+                <span v-else>
+                  ({{ transaction.fromUser }})
+                  {{ transaction.fromAccountNumber }}
+                </span>
               </div>
 
               <div class="flex justify-between gap-2">
-                <span class="font-medium text-muted-foreground">
-                  To account:
-                </span>
-                <span class="break-all"> ES00 0000 0000 1111 2222 </span>
+                <span class="font-medium text-muted-foreground"> To: </span>
+                <span class="break-all">
+                  ({{ transaction.toUser }})
+                  {{ transaction.toAccountNumber }}</span
+                >
               </div>
             </div>
 
@@ -176,11 +193,21 @@ onMounted(async () => {
             </div>
 
             <!-- Created -->
-            <div class="flex justify-between gap-2">
-              <span class="font-medium text-muted-foreground"> Created: </span>
-              <span>
-                {{ formatDate(transaction.createdAt) }}
-              </span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex justify-between gap-2">
+                <span class="font-medium text-muted-foreground"> Status: </span>
+                <span>
+                  {{ transaction.status }}
+                </span>
+              </div>
+              <div class="flex justify-between gap-2">
+                <span class="font-medium text-muted-foreground">
+                  Created:
+                </span>
+                <span>
+                  {{ formatDate(transaction.createdAt) }}
+                </span>
+              </div>
             </div>
           </div>
         </div>

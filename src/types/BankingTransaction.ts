@@ -16,6 +16,10 @@ export enum BankingTransactionStatus {
 export interface BankingTransaction {
   id: number;
   accountId: number;
+  fromUser?: string;
+  fromAccountNumber?: string;
+  toUser?: string;
+  toAccountNumber?: string;
   cardId?: number;
   amount: number;
   currency: string;
