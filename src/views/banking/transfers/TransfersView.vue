@@ -131,13 +131,17 @@ onMounted(async () => {
       <div class="flex items-center justify-between">
         <h1>Transfers</h1>
         <div
-          class="flex items-center p-1 text-white bg-blue-500 rounded text-xs gap-2"
+          class="flex items-center p-1 text-white bg-blue-300 rounded text-xs gap-2"
         >
-          <Button size="xs" class="rounded-lg" @click="previousPage()">
+          <Button
+            size="xs"
+            class="rounded-sm bg-blue-400"
+            @click="previousPage()"
+          >
             <ChevronLeft />
           </Button>
           <span> {{ currentPage + 1 }} / {{ pagination?.totalPages }} </span>
-          <Button size="xs" class="rounded-lg" @click="nextPage">
+          <Button size="xs" class="rounded-sm bg-blue-400" @click="nextPage">
             <ChevronRight />
           </Button>
         </div>
