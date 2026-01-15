@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import type { BankingCard } from "@/types/BankingCard";
 import { computed, ref } from "vue";
 import { cardService } from "@/services/cardService";
+import { mapToCard } from "@/types/BankingCard";
 
 export const useCardStore = defineStore("card", () => {
   const bankingCards = ref<BankingCard[]>([]);
@@ -38,10 +39,15 @@ export const useCardStore = defineStore("card", () => {
   });
 
   async function activateCard(cardId: number, cvv: string) {
-    const activatedCard = await cardService.activate(cardId, cvv);
+    const activatedCard: BankingCard = mapToCard(
+      await cardService.activate(cardId, cvv)
+    );
+
     bankingCards.value = bankingCards.value.map((card) =>
       card.id === activatedCard.id ? activatedCard : card
     );
+
+    return activatedCard;
   }
 
   async function fetchBankingCards() {

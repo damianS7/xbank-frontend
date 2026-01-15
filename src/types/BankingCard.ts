@@ -37,3 +37,12 @@ export interface BankingCard {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export function mapToCard(card: any): BankingCard {
+  return {
+    ...card,
+    expiredDate: new Date(card.expiredDate),
+    createdAt: new Date(card.createdAt),
+    updatedAt: new Date(card.updatedAt),
+  };
+}

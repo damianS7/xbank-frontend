@@ -11,8 +11,7 @@ import BankingCardTransactions from "./components/BankingCardTransactions.vue";
 import { useAccountStore } from "@/stores/account";
 import { useModalStore } from "@/stores/modal";
 import PageLayout from "@/layouts/PageLayout.vue";
-
-// ---
+import type { BankingCard } from "@/types/BankingCard";
 
 // store
 const accountStore = useAccountStore();
@@ -25,7 +24,10 @@ const route = useRoute();
 const alert = ref();
 
 const cardId = parseInt(route.params.id as string, 10);
-const card = computed(() => cardStore.getBankingCard(cardId));
+const card: ComputedRef<BankingCard | undefined> = computed(() =>
+  cardStore.getBankingCard(cardId)
+);
+
 const currency: ComputedRef<string> = computed(() => {
   const bankingAccountId = card.value?.bankingAccountId;
   if (!bankingAccountId) return "";
@@ -33,6 +35,21 @@ const currency: ComputedRef<string> = computed(() => {
     accountStore.getBankingAccount(bankingAccountId)?.accountCurrency ?? ""
   );
 });
+
+async function activateCard() {
+  if (!card || !card.value) {
+    return;
+  }
+
+  await cardStore
+    .activateCard(card.value.id, card.value.cardCVV)
+    .then((_card) => {
+      alert.value.success("Card activated.", { timeout: 5 });
+    })
+    .catch((error) => {
+      alert.value.exception(error.message);
+    });
+}
 
 async function setLock() {
   const confirm: string = (await modalStore.open("ConfirmMessage", {
@@ -154,7 +171,7 @@ async function setDailyLimit() {
         <div class="flex gap-1">
           <Button
             v-if="card?.cardStatus === 'PENDING_ACTIVATION'"
-            @click="cardStore.activateCard(card?.id, card?.cardCVV)"
+            @click="activateCard()"
             size="sm"
           >
             ACTIVATE
