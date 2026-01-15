@@ -7,12 +7,12 @@ import { Bell } from "lucide-vue-next";
 import { useNotificationStore } from "@/stores/notification";
 import { useI18n } from "vue-i18n";
 
-const { t } = useI18n();
-
 // props
 defineProps<{
   notification: Notification;
 }>();
+
+const { t } = useI18n();
 </script>
 <template>
   <div
