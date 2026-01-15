@@ -6,8 +6,6 @@ import { ChevronRight, ChevronLeft } from "lucide-vue-next";
 import PageLayout from "@/layouts/PageLayout.vue";
 import CustomAlert from "@/components/CustomAlert.vue";
 
-// ---
-
 const cardStore = useCardStore();
 const cards = cardStore.bankingCards;
 const currentCardIndex = ref(0);

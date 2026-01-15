@@ -93,6 +93,7 @@ async function reject(id: number) {
 function formatAmount(amount: number): string {
   return `${amount.toFixed(2)}`;
 }
+
 // methods
 async function doOnBottom() {
   if (
@@ -114,7 +115,7 @@ const { currentPage, nextPage, pagination, previousPage } = usePagination(() =>
   transferStore.fetchTransfers(currentPage.value)
 );
 
-const { isScrollOnBottom } = useScrollBottonDetect(transferScroll, doOnBottom);
+useScrollBottonDetect(transferScroll, doOnBottom);
 
 onMounted(async () => {
   // notificationStore.resetStore();

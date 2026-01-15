@@ -3,14 +3,7 @@ import { useSettingStore } from "@/stores/setting";
 import { TabsContent } from "@/components/ui/tabs";
 import Button from "@/components/ui/button/Button.vue";
 import Switch from "@/components/ui/switch/Switch.vue";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   NumberField,
   NumberFieldContent,
@@ -29,12 +22,11 @@ import {
 } from "@/components/ui/select";
 import {
   Field,
-  FieldSet,
-  FieldGroup,
   FieldLabel,
   FieldContent,
   FieldDescription,
 } from "@/components/ui/field";
+
 // store
 const settingStore = useSettingStore();
 </script>

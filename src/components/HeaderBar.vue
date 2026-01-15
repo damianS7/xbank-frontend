@@ -3,12 +3,13 @@ import { useUserStore } from "@/stores/user";
 import { Bell } from "lucide-vue-next";
 import ProfilePhoto from "@/components/ProfilePhoto.vue";
 const userStore = useUserStore();
+const user = userStore.user;
 </script>
 <template>
   <header class="flex justify-end items-center gap-2 w-full p-2 shadow">
-    <span class="">
+    <span v-if="user">
       Welcome
-      <b class="uppercase">{{ userStore.user.profile?.firstName }}</b>
+      <b class="uppercase">{{ user.profile?.firstName }}</b>
     </span>
 
     <span>

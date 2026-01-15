@@ -2,16 +2,18 @@
 import { ref, onMounted, watch } from "vue";
 import { useUserStore } from "@/stores/user";
 const userStore = useUserStore();
+const user = userStore.user;
+
 const profileImgURL = ref("");
 
 onMounted(() => {
-  if (userStore.user.profile?.photoUrl) {
+  if (user?.profile?.photoUrl) {
     reloadProfileImg();
   }
 });
 
 watch(
-  () => userStore.user.profile?.photoUrl,
+  () => user?.profile?.photoUrl,
   () => {
     reloadProfileImg();
   },

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
 import type { BankingCard } from "@/types/BankingCard";
 import { useUserStore } from "@/stores/user";
 const userStore = useUserStore();
 
-const props = defineProps<{
+defineProps<{
   card: BankingCard;
 }>();
 

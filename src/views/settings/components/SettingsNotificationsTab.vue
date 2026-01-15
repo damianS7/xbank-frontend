@@ -2,23 +2,14 @@
 import { useSettingStore } from "@/stores/setting";
 import Switch from "@/components/ui/switch/Switch.vue";
 import { TabsContent } from "@/components/ui/tabs";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Field,
-  FieldSet,
-  FieldGroup,
   FieldContent,
   FieldLabel,
   FieldDescription,
 } from "@/components/ui/field";
-import Button from "@/components/ui/button/Button.vue";
+
 // store
 const settingStore = useSettingStore();
 </script>

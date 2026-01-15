@@ -15,8 +15,7 @@ import type { BankingCardType } from "@/types/BankingCard";
 import type { BankingAccountTransferForm } from "@/types/form/BankingAccountTransferForm";
 import PageLayout from "@/layouts/PageLayout.vue";
 import { useTransferStore } from "@/stores/transfer";
-
-// ----
+import { toast } from "vue-sonner";
 
 const route = useRoute();
 const accountStore = useAccountStore();
@@ -24,7 +23,6 @@ const transactionStore = useTransactionStore();
 const cardStore = useCardStore();
 const accountId = parseInt(route.params.id as string, 10);
 const account = computed(() => accountStore.getBankingAccount(accountId));
-const transactionRefs = ref();
 
 // alert
 const alert = ref();
@@ -61,7 +59,7 @@ async function transferTo() {
       transfer.amount,
       transfer.description
     )
-    .then((transfer) => {
+    .then((_transfer) => {
       alert.value?.success("Transfer created and pending for your approval.");
     })
     .catch((error) => {
@@ -72,6 +70,10 @@ async function transferTo() {
 // Set alias for the banking account
 async function setAlias(alias: string) {
   formFields.value.isEditing = false;
+
+  if (alias.trim().length == 0) {
+    return;
+  }
 
   await accountStore
     .updateBankingAccountAlias(accountId.toString(), alias)
@@ -108,7 +110,7 @@ const formFields = ref({
   name: "alias",
   type: "text",
   placeholder: "Alias",
-  value: account.value?.alias,
+  value: account.value?.alias ?? "",
   error: "",
   isEditing: false,
   edited: false,
@@ -119,7 +121,12 @@ function formatIban(iban: string): string {
 }
 
 async function toClipboard(text: string) {
-  await navigator.clipboard.writeText(text);
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("Account number copied to clipboard.");
+  } catch {
+    toast("Failed to copy account number to clipboard.");
+  }
 }
 </script>
 <template>
@@ -175,6 +182,7 @@ async function toClipboard(text: string) {
               <ClipboardCopy
                 @click="toClipboard(account.accountNumber)"
                 :size="18"
+                class="cursor-pointer"
               />
             </span>
           </div>

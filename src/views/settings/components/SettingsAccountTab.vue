@@ -1,18 +1,9 @@
 <script setup lang="ts">
 // ui
 import { TabsContent } from "@/components/ui/tabs";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Field,
-  FieldSet,
-  FieldGroup,
   FieldContent,
   FieldLabel,
   FieldDescription,

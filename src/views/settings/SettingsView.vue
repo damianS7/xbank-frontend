@@ -42,7 +42,9 @@ async function deleteCache() {
     message: "Do you wish to delete local cache?",
   })) as string;
 
-  // if(confirm)
+  if (!confirm) {
+    return;
+  }
   // emit message to parent
 }
 
@@ -57,8 +59,9 @@ async function lockAccount() {
     message: "Do you wish to lock your account?",
   })) as string;
 
-  // if(confirm)
-  // emit message to parent
+  if (!confirm) {
+    return;
+  }
 }
 
 async function closeAccount() {
@@ -67,8 +70,9 @@ async function closeAccount() {
     message: "Do you wish to delete close your account?",
   })) as string;
 
-  // if(confirm)
-  // emit message to parent
+  if (!confirm) {
+    return;
+  }
 }
 
 onMounted(async () => {

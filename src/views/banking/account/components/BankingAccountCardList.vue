@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { defineProps } from "vue";
 import { useCardStore } from "@/stores/card";
 import {
   CreditCard,
   CircleChevronDown,
   CircleChevronUp,
 } from "lucide-vue-next";
-import Button from "@/components/ui/button/Button.vue";
 import Badge from "@/components/ui/badge/Badge.vue";
 
 const cardStore = useCardStore();

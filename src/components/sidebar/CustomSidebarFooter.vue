@@ -32,7 +32,7 @@ defineProps<{
   };
 }>();
 
-const { isMobile, setOpen } = useSidebar();
+const { isMobile } = useSidebar();
 const links = [
   { to: "profile", icon: Profile, label: "Profile" },
   { to: "notifications", icon: Bell, label: "Notifications" },

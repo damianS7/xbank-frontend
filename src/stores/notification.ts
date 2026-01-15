@@ -14,6 +14,7 @@ export const useNotificationStore = defineStore("notification", () => {
   const unreadNotificationsCount = ref(0);
   const initialized = ref(false);
   let eventSource: typeof EventSourcePolyfill;
+  // let eventSource: EventSource | null = null;
 
   const countNotifications = computed(() => {
     return unreadNotificationsCount.value;
@@ -39,6 +40,19 @@ export const useNotificationStore = defineStore("notification", () => {
     await fetchNotifications();
 
     // setup the event source for server-sent events (SSE)
+    // const options: EventSourceInitDict = {
+    //   headers: {
+    //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //   },
+    //   heartbeatTimeout: 35000,
+    //   reconnectInterval: 5000,
+    // };
+
+    // eventSource = new EventSourcePolyfill(
+    //   `${API}/notifications/stream`,
+    //   options as EventSourceInitDict
+    // );
+
     eventSource = new EventSourcePolyfill(`${API}/notifications/stream`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

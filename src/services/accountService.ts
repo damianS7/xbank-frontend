@@ -3,9 +3,7 @@ import type { BankingAccount } from "@/types/BankingAccount";
 import type { BankingAccountCreateRequest } from "@/types/request/BankingAccountCreateRequest";
 import type { BankingAccountCardRequest } from "@/types/request/BankingAccountCardRequest";
 import type { BankingCard } from "@/types/BankingCard";
-import type { BankingAccountUpdateRequest } from "@/types/request/BankingAccountUpdateRequest";
 import type { BankingAccountAliasUpdateRequest } from "@/types/request/BankingAccountAliasUpdateRequest";
-import type { BankingTransaction } from "@/types/BankingTransaction";
 import { buildHeaders } from "./api/baseHeaders";
 
 const API = import.meta.env.VITE_APP_API_URL;
@@ -30,7 +28,7 @@ export const accountService = {
 
     return json as BankingAccount[];
   },
-  async chartData(currency: string): Promise<Object[]> {
+  async chartData(currency: string): Promise<[string, string][]> {
     const response = await fetch(
       `${API}/banking/accounts/summary/${currency}`,
       {
@@ -50,7 +48,7 @@ export const accountService = {
       );
     }
 
-    return json as Object[];
+    return json as [string, string][];
   },
 
   async requestBankingAccount(

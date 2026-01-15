@@ -3,8 +3,6 @@ import { useModalStore } from "@/stores/modal";
 import {
   BankingAccountCurrencies as currencies,
   BankingAccountTypes as accountTypes,
-  type BankingAccountCurrency,
-  type BankingAccountType,
 } from "@/types/BankingAccount";
 import {
   DialogClose,

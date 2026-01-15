@@ -18,16 +18,13 @@ import CustomAlert from "@/components/CustomAlert.vue";
 import { useScrollBottonDetect } from "@/composables/useScrollBottomDetect";
 import { usePagination } from "@/composables/usePagination";
 
-// types
-import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
-
 // setup
 const notificationStore = useNotificationStore();
 const notifications = computed(() => notificationStore.notifications);
 const mountedComponent = ref(false);
 
 // alert ref
-const alert = ref();
+// const alert = ref();
 
 // pagination
 const notificationScroll: Ref<HTMLDivElement | HTMLElement | null> = ref(null);
@@ -50,10 +47,8 @@ async function doOnBottom() {
   nextPage();
 }
 
-const { isScrollOnBottom } = useScrollBottonDetect(
-  notificationScroll,
-  doOnBottom
-);
+// const { isScrollOnBottom } = useScrollBottonDetect(notificationScroll, doOnBottom);
+useScrollBottonDetect(notificationScroll, doOnBottom);
 
 onMounted(async () => {
   // notificationStore.resetStore();

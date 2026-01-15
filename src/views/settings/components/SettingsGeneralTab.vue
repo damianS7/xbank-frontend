@@ -1,25 +1,13 @@
 <script setup lang="ts">
-// vue core
-import { ref } from "vue";
-
 // store
 import { useSettingStore } from "@/stores/setting";
 
 // ui
 import Button from "@/components/ui/button/Button.vue";
 import { TabsContent } from "@/components/ui/tabs";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Field,
-  FieldSet,
-  FieldGroup,
   FieldContent,
   FieldLabel,
   FieldDescription,

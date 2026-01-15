@@ -26,7 +26,7 @@ export const transferService = {
       );
     }
 
-    return json as BankingTransfer[];
+    return json as PaginatedResponse;
   },
   async transfer(
     fromAccountId: string,

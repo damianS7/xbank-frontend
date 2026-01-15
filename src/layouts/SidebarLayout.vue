@@ -6,23 +6,18 @@ import {
   CreditCard,
   UserPen as Profile,
   Settings,
-  ReceiptText,
   Bell,
   BanknoteArrowDown,
-  ShoppingCart,
-  Signature,
 } from "lucide-vue-next";
 import SidebarLink from "@/components/sidebar/SidebarLink.vue";
 import {
   Sidebar,
-  SidebarHeader,
   SidebarFooter,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
 import { useUserStore } from "@/stores/user";
@@ -42,6 +37,9 @@ const links = [
 ];
 
 const { setOpen } = useSidebar();
+
+const userStore = useUserStore();
+const user = userStore.user;
 </script>
 <template>
   <Sidebar
@@ -68,10 +66,11 @@ const { setOpen } = useSidebar();
     </SidebarContent>
     <SidebarFooter>
       <CustomSidebarFooter
+        v-if="user"
         :user="{
-          name: useUserStore().user.profile.firstName,
-          email: useUserStore().user.email,
-          avatar: useUserStore().user.profile.photoUrl,
+          name: user.profile.firstName,
+          email: user.email,
+          avatar: user.profile.photoUrl,
         }"
       />
     </SidebarFooter>

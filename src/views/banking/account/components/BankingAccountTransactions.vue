@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { defineProps } from "vue";
+import { computed, onMounted } from "vue";
 import { ChevronRight, ChevronLeft } from "lucide-vue-next";
 import { useTransactionStore } from "@/stores/transaction";
 import { usePagination } from "@/composables/usePagination";

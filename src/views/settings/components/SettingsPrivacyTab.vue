@@ -1,27 +1,17 @@
 <script setup lang="ts">
-import { useSettingStore } from "@/stores/setting";
-import Switch from "@/components/ui/switch/Switch.vue";
+// import { useSettingStore } from "@/stores/setting";
 import { TabsContent } from "@/components/ui/tabs";
 import {
   Field,
-  FieldSet,
-  FieldGroup,
   FieldLabel,
   FieldDescription,
   FieldContent,
 } from "@/components/ui/field";
 import Button from "@/components/ui/button/Button.vue";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 // store
-const settingStore = useSettingStore();
+// const settingStore = useSettingStore();
 </script>
 <template>
   <TabsContent value="privacy" class="">

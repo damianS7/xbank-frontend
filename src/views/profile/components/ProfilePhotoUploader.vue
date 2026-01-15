@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { defineEmits, ref } from "vue";
+import { ref } from "vue";
 import CustomAvatar from "@/components/CustomAvatar.vue";
 import { useUserStore } from "@/stores/user";
 const emit = defineEmits(["update", "close"]);
 const userStore = useUserStore();
+const user = userStore.user;
 const fileInput = ref<HTMLInputElement | null>(null);
 // it shows the file chooser dialog
 function showFileChooserDialog() {
@@ -25,9 +26,9 @@ function updatePhoto(event: Event) {
     <div class="md:col-span-2">
       <input type="file" ref="fileInput" class="hidden" @change="updatePhoto" />
       <CustomAvatar
-        v-if="userStore.user.profile.photoUrl"
-        :src="userStore.user.profile.photoUrl"
-        :fallback="userStore.user.profile.firstName"
+        v-if="user?.profile.photoUrl"
+        :src="user.profile.photoUrl"
+        :fallback="user.profile.firstName"
         alt="Profile photo"
         @click="showFileChooserDialog"
         class="w-24 h-24 rounded-full object-cover border cursor-pointer"

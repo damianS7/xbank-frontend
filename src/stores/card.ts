@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { BankingCard, BankingCardLockStatus } from "@/types/BankingCard";
+import type { BankingCard } from "@/types/BankingCard";
 import { computed, ref } from "vue";
 import { cardService } from "@/services/cardService";
 
@@ -91,7 +91,7 @@ export const useCardStore = defineStore("card", () => {
 
   async function setLockStatus(
     cardId: number,
-    lockStatus: BankingCardLockStatus,
+    lockStatus: string,
     password: string
   ): Promise<BankingCard> {
     let card: BankingCard = undefined as any;
