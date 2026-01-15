@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import ModalManager from "@/components/modal/ModalManager.vue";
+import "vue-sonner/style.css";
+import { Toaster } from "@/components/ui/sonner";
 </script>
 <template>
   <ModalManager />
   <router-view />
+  <Toaster />
 </template>
 <style>
 @reference "tailwindcss";
