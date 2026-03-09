@@ -80,7 +80,6 @@ export const useAccountStore = defineStore("account", () => {
 
     return {
       ...card,
-      expiredDate: new Date(card.expiredDate),
       createdAt: new Date(card.createdAt),
       updatedAt: new Date(card.updatedAt),
     } as BankingCard;

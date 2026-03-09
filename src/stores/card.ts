@@ -70,7 +70,6 @@ export const useCardStore = defineStore("card", () => {
 
     return {
       ...card,
-      expiredDate: new Date(card.expiredDate),
       createdAt: new Date(card.createdAt),
       updatedAt: new Date(card.updatedAt),
     };
@@ -89,7 +88,6 @@ export const useCardStore = defineStore("card", () => {
 
     return {
       ...card,
-      expiredDate: new Date(card.expiredDate),
       createdAt: new Date(card.createdAt),
       updatedAt: new Date(card.updatedAt),
     };
@@ -110,7 +108,6 @@ export const useCardStore = defineStore("card", () => {
 
     return {
       ...card,
-      expiredDate: new Date(card.expiredDate),
       createdAt: new Date(card.createdAt),
       updatedAt: new Date(card.updatedAt),
     };
