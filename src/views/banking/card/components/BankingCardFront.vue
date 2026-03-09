@@ -74,15 +74,10 @@ function formatCardNumber(number: string): string {
       </text>
     </g>
 
-    <g transform="translate(220, 205)" fill="gray">
+    <g transform="translate(220, 205)" fill="white">
       <text font-size="12" y="0">Expired date</text>
       <text font-size="14" y="20">
-        {{
-          card?.expiredDate.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "2-digit",
-          })
-        }}
+        {{ card.expirationMonth }} / {{ card?.expirationYear }}
       </text>
     </g>
   </svg>

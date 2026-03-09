@@ -55,7 +55,7 @@ onMounted(async () => {
       <ChevronLeft @click="previousPage" class="cursor-pointer" />
     </button>
     <span>
-      {{ pagination.pageable?.pageNumber + 1 }} /
+      {{ pagination.pageNumber + 1 }} /
       {{ pagination.totalPages }}
     </span>
     <button class="mx-2 rounded-md">

@@ -2,6 +2,8 @@ import type { BankingTransaction } from "./BankingTransaction";
 
 export enum BankingTransferStatus {
   PENDING = "PENDING",
+  AUTHORIZED = "AUTHORIZED",
+  COMPLETED = "COMPLETED",
   CONFIRMED = "CONFIRMED",
   REJECTED = "REJECTED",
 }

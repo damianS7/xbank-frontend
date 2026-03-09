@@ -90,12 +90,7 @@ onMounted(() => {
                   {{ card.cardType }}
                 </Badge>
                 <Badge variant="default">
-                  {{
-                    card?.expiredDate.toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "2-digit",
-                    })
-                  }}
+                  {{ card.expirationMonth }} / {{ card?.expirationYear }}
                 </Badge>
               </div>
             </router-link>

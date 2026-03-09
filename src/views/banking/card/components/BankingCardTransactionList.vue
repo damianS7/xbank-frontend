@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
 import type { BankingTransaction } from "@/types/BankingTransaction";
 import Badge from "@/components/ui/badge/Badge.vue";
 

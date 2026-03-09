@@ -33,7 +33,9 @@ const transfers = computed<BankingTransfer[]>(
 const STATUS_VARIANT_MAP: Record<BankingTransferStatus, BadgeVariants> = {
   [BankingTransferStatus.PENDING]: { variant: "alert" },
   [BankingTransferStatus.REJECTED]: { variant: "destructive" },
-  [BankingTransferStatus.CONFIRMED]: { variant: "success" },
+  [BankingTransferStatus.AUTHORIZED]: { variant: "default" },
+  [BankingTransferStatus.COMPLETED]: { variant: "success" },
+  [BankingTransferStatus.CONFIRMED]: { variant: "default" },
 };
 async function doAction(action: string) {
   const confirm: string = (await modalStore.open("ConfirmMessage", {

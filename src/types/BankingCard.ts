@@ -30,7 +30,8 @@ export interface BankingCard {
   cardPIN: string;
   currency: string;
   dailyLimit: number;
-  expiredDate: Date;
+  expirationYear: number;
+  expirationMonth: number;
   cardType: BankingCardType;
   cardStatus: BankingCardStatus;
   transactions?: BankingTransaction[];
