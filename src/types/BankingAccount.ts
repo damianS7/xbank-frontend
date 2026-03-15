@@ -24,6 +24,7 @@ export interface BankingAccount {
   totalCards?: number;
   accountNumber: string;
   balance: number;
+  reservedBalance: number;
   accountType: BankingAccountType;
   accountCurrency: BankingAccountCurrency;
   accountStatus: BankingAccountStatus;

@@ -10,7 +10,7 @@ import BankingAccountTransactions from "@/views/banking/account/components/Banki
 import { useTransactionStore } from "@/stores/transaction";
 import { useModalStore } from "@/stores/modal";
 import Button from "@/components/ui/button/Button.vue";
-import Badge from "@/components/ui/badge/Badge.vue";
+import { Badge } from "@/components/ui/badge";
 import type { BankingCardType } from "@/types/BankingCard";
 import type { BankingAccountTransferForm } from "@/types/form/BankingAccountTransferForm";
 import PageLayout from "@/layouts/PageLayout.vue";
@@ -228,10 +228,23 @@ async function toClipboard(text: string) {
               </div>
             </div>
             <div class="text-right">
-              <p class="text-2xl font-bold text-green-600">
+              <p class="text-2xl font-semibold text-green-600">
                 {{ account.balance.toLocaleString() }}
                 {{ account.accountCurrency }}
               </p>
+              <div
+                v-if="account.reservedBalance"
+                class="flex items-center justify-end gap-2 text-xs text-muted-foreground"
+              >
+                <span>
+                  {{ account.reservedBalance.toLocaleString() }}
+                  {{ account.accountCurrency }}
+                </span>
+
+                <Badge variant="outline" class="text-red-600 border-red-200">
+                  ON HOLD
+                </Badge>
+              </div>
             </div>
           </div>
 
