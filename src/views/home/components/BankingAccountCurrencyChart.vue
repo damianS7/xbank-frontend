@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { LineChart } from "@/components/ui/chart-line";
-import { accountService } from "@/services/accountService";
+import { accountService } from "@/modules/banking/account/service/accountService";
 interface CurrencyBalanceEndOfDay {
   balance: number;
   createdAt: Date;

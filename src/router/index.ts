@@ -4,25 +4,22 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 import HomeView from "@/views/home/HomeView.vue";
-import LoginView from "@/views/auth/LoginView.vue";
+import LoginView from "@/modules/auth/views/LoginView.vue";
+import RegisterView from "@/modules/auth/views/RegisterView.vue";
+import VerificationView from "@/modules/auth/views/verification/VerificationView.vue";
+import ResendVerificationView from "@/modules/auth/views/verification/ResendVerificationView.vue";
+import ResetPasswordView from "@/modules/auth/views/password/reset/ResetPasswordView.vue";
+import ResetPasswordSetView from "@/modules/auth/views/password/reset/ResetPasswordSetView.vue";
+import { useAuthStore } from "@/modules/auth/store/auth";
 import MainLayout from "@/layouts/MainLayout.vue";
 import AuthLayout from "@/layouts/AuthLayout.vue";
-import BankingAccountListView from "@/views/banking/account/BankingAccountListView.vue";
-import BankingAccountItemView from "@/views/banking/account/BankingAccountItemView.vue";
-import BankingCardListView from "@/views/banking/card/BankingCardListView.vue";
-import BankingCardItemView from "@/views/banking/card/BankingCardItemView.vue";
-import SettingsView from "@/views/settings/SettingsView.vue";
-import ProfileView from "@/views/profile/ProfileView.vue";
-import RegisterView from "@/views/auth/RegisterView.vue";
-import TransfersView from "@/views/banking/transfers/TransfersView.vue";
-import VerificationView from "@/views/auth/verification/VerificationView.vue";
-import ResendVerificationView from "@/views/auth/verification/ResendVerificationView.vue";
-import ResetPasswordView from "@/views/auth/password/reset/ResetPasswordView.vue";
-import ResetPasswordSetView from "@/views/auth/password/reset/ResetPasswordSetView.vue";
-import { useAuthStore } from "@/stores/auth";
-import NotificationView from "@/views/notifications/NotificationListView.vue";
-import BankingTransactionItemView from "@/views/banking/transaction/BankingTransactionItemView.vue";
-
+import bankingAccountRouter from "@/modules/banking/account/router";
+import bankingTransferRouter from "@/modules/banking/transfers/router";
+import bankingTransactionRouter from "@/modules/banking/transaction/router";
+import bankingCardRouter from "@/modules/banking/card/router";
+import settingsRouter from "@/modules/settings/router";
+import userProfileRouter from "@/modules/user/profile/router";
+import notificationsRouter from "@/modules/notifications/router";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -35,51 +32,13 @@ const routes: Array<RouteRecordRaw> = [
         name: "home",
         component: HomeView,
       },
-      {
-        path: "/banking/accounts",
-        name: "banking-accounts",
-        component: BankingAccountListView,
-      },
-      {
-        path: "/banking/account/:id",
-        name: "banking-account",
-        component: BankingAccountItemView,
-      },
-      {
-        path: "/banking/transfers",
-        name: "banking-transfers",
-        component: TransfersView,
-      },
-      {
-        path: "/banking/transactions/:id",
-        name: "banking-transaction",
-        component: BankingTransactionItemView,
-      },
-      {
-        path: "/banking/cards",
-        name: "banking-cards",
-        component: BankingCardListView,
-      },
-      {
-        path: "/banking/card/:id",
-        name: "banking-card",
-        component: BankingCardItemView,
-      },
-      {
-        path: "profile",
-        name: "profile",
-        component: ProfileView,
-      },
-      {
-        path: "settings",
-        name: "settings",
-        component: SettingsView,
-      },
-      {
-        path: "notifications",
-        name: "notifications",
-        component: NotificationView,
-      },
+      ...bankingAccountRouter,
+      ...bankingTransferRouter,
+      ...bankingTransactionRouter,
+      ...bankingCardRouter,
+      ...userProfileRouter,
+      ...settingsRouter,
+      ...notificationsRouter,
     ],
   },
   {

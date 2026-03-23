@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useAccountStore } from "@/stores/account";
+import { useAccountStore } from "@/modules/banking/account/store/account";
 import { computed } from "vue";
-import { BankingAccountCurrencies as currencies } from "@/types/BankingAccount";
+import { BankingAccountCurrencies as currencies } from "@/modules/banking/account/types/BankingAccount";
 import BankingAccountCurrencyChart from "@/views/home/components/BankingAccountCurrencyChart.vue";
 
 const accountStore = useAccountStore();

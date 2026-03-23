@@ -1,13 +1,13 @@
 import { onMounted, onUnmounted, ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore } from "@/modules/auth/store/auth";
 // import { useSettingStore } from "@/stores/setting";
-import { authService } from "@/services/authService";
-import { useUserStore } from "@/stores/user";
-import { useAccountStore } from "@/stores/account";
-import { useCardStore } from "@/stores/card";
-import { useNotificationStore } from "@/stores/notification";
-import { useTransferStore } from "@/stores/transfer";
-import { useSettingStore } from "@/stores/setting";
+import { authService } from "@/modules/auth/service/authService";
+import { useUserStore } from "@/modules/user/user/store/user";
+import { useAccountStore } from "@/modules/banking/account/store/account";
+import { useCardStore } from "@/modules/banking/card/store/card";
+import { useNotificationStore } from "@/modules/notifications/store/notification";
+import { useTransferStore } from "@/modules/banking/transfers/store/transfer";
+import { useSettingStore } from "@/modules/settings/store/setting";
 
 export function useAppInit() {
   const authStore = useAuthStore();

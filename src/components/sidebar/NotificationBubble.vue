@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useNotificationStore } from "@/stores/notification";
+import { useNotificationStore } from "@/modules/notifications/store/notification";
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
 

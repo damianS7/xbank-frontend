@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user";
+import { useUserStore } from "@/modules/user/user/store/user";
 import { Bell } from "lucide-vue-next";
 import ProfilePhoto from "@/components/ProfilePhoto.vue";
 const userStore = useUserStore();

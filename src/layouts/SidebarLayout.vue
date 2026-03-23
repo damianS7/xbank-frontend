@@ -20,7 +20,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
-import { useUserStore } from "@/stores/user";
+import { useUserStore } from "@/modules/user/user/store/user";
 import CustomSidebarFooter from "@/components/sidebar/CustomSidebarFooter.vue";
 const links = [
   { to: "home", icon: Home, label: "Home" },

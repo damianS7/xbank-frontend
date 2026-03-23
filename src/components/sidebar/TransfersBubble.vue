@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTransferStore } from "@/stores/transfer";
+import { useTransferStore } from "@/modules/banking/transfers/store/transfer";
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
 
