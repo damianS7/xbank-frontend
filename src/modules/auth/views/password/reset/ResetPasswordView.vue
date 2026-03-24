@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { authService } from "@/modules/auth/service/authService";
-import type { ApiResponse } from "@/types/response/ApiResponse";
+import type { ApiResponse } from "@/types/api/response/ApiResponse";
 import Button from "@/components/ui/button/Button.vue";
 import {
   Card,

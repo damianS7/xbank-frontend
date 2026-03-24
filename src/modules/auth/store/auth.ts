@@ -1,4 +1,4 @@
-import type { JwtPayload } from "@/types/JwtPayload";
+import type { JwtPayload } from "@/types/api/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";

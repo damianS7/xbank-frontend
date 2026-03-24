@@ -104,7 +104,9 @@ const STATUS_VARIANT_MAP: Record<BankingTransactionStatus, BadgeVariants> = {
                   {{ transaction.status }}
                 </Badge>
                 <span
-                  v-if="['DEPOSIT', 'TRANSFER_FROM'].includes(transaction.type)"
+                  v-if="
+                    ['DEPOSIT', 'INCOMING_TRANSFER'].includes(transaction.type)
+                  "
                   class="text-green-600"
                 >
                   +{{ transaction.amount }} {{ currency }}

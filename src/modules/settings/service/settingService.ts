@@ -1,5 +1,5 @@
 import type { SettingsUpdateRequest } from "@/modules/settings/types/SettingsUpdateRequest";
-import { ApiResponse } from "@/types/response/ApiResponse";
+import { ApiResponse } from "@/types/api/response/ApiResponse";
 import type { Setting } from "@/modules/settings/types/Setting";
 import { buildHeaders } from "@/utils/baseHeaders";
 

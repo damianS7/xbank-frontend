@@ -3,20 +3,14 @@ import {
   createWebHistory,
   type RouteRecordRaw,
 } from "vue-router";
-import HomeView from "@/views/home/HomeView.vue";
-import LoginView from "@/modules/auth/views/LoginView.vue";
-import RegisterView from "@/modules/auth/views/RegisterView.vue";
-import VerificationView from "@/modules/auth/views/verification/VerificationView.vue";
-import ResendVerificationView from "@/modules/auth/views/verification/ResendVerificationView.vue";
-import ResetPasswordView from "@/modules/auth/views/password/reset/ResetPasswordView.vue";
-import ResetPasswordSetView from "@/modules/auth/views/password/reset/ResetPasswordSetView.vue";
+import HomeView from "@/modules/home/views/HomeView.vue";
 import { useAuthStore } from "@/modules/auth/store/auth";
 import MainLayout from "@/layouts/MainLayout.vue";
-import AuthLayout from "@/layouts/AuthLayout.vue";
 import bankingAccountRouter from "@/modules/banking/account/router";
 import bankingTransferRouter from "@/modules/banking/transfers/router";
 import bankingTransactionRouter from "@/modules/banking/transaction/router";
 import bankingCardRouter from "@/modules/banking/card/router";
+import authRouter from "@/modules/auth/router";
 import settingsRouter from "@/modules/settings/router";
 import userProfileRouter from "@/modules/user/profile/router";
 import notificationsRouter from "@/modules/notifications/router";
@@ -41,52 +35,7 @@ const routes: Array<RouteRecordRaw> = [
       ...notificationsRouter,
     ],
   },
-  {
-    path: "/users/accounts",
-    component: AuthLayout,
-    redirect: "/users/accounts/login",
-    meta: { requiresAuth: false, redirectIfAuth: true },
-    children: [
-      {
-        path: "login",
-        name: "login",
-        component: LoginView,
-      },
-      {
-        path: "logout",
-        name: "logout",
-        component: LoginView,
-        beforeEnter: () => {
-          useAuthStore().logout();
-        },
-      },
-      {
-        path: "register",
-        name: "register",
-        component: RegisterView,
-      },
-      {
-        path: "verification/:token?",
-        name: "verify-account",
-        component: VerificationView,
-      },
-      {
-        path: "verification/resend",
-        name: "resend-verification",
-        component: ResendVerificationView,
-      },
-      {
-        path: "password/reset",
-        name: "reset-password",
-        component: ResetPasswordView,
-      },
-      {
-        path: "password/reset/:token",
-        name: "reset-password-set",
-        component: ResetPasswordSetView,
-      },
-    ],
-  },
+  ...authRouter,
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",

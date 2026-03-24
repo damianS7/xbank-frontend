@@ -1,6 +1,6 @@
 // services/notificationService.ts
-import { ApiResponse } from "@/types/response/ApiResponse";
-import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
+import { ApiResponse } from "@/types/api/response/ApiResponse";
+import type { PaginatedResponse } from "@/types/api/response/PaginatedResponse";
 import { buildHeaders } from "@/utils/baseHeaders";
 
 const API = import.meta.env.VITE_APP_API_URL;

@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import type { BankingTransfer } from "@/modules/banking/transfers/types/BankingTransfer";
 import { transferService } from "@/modules/banking/transfers/service/transferService";
-import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
+import type { PaginatedResponse } from "@/types/api/response/PaginatedResponse";
 export const useTransferStore = defineStore("transfer", () => {
   const initialized = ref(false);
   const transfers = ref<BankingTransfer[]>([]);

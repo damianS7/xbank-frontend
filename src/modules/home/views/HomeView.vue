@@ -2,7 +2,7 @@
 import { useAccountStore } from "@/modules/banking/account/store/account";
 import { computed } from "vue";
 import { BankingAccountCurrencies as currencies } from "@/modules/banking/account/types/BankingAccount";
-import BankingAccountCurrencyChart from "@/views/home/components/BankingAccountCurrencyChart.vue";
+import BankingAccountCurrencyChart from "@/modules/banking/account/components/BankingAccountCurrencyChart.vue";
 
 const accountStore = useAccountStore();
 const accounts = computed(() => accountStore.bankingAccounts);

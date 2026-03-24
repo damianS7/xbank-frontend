@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
 import { authService } from "@/modules/auth/service/authService";
-import type { ApiResponse } from "@/types/response/ApiResponse";
+import type { ApiResponse } from "@/types/api/response/ApiResponse";
 import CustomAlert from "@/components/CustomAlert.vue";
 
 const route = useRoute();

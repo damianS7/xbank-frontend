@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/types/response/ApiResponse";
+import { ApiResponse } from "@/types/api/response/ApiResponse";
 import type { BankingCard } from "@/modules/banking/card/types/BankingCard";
 import { buildHeaders } from "@/utils/baseHeaders";
 

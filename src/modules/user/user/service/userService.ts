@@ -1,5 +1,5 @@
 import type { UserRegisterRequest } from "@/modules/user/user/types/UserRegisterRequest";
-import { ApiResponse } from "@/types/response/ApiResponse";
+import { ApiResponse } from "@/types/api/response/ApiResponse";
 import { buildHeaders } from "@/utils/baseHeaders";
 import type { User } from "@/modules/user/user/types/User";
 

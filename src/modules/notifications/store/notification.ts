@@ -4,7 +4,7 @@ import { type Notification } from "@/modules/notifications/types/Notification";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { notificationService } from "@/modules/notifications/service/notificationService";
 import { mapNotification } from "@/modules/notifications/types/Notification";
-import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
+import type { PaginatedResponse } from "@/types/api/response/PaginatedResponse";
 
 const API = import.meta.env.VITE_APP_API_URL;
 

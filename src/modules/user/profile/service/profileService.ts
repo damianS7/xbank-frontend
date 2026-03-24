@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/types/response/ApiResponse";
+import { ApiResponse } from "@/types/api/response/ApiResponse";
 import type { Profile } from "@/modules/user/profile/types/Profile";
 import { buildHeaders } from "@/utils/baseHeaders";
 

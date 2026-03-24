@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/types/response/ApiResponse";
+import { ApiResponse } from "@/types/api/response/ApiResponse";
 import type { BankingAccount } from "@/modules/banking/account/types/BankingAccount";
 import type { BankingAccountCreateRequest } from "@/modules/banking/account/types/BankingAccountCreateRequest";
 import type { BankingAccountCardRequest } from "@/modules/banking/account/types/BankingAccountCardRequest";

@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/types/response/ApiResponse";
+import { ApiResponse } from "@/types/api/response/ApiResponse";
 const API = import.meta.env.VITE_APP_API_URL;
 
 export const authService = {

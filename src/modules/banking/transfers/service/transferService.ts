@@ -1,5 +1,5 @@
-import { ApiResponse } from "@/types/response/ApiResponse";
-import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
+import { ApiResponse } from "@/types/api/response/ApiResponse";
+import type { PaginatedResponse } from "@/types/api/response/PaginatedResponse";
 import type { BankingTransfer } from "@/modules/banking/transfers/types/BankingTransfer";
 import { buildHeaders } from "@/utils/baseHeaders";
 

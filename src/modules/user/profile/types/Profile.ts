@@ -1,4 +1,4 @@
-import type { GenderType } from "@/types/Gender";
+import type { GenderType } from "@/modules/user/user/types/Gender";
 
 export interface Profile {
   firstName: string;

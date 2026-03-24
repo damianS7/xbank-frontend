@@ -4,7 +4,7 @@ import CustomAlert from "@/components/CustomAlert.vue";
 import { computed, ref } from "vue";
 import ProfileEditableField from "@/modules/user/profile/components/ProfileEditableField.vue";
 import ProfilePhoto from "@/modules/user/profile/components/ProfilePhotoUploader.vue";
-import { genderOptions } from "@/types/Gender";
+import { genderOptions } from "@/modules/user/user/types/Gender";
 import { useModalStore } from "@/stores/modal";
 import PageLayout from "@/layouts/PageLayout.vue";
 

@@ -1,4 +1,4 @@
-import type { PaginatedResponse } from "@/types/response/PaginatedResponse";
+import type { PaginatedResponse } from "@/types/api/response/PaginatedResponse";
 import { onMounted, ref } from "vue";
 
 export function usePagination(onPageUpdate: () => any) {

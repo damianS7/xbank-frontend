@@ -13,7 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ref } from "vue";
 import { z } from "zod";
-import { genderOptions, genderValues, type GenderType } from "@/types/Gender";
+import {
+  genderOptions,
+  genderValues,
+  type GenderType,
+} from "@/modules/user/user/types/Gender";
 import type { UserRegisterRequest } from "@/modules/user/user/types/UserRegisterRequest";
 import { useUserStore } from "@/modules/user/user/store/user";
 
